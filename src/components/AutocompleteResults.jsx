@@ -12,11 +12,16 @@ const AutocompleteResults = props => {
   useEffect(() => {
     console.log("AXOIS PARAMAS HAVE CHANGED: UPDATE RESUTLS");
     console.log("table: ", table);
-    console.log("params: ", params);
 
     const makeNetworkRequest = debounce(() => {
       console.log("making fake network request: ");
-      doQuery({ table, params })
+      doQuery({
+        table,
+        params: {
+          q: params.q,
+          related: params.related
+        }
+      })
         .then(res => {
           console.log("data: ", res);
           setData({ items: res });
@@ -32,17 +37,30 @@ const AutocompleteResults = props => {
         });
     }, 200);
 
+    const someRelatedParamsAreMissing = params =>
+      params.related.some(relation => !relation.value || relation.value <= 0);
+
     const fetchData = () => {
       if (!params.q || !params.q.length || !params.q.trim().length) return;
 
-      setLoading(true);
       setError(false);
+
+      if (
+        params.related &&
+        params.related.length &&
+        someRelatedParamsAreMissing(params)
+      ) {
+        setError("Please enter all dependent values.");
+        return;
+      }
+
+      setLoading(true);
 
       makeNetworkRequest();
     };
 
     fetchData();
-  }, [table, params.q]);
+  }, [table, params.q, params.related]);
 
   return (
     <React.Fragment>

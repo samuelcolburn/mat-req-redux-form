@@ -7,8 +7,12 @@ import IconButton from "@material-ui/core/IconButton";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import Paper from "@material-ui/core/Paper";
 import MenuItem from "@material-ui/core/MenuItem";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ListItemText from "@material-ui/core/ListItemText";
+
 import CloseIcon from "@material-ui/icons/Close";
 import ArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
+import ErrorIcon from "@material-ui/icons/Error";
 import { makeStyles } from "@material-ui/core/styles";
 
 import AutocompleteResults from "./AutocompleteResults";
@@ -23,7 +27,7 @@ const ControllerButton = ({
     {selectedItem ? (
       <IconButton
         edge="end"
-        aria-label="Toggle password visibility"
+        aria-label="Clear Selection"
         onClick={clearSelection}
         className={classes.iconButton}
       >
@@ -32,7 +36,7 @@ const ControllerButton = ({
     ) : (
       <IconButton
         edge="end"
-        aria-label="Toggle password visibility"
+        aria-label="Open Selection Menu"
         onClick={toggleMenu}
         className={classes.iconButton}
       >
@@ -121,6 +125,9 @@ const useStyles = makeStyles(theme => ({
   iconButton: {
     padding: theme.spacing(2),
     marginRight: theme.spacing(2) * -1
+  },
+  resultsError: {
+    color: theme.palette.error.main
   }
 }));
 
@@ -220,11 +227,18 @@ let AutoComplete = ({
                       }
 
                       if (error) {
-                        return <MenuItem>Error! ${error}</MenuItem>;
+                        return (
+                          <MenuItem className={classes.resultsError}>
+                            <ListItemIcon>
+                              <ErrorIcon color="error" />
+                            </ListItemIcon>
+                            <ListItemText>{error}</ListItemText>
+                          </MenuItem>
+                        );
                       }
 
                       if (!items.length) {
-                        return <MenuItem>No repositories found</MenuItem>;
+                        return <MenuItem>No items match your search</MenuItem>;
                       }
 
                       return items.map((item, index) =>
