@@ -4,14 +4,19 @@ const values = obj => Object.values(obj);
 
 const delay = ms => new Promise(_ => setTimeout(_, ms));
 
-const mockJob = () => ({
-  id: faker.random.uuid(),
-  number: faker.random.number({
+const mockJob = () => {
+  const number = faker.random.number({
     max: 9999,
     min: 6000
-  }),
-  name: faker.company.companyName()
-});
+  });
+  const name = faker.company.companyName();
+  return {
+    id: faker.random.uuid(),
+    number,
+    name,
+    job: `${number} - ${name}`
+  };
+};
 
 const mockJobs = (qty = 100) => {
   let jobs = [];
@@ -25,20 +30,26 @@ const mockJobs = (qty = 100) => {
 };
 const jobs = mockJobs();
 
-const mockShopDrawing = job => ({
-  id: faker.random.uuid(),
-  number: faker.random.number({
+const mockShopDrawing = job => {
+  const number = faker.random.number({
     min: 1,
     max: 35
-  }),
-  subject: faker.lorem.words(
+  });
+  const subject = faker.lorem.words(
     faker.random.number({
       min: 5,
       max: 15
     })
-  ),
-  job: job.id
-});
+  );
+
+  return {
+    id: faker.random.uuid(),
+    number,
+    subject,
+    shopDrawing: `SD.${number} - ${subject}`,
+    job: job.id
+  };
+};
 
 const mockShopDrawings = (qtyPerJob = 10) =>
   jobs.reduce((acc, curr) => {
