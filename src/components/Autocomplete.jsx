@@ -95,7 +95,7 @@ function renderSuggestion({
         fontWeight: isSelected ? 500 : 400
       }}
     >
-      {itemToString(item)}
+     {itemToString(item)}
     </MenuItem>
   );
 }
@@ -221,7 +221,7 @@ let AutoComplete = ({
                     table={table}
                     params={{ q: inputValue, ...params }}
                   >
-                    {({ loading, error, data: { items = [] } = {} }) => {
+                    {({ loading, error, data }) => {
                       if (loading) {
                         return <MenuItem>Loading...</MenuItem>;
                       }
@@ -237,11 +237,11 @@ let AutoComplete = ({
                         );
                       }
 
-                      if (!items.length) {
+                      if (!data.length) {
                         return <MenuItem>No items match your search</MenuItem>;
                       }
 
-                      return items.map((item, index) =>
+                      return data.map((item, index) =>
                         renderSuggestion({
                           item,
                           index,

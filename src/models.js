@@ -24,7 +24,11 @@ ShopDrawing.fields = {
   id: attr(),
   number: attr(),
   subject: attr(),
-  job: fk("Job", "shopDrawings"),
+  relatedJob: fk({
+    to: "Job",
+    as: 'job',
+    relatedName: "shopDrawings"
+  }),
   phases: many("Phase", "shopDrawings")
 };
 
@@ -38,7 +42,11 @@ Phase.modelName = "Phase";
 Phase.fields = {
   id: attr(),
   phase: attr(),
-  job: fk("Job", "phases")
+  relatedJob: fk({
+    to: "Job",
+    as: 'job',
+    relatedName: "phases"
+  })
 };
 
 export class Requisition extends Model {
@@ -55,8 +63,16 @@ Requisition.fields = {
   dateNeeded: attr(),
   number: attr(),
   subject: attr(),
-  job: fk("Job", "requisitions"),
-  shopDrawing: fk("ShopDrawing", "requisitions")
+  relatedJob: fk({
+    to: "Job",
+    as: 'job',
+    relatedName: "requisitions"
+  }),
+  relatedShopDrawing: fk({
+    to: "ShopDrawing",
+    as: 'shopDrawing',
+    relatedName: "requisitions"
+  })
 };
 
 export class RequisitionLineItem extends Model {
@@ -76,6 +92,14 @@ RequisitionLineItem.fields = {
   quantityNeeded: attr(),
   estimatedCost: attr(),
   currentCost: attr(),
-  phase: fk("Phase", "requisitionLineItems"),
-  requisition: fk("Requisition", "requisitionLineItems")
+  relatedPhase: fk({
+    to: "Phase",
+    as: 'phase',
+    relatedName: "requisitionLineItems"
+  }),
+  relatedRequisition: fk({
+    to: "Requisition",
+    as: 'requisition',
+    relatedName: "requisitionLineItems"
+  })
 };

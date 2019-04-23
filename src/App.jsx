@@ -1,14 +1,43 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { connect } from "react-redux";
 
 import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
+import Paper from '@material-ui/core/Paper';
+import Grid from '@material-ui/core/Grid';
 
-import { loadRequisitionById } from "./actions";
+import CircularProgress from '@material-ui/core/CircularProgress';
+import ErrorIcon from '@material-ui/icons/Error';
+
+import { loadRandomRequisition } from "./actions";
 import Form from "./Form";
 
-let App = ({ rid, load }) => {
+let App = ({ rid, load, loading, error }) => {
+
+  const form = loading
+  ? (
+    <CircularProgress />
+  ) : error
+  ? (
+    <Grid container alignItems="center" alignContent="center" justify="center">
+      <Grid item >
+      < ErrorIcon color="error" fontSize="large" />
+      </Grid>
+
+      <Grid item>
+        <Typography variant="h2" component="h2" gutterBottom>
+        Error Loading Requisition
+        </Typography>
+        <Typography variant="h4" component="h4" gutterBottom>
+        {error}
+        </Typography>
+      </Grid>
+    </Grid>
+    ) : (
+      <Form rid={rid} />
+    )
+
   return (
     <Container>
       <Typography variant="h4" component="h1" gutterBottom>
@@ -18,22 +47,26 @@ let App = ({ rid, load }) => {
       <Button
         color="primary"
         variant="contained"
-        onClick={() => load({ id: "1" })}
+        onClick={() => load()}
       >
         Load Requisition
       </Button>
 
-      <Form rid={rid} />
+      <Paper>
+        {form}
+      </Paper>
     </Container>
   );
 };
 
 const mapStateToProps = state => ({
-  rid: state.selectedRequisitionId
+  rid: state.selectedRequisitionId,
+  loading: state.loading,
+  error: state.error
 });
 
 const mapDispatchToProps = {
-  load: loadRequisitionById
+  load: loadRandomRequisition
 };
 
 App = connect(

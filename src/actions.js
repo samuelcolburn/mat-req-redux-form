@@ -1,8 +1,11 @@
 // export const REQUEST_REQUISITION = 'REQUEST_REQUISITION'
 // function fetchRequisition
-import { fetchData, fetchLineItemsForReq } from "./data/mockAPI";
+import { doQuery, getData, getRandomData, getLineItemsForReq } from "./data/mockAPI";
 
 import {
+  AUTOCOMPLETE_FETCH_INIT,
+  AUTOCOMPLETE_FETCH_ERROR,
+  AUTOCOMPLETE_FETCH_SUCCESS,
   CREATE_JOB,
   UPDATE_JOB,
   REMOVE_JOB,
@@ -23,9 +26,10 @@ import {
   CREATE_REQUISITION_LINE_ITEM,
   UPDATE_REQUISITION_LINE_ITEM,
   REMOVE_REQUISITION_LINE_ITEM,
-  SELECT_ITEM,
-  DESELECT_ITEM
+  SAVE_QUERY
 } from "./actionTypes";
+
+import orm from './orm'
 
 export const createJob = props => {
   return {
@@ -139,34 +143,12 @@ export const removeRequisitionLineItem = id => {
   };
 };
 
-export const selectRequisition = id => {
+const createRequisition = requisition => {
   return {
-    type: SELECT_REQUISITION,
-    payload: id
-  };
-};
-
-export const loadRequisitionById = ({ id }) => {
-  console.log("loadRequisitionById", id);
-  return (dispatch, getState) => {
-    Promise.all([fetchData("requisitions", id), fetchLineItemsForReq(id)]).then(
-      data => {
-        console.log("load req done fetching: ", data);
-        dispatch(createRequisition(data[0]));
-        dispatch(createManyRequisitionLineItem(data[1]));
-        dispatch(selectRequisition(id));
-      }
-    );
-  };
-};
-
-export const createRequisition = props => {
-  console.log("createRequistion action, props: ", props);
-  return {
-    type: CREATE_REQUISITION,
-    payload: props
-  };
-};
+      type: CREATE_REQUISITION,
+      payload: requisition
+  }
+}
 
 export const updateRequisition = (id, props) => {
   return {
@@ -187,16 +169,160 @@ export const removeRequisition = id => {
   };
 };
 
-export const selectItem = item => {
+export const selectRequisition = id => {
   return {
-    type: SELECT_ITEM,
-    item
+    type: SELECT_REQUISITION,
+    payload: id
   };
 };
 
-export const deselectItem = item => {
+const reqRequisitionInit = id => {
   return {
-    type: DESELECT_ITEM,
-    item
+    type: REQ_REQUISITION,
+    payload: id
+  }
+}
+const reqRequisitionSuccess = (requisition) => {
+  return (dispatch, getState) => {
+    dispatch(createRequisition(requisition))
+    dispatch({
+      type: REQ_REQUISITION_SUCCESS
+    })
+
+    const dbState = getState().db;
+    const sess = orm.session(dbState);
+
+    if (!sess.Job.idExists(requisition.relatedJob)) {
+      dispatch(createJob(requisition.job))
+    }
+
+    if (!sess.ShopDrawing.idExists(requisition.relatedShopDrawing)) {
+      dispatch(createShopDrawing(requisition.shopDrawing))
+    }
+  }
+}
+
+const reqRequisitionError = error => {
+  return {
+    type: REQ_REQUISITION_ERROR,
+    error
+  }
+}
+const fetchRequisition = id => {
+  console.log('fetching Requisition: ', id)
+  return (dispatch, getState) => {
+    dispatch(reqRequisitionInit(id))
+    dispatch(selectRequisition(id));
+
+    return getData({ table: 'requisitions', id })
+/*       .then(
+        res => dispatch(reqRequisitionSuccess(res)),
+        error => dispatch(reqRequisitionError(error))
+      ) */
+  }
+}
+
+const fetchLineItemsForReq = (id) => {
+  return (dispatch, getState) => getLineItemsForReq({id})
+}
+
+export const loadRequisitionById = ({ id }) => {
+  console.log("loadRequisitionById", id);
+  return (dispatch, getState) => {
+    Promise.all([
+        dispatch(fetchRequisition(id)),
+        dispatch(fetchLineItemsForReq(id))
+      ]).then(
+      data => {
+        console.log("load req done fetching: ", data);
+        dispatch(reqRequisitionSuccess(data[0]));
+        dispatch(createManyRequisitionLineItem(data[1]));
+      },
+      error => {
+        console.log('error fetching data: ', error.message)
+        console.error(error)
+        dispatch(reqRequisitionError(error))
+      }
+    );
+  };
+};
+
+const fetchRandomRequisition = () => {
+  return (dispatch, getState) => {
+    dispatch(reqRequisitionInit())
+
+    return getRandomData({ table: 'requisitions' })
+  }
+}
+export const loadRandomRequisition = () => {
+  return (dispatch, getState) => {
+      dispatch(fetchRandomRequisition())
+      .then(
+      data => Promise.all([
+        data,
+        dispatch(fetchLineItemsForReq(data.id))
+      ])
+      .then(
+        data => {
+          console.log("load req done fetching: ", data);
+          dispatch(reqRequisitionSuccess(data[0]));
+          dispatch(createManyRequisitionLineItem(data[1]));
+          dispatch(selectRequisition(data[0].id))
+        },
+        error => {
+          console.log('error fetching data: ', error.message)
+          console.error(error)
+          dispatch(reqRequisitionError(error))
+        }
+      )
+    );
+  };
+}
+
+const autocompleteFetchInit = () => {
+  return {
+    type: AUTOCOMPLETE_FETCH_INIT
+  }
+}
+const autocompleteFetchSuccess = props => {
+  return {
+    type: AUTOCOMPLETE_FETCH_SUCCESS,
+    payload: props
+  }
+}
+const autocompleteFetchError = error => {
+  return {
+    type: AUTOCOMPLETE_FETCH_ERROR,
+    error: error
+  }
+}
+
+const saveQuery = props => {
+  return {
+    type: SAVE_QUERY,
+    payload: props
+  }
+}
+
+export const getQuery = ({ table, params }) => {
+  return (dispatch, getState) => {
+    if (getState().autocomplete.loading) {
+      // bail out early if we are already loading
+      return Promise.resolve();
+    }
+
+    dispatch(autocompleteFetchInit());
+
+    return doQuery({ table, params })
+      .then(
+        data => dispatch(autocompleteFetchSuccess({ table, params, data })),
+        err => dispatch(autocompleteFetchError(err))
+      );
+
+    /*
+      return {
+    type: FETCH_INIT
+  }
+  */
   };
 };

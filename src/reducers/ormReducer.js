@@ -1,4 +1,4 @@
-import orm from "../orm";
+import orm, { tableModelMap } from "../orm";
 import {
   CREATE_JOB,
   UPDATE_JOB,
@@ -15,8 +15,37 @@ import {
   CREATE_MANY_REQUISITION_LINE_ITEM,
   CREATE_REQUISITION_LINE_ITEM,
   UPDATE_REQUISITION_LINE_ITEM,
-  REMOVE_REQUISITION_LINE_ITEM
+  REMOVE_REQUISITION_LINE_ITEM,
+  AUTOCOMPLETE_FETCH_SUCCESS
 } from "../actionTypes";
+
+function autocompleteOrmReducer(sess, action) {
+  console.log('AUTOCOMPLETE_FETCH_SUCCESS: orm reducer')
+  console.log('action: ', action)
+
+  if (action.type !== AUTOCOMPLETE_FETCH_SUCCESS) return;
+
+  const { data, params, table } = action.payload
+
+  console.log("tableModelMap: ", tableModelMap)
+
+  if (!tableModelMap[table]) return;
+
+  if (!data || !data.length) return;
+
+  const modelName = tableModelMap[table]
+  console.log("modelName: ", modelName)
+
+  const model = sess[modelName]
+
+  if (!model) return;
+
+  data.forEach(record => {
+    model.idExists(record.id)
+      ? model.withId(record.id).update(record)
+      : model.create(record)
+  })
+}
 
 function ormReducer(dbState, action) {
   const sess = orm.session(dbState);
@@ -26,6 +55,13 @@ function ormReducer(dbState, action) {
   const { Job, ShopDrawing, Phase, Requisition, RequisitionLineItem } = sess;
 
   switch (action.type) {
+    case AUTOCOMPLETE_FETCH_SUCCESS:
+      console.log('AUTOCOMPLETE_FETCH_SUCCESS: orm reducer')
+      console.log('type, table, params, data: ', action)
+
+      autocompleteOrmReducer(sess, action)
+      break;
+
     case CREATE_JOB:
       Job.create(action.payload);
       break;

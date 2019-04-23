@@ -39,7 +39,7 @@ let Form = props => {
 
 */
   return (
-    <form onSubmit={e => onSubmit(e)}>
+  <form onSubmit={e => onSubmit(e)}>
       <Typography variant="h6" component="h5" gutterBottom>
         <span>Rid: </span>
         <span>{rid}</span>
@@ -126,8 +126,8 @@ Form = reduxForm({
   // asyncBlurFields: ["createdBy", "dateCreated"]
 })(Form);
 
-const mapStateToProps = (state, ownProps) => ({
-  initialValues: requisitionSelector(state, ownProps),
+const mapStateToProps = (state, props) => ({
+  initialValues: requisitionSelector(state, props),
   job: selector(state, "job")
 });
 
