@@ -2,6 +2,8 @@ import React, { useState } from "react";
 
 import Downshift from "downshift";
 
+// import { connect } from 'react-redux'
+
 import TextField from "@material-ui/core/TextField";
 import IconButton from "@material-ui/core/IconButton";
 import InputAdornment from "@material-ui/core/InputAdornment";
@@ -16,6 +18,8 @@ import ErrorIcon from "@material-ui/icons/Error";
 import { makeStyles } from "@material-ui/core/styles";
 
 import AutocompleteResults from "./AutocompleteResults";
+
+// import { autocompleteStateSelector } from '../selectors'
 
 const ControllerButton = ({
   classes,
@@ -139,6 +143,8 @@ let AutoComplete = ({
   itemToString,
   table,
   params,
+  // loading,
+  // error,
   ...rest
 }) => {
   const classes = useStyles();
@@ -146,11 +152,7 @@ let AutoComplete = ({
   const [inputValue, setInputValue] = useState("");
 
   function onInputValueChange(inputValue, stateAndHelpers) {
-    console.log("onInputValueChange: ");
-    console.log("inputValue: ", inputValue);
-    console.log("stateAndHelpers: ", stateAndHelpers);
     setInputValue(inputValue);
-
     if (!inputValue || !inputValue.length) input.onChange(null);
   }
 
@@ -166,7 +168,7 @@ let AutoComplete = ({
         input.onChange(selectedItem);
       }}
       selectedItem={input.value}
-      // defaultIsOpen={true}
+      // defaultIsOpen={true} // keep open during dev to see results
       itemToString={itemToString}
       inputValue={inputValue}
       onInputValueChange={onInputValueChange}
@@ -216,7 +218,7 @@ let AutoComplete = ({
                   return <MenuItem>You have to enter a search query</MenuItem>;
                 }
 
-                return (
+                 return (
                   <AutocompleteResults
                     table={table}
                     params={{ q: inputValue, ...params }}
@@ -262,5 +264,13 @@ let AutoComplete = ({
     </Downshift>
   );
 };
+
+/* const mapStateToProps = (state, ownProps) => ({
+  loading: autocompleteStateSelector(state, 'loading', ownProps.table),
+  error: autocompleteStateSelector(state, 'error', ownProps.table)
+})
+
+AutoComplete = connect(mapStateToProps)(AutoComplete);
+ */
 
 export default AutoComplete;

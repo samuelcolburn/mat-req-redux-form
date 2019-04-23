@@ -1,6 +1,8 @@
 import faker from "faker";
 import random from 'lodash/random'
 
+const price = () => faker.random.number({ min: 0, max: 100000 }) + (faker.random.number({min: 0, max: 99 })/100)
+
 const mockJob = () => {
   const number = faker.random.number({
     max: 9999,
@@ -50,15 +52,15 @@ const mockShopDrawing = job => {
   };
 };
 
-const mockShopDrawings = (jobs) =>
+const mockShopDrawings = (jobs, numShopDrawingOptions = {
+  min: 1,
+  max: 25
+}) =>
   jobs.reduce((acc, curr) => {
     const shopDrawings = [];
-    const numShopDrawings = faker.random.number({
-      min: 1,
-      max: 25
-    })
+    const numShopDrawings = faker.random.number(numShopDrawingOptions)
 
-    for (let i = 0; i < numShopDrawings; i++) {
+    for (let i = 0; i <= numShopDrawings; i++) {
       const shopDrawing = mockShopDrawing(curr);
       shopDrawings.push(shopDrawing);
     }
@@ -96,17 +98,14 @@ const mockPhase = (job, shopDrawings) => {
     }
   };
 };
-const mockPhases = (jobs, shopDrawings) =>
+const mockPhases = (jobs, shopDrawings, numPhasesOptions = { min: 5, max: 25 }) =>
 jobs.reduce((acc, curr) => {
   const phases = [];
-  const numPhases = faker.random.number({
-    min: 5,
-    max: 25
-  })
+  const numPhases = faker.random.number(numPhasesOptions)
 
   const sds = shopDrawings.filter(sd => sd.relatedJob === curr.id)
 
-  for (let i = 0; i < numPhases; i++) {
+  for (let i = 0; i <= numPhases; i++) {
     const phase = mockPhase(curr, sds);
     phases.push(phase);
   }
@@ -139,7 +138,7 @@ const mockRequisitions = shopDrawings => shopDrawings
       max: 25
     })
 
-    for (let i = 0; i < numRequisitions; i++) {
+    for (let i = 0; i <= numRequisitions; i++) {
       const mr = mockRequisition(curr);
       requisitions.push(mr);
     }
@@ -151,33 +150,42 @@ const mockRequisitionLineItem = (requisition, phase) => {
   return {
     id: faker.random.uuid(),
     selected: false,
-    status: "Needs Review",
+    status: faker.random.arrayElement([
+      'Needs Review',
+      'Needs Pricing',
+      'Needs Approval',
+      'Approved',
+      'Rejected',
+      'Ordered',
+      'Received',
+      'Complete'
+    ]),
     vendor: "",
     type: "",
     description: faker.lorem.words(faker.random.number({ max: 15 })),
     inventoryItem: "",
     startingInventory: faker.random.number({ min: 0, max: 1000}),
     quantityRequested: faker.random.number({ min: 0, max: 1000}),
-    quantityOrdered: faker.random.number({ min: 0, max: 1000}),
-    quantityNeeded: faker.random.number({ min: 0, max: 1000}),
-    estimatedCost: faker.random.number({ min: 0, max: 10000}),
-    currentCost: faker.random.number({ min: 0, max: 10000}),
+    quantityOrdered: price(),
+    quantityNeeded: price(),
+    estimatedCost: price(),
+    currentCost: price(),
     relatedRequisition: requisition.id,
     requisition: {...requisition},
     relatedPhase: phase.id,
     phase: {...phase}
   }
 }
-const mockRequisitionLineItems = (requisitions, phases) => requisitions
+const mockRequisitionLineItems = (requisitions, phases, numLineItemsOptions = { min: 1, max: 10 }) => requisitions
 .reduce((acc, curr) => {
   const lineItems = [];
-  const numLineItems = faker.random.number({ min: 1, max: 10 })
+  const numLineItems = faker.random.number(numLineItemsOptions)
 
   const sdPhases = phases.filter(phase => phase.relatedShopDrawing === curr.relatedShopDrawing)
 
   if (!sdPhases) return [...acc, ...lineItems];
 
-  for (let i = 0; i < numLineItems; i++) {
+  for (let i = 0; i <= numLineItems; i++) {
     const phase = sdPhases[faker.random.number({min: 0, max: sdPhases.length  - 1})]
 
     if (!phase) return [...acc, ...lineItems];
@@ -190,19 +198,23 @@ const mockRequisitionLineItems = (requisitions, phases) => requisitions
 }, []);
 
 const makeSampleData = () => {
-  const jobs = mockJobs()
-  const shopDrawings = mockShopDrawings(jobs)
-  const phases = mockPhases(jobs, shopDrawings)
-  const requisitions = mockRequisitions(shopDrawings)
-  const requisitionLineItems = mockRequisitionLineItems(requisitions, phases)
+  const jobs = mockJobs(10)
+  const shopDrawings = mockShopDrawings(jobs, { min: 2, max: 5})
+  const phases = mockPhases(jobs, shopDrawings, { min: 2, max: 5})
+  const requisitions = mockRequisitions(shopDrawings, { min: 2, max: 5 })
+  const requisitionLineItems = mockRequisitionLineItems(requisitions, phases, { min: 2, max: 5 })
 
-  return {
+  const sampleData = {
     jobs,
     shopDrawings,
     phases,
     requisitions,
     requisitionLineItems
   }
+
+  console.log('sampleData: ', sampleData)
+
+  return sampleData
 }
 
 const sampleData = makeSampleData()

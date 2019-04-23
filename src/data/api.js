@@ -11,12 +11,16 @@ import {
 import sampleData from "./sampleData";
 
 export const doQuery = async ({ table, params }) => {
+  console.log('doQuery Called: ', table, params)
   await delay(500);
 
-  return compose(
+  const results = compose(
     filter(filterTableRecord(parseParams(params))),
     get(table)
   )(sampleData);
+
+  console.log("results: ", results )
+  return results
 };
 
 export const getRandomData = async ({ table, wait = 500 }) => {

@@ -1,6 +1,5 @@
 import React from "react";
 import uniqueId from "lodash/uniqueId";
-import { Field, FieldArray, reduxForm } from "redux-form";
 
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";

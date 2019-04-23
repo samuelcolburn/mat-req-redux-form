@@ -1,11 +1,12 @@
 import compose from 'lodash/fp/compose';
+import get from 'lodash/fp/get'
+import { createSelector as ormCreateSelector } from "redux-orm";
+import { createSelector } from "reselect";
+import createCachedSelector from "re-reselect";
 import {
   includes, toLowerCase, stringify, values, parseParams
 } from './helpers'
-import { createSelector as ormCreateSelector } from "redux-orm";
 import orm, { tableModelMap } from "./orm";
-
-import { createSelector } from "reselect";
 
 const dbStateSelector = state => state.db;
 
@@ -55,38 +56,52 @@ const recordHasQueryString = query => record =>
     stringify,
     values
   )(record);
-
+/*
 export const tableQuerySelector = ormCreateSelector(
   orm,
   dbStateSelector,
   (state, table) => table,
   (state, table, params) => params,
   (session, table, params) => {
-  console.log('tableQuerySelector: ')
-  console.log('session: ', session)
-  console.log("table: ", table)
-  console.log('params: ', params)
-
   const modelName = tableModelMap[table]
   if (!modelName) return [];
 
   const parsedParams = parseParams(params);
 
-  const records = session[modelName].all()
+  return session[modelName].all()
     .filter(hasAllRelations(parsedParams))
     .toModelArray()
     .map(record => ({ ...record.ref }))
     .filter(recordHasQueryString(parsedParams.q))
-  console.log('records: ', records)
-
-  return records
-    //
-  /*
-
-
-    return relatedRecords.filter(record => {
-      console.log("filter after ref array'd")
-      return recordHasQueryString(parsedParams.q)(record)
-    }) */
 }
+);
+
+ */
+export const tableQuerySelector = ormCreateSelector(
+  orm,
+  dbStateSelector,
+  (state, table) => table,
+  (state, table, indices) => indices,
+  (session, table, indices) => {
+    if (!indices || !indices.length) return []
+
+  const modelName = tableModelMap[table]
+  if (!modelName) return [];
+
+  const model = session[modelName]
+  return indices.reduce((acc, curr) => model.idExists(curr)
+  ? [...acc, { ...model.withId(curr).ref }]
+  : acc,
+  [])
+}
+);
+
+const getAutocompleteData = state => state.autocomplete
+export const autocompleteStateSelector = createCachedSelector(
+  getAutocompleteData,
+  (state, aspect) => aspect,
+  (state, aspect, table) => table,
+  (state, aspect, table) => get([table, aspect], state),
+)(
+  (state, aspect, table) => `autocomplete:${table}:${aspect}`
 );

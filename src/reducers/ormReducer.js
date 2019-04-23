@@ -20,21 +20,15 @@ import {
 } from "../actionTypes";
 
 function autocompleteOrmReducer(sess, action) {
-  console.log('AUTOCOMPLETE_FETCH_SUCCESS: orm reducer')
-  console.log('action: ', action)
-
   if (action.type !== AUTOCOMPLETE_FETCH_SUCCESS) return;
 
-  const { data, params, table } = action.payload
-
-  console.log("tableModelMap: ", tableModelMap)
+  const { data, table } = action.payload
 
   if (!tableModelMap[table]) return;
 
   if (!data || !data.length) return;
 
   const modelName = tableModelMap[table]
-  console.log("modelName: ", modelName)
 
   const model = sess[modelName]
 
@@ -56,9 +50,6 @@ function ormReducer(dbState, action) {
 
   switch (action.type) {
     case AUTOCOMPLETE_FETCH_SUCCESS:
-      console.log('AUTOCOMPLETE_FETCH_SUCCESS: orm reducer')
-      console.log('type, table, params, data: ', action)
-
       autocompleteOrmReducer(sess, action)
       break;
 

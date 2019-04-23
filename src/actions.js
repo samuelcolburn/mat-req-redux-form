@@ -1,6 +1,9 @@
-// export const REQUEST_REQUISITION = 'REQUEST_REQUISITION'
-// function fetchRequisition
-import { doQuery, getData, getRandomData, getLineItemsForReq } from "./data/mockAPI";
+import get from "lodash/get";
+import debounce from 'lodash/debounce';
+
+import { stringify } from './helpers';
+
+import { doQuery, getData, getRandomData, getLineItemsForReq } from "./data/api";
 
 import {
   AUTOCOMPLETE_FETCH_INIT,
@@ -29,7 +32,7 @@ import {
   SAVE_QUERY
 } from "./actionTypes";
 
-import orm from './orm'
+import orm from './orm';
 
 export const createJob = props => {
   return {
@@ -279,9 +282,10 @@ export const loadRandomRequisition = () => {
   };
 }
 
-const autocompleteFetchInit = () => {
+const autocompleteFetchInit = props => {
   return {
-    type: AUTOCOMPLETE_FETCH_INIT
+    type: AUTOCOMPLETE_FETCH_INIT,
+    payload: props
   }
 }
 const autocompleteFetchSuccess = props => {
@@ -290,10 +294,10 @@ const autocompleteFetchSuccess = props => {
     payload: props
   }
 }
-const autocompleteFetchError = error => {
+const autocompleteFetchError = props => {
   return {
     type: AUTOCOMPLETE_FETCH_ERROR,
-    error: error
+    payload: props
   }
 }
 
@@ -306,17 +310,18 @@ const saveQuery = props => {
 
 export const getQuery = ({ table, params }) => {
   return (dispatch, getState) => {
-    if (getState().autocomplete.loading) {
+    const { autocomplete } = getState()
+    if (get(`${table}.loading`, autocomplete)) {
       // bail out early if we are already loading
       return Promise.resolve();
     }
 
-    dispatch(autocompleteFetchInit());
+    dispatch(autocompleteFetchInit({ table, params }));
 
     return doQuery({ table, params })
       .then(
         data => dispatch(autocompleteFetchSuccess({ table, params, data })),
-        err => dispatch(autocompleteFetchError(err))
+        err => dispatch(autocompleteFetchError({ table, error: err }))
       );
 
     /*
@@ -326,3 +331,30 @@ export const getQuery = ({ table, params }) => {
   */
   };
 };
+
+const debouncedGetQuery = debounce((dispatch, ...args) => dispatch(getQuery(...args)), 200)
+
+export const search = ({ table, params }) => (dispatch, getState) => {
+  if (!params) return Promise.resolve();
+  if (!params.q) return Promise.resolve();
+  if (!params.q.length) return Promise.resolve();
+  if (!params.q.trim().length) return Promise.resolve();
+
+  console.log('search action')
+  console.log('table: ', table)
+  console.log('params: ', params)
+  const { autocomplete } = getState()
+  console.log('autcomplete state: ', autocomplete)
+  const searchKey = stringify(params)
+  console.log('searchKey: ', searchKey)
+
+  const cachedSearch = get(autocomplete, [table, 'byId', searchKey])
+  console.log('cachedSearch: ', cachedSearch)
+
+  if (cachedSearch) {
+    console.log('already searched this value, returning resolved promise: ')
+    return Promise.resolve();
+  }
+
+  debouncedGetQuery(dispatch, { table, params })
+}

@@ -79,7 +79,7 @@ let Form = props => {
           params={{
             related: [
               {
-                key: "job",
+                key: "relatedJob",
                 value: job && job.id ? job.id : 0
               }
             ]
@@ -98,7 +98,7 @@ let Form = props => {
           variant="contained"
           color="primary"
           type="button"
-          disabled={submitting || pristine}
+          disabled={submitting}
           onClick={reset}
         >
           Reset
@@ -122,7 +122,8 @@ const selector = formValueSelector(FORM_NAME);
 Form = reduxForm({
   form: FORM_NAME, // a unique identifier for this form
   validate,
-  enableReinitialize: true
+  enableReinitialize: true,
+  immutableProps: ['rid',  'number', 'subject']
   // asyncBlurFields: ["createdBy", "dateCreated"]
 })(Form);
 
