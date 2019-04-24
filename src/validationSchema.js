@@ -15,11 +15,14 @@ const LineItemSchema = Yup.object({
     .required("A Status is required"),
   phase: Yup.object({
     id: Yup.string(),
-    job: Yup.string(),
-    name: Yup.string()
+    relatedJob: Yup.string(),
+    relatedShopDrawing: Yup.string(),
+    number: Yup.string(),
+    description: Yup.string(),
+    phase: Yup.string()
   }).required("A Phase is required"),
   vendor: Yup.object({
-    rid: Yup.number(),
+    id: Yup.number(),
     name: Yup.string()
   })
     .nullable()
@@ -76,7 +79,7 @@ const validationSchema = Yup.object({
   number: Yup.string().required("A TO number is required"),
   subject: Yup.string().required("A subject is required"),
   lineItems: Yup.array(LineItemSchema)
-    .min(1, "At least ${min} Line Item is required")
+    .min(1, "At least 1 Line Item is required")
     .required("Line Items are required")
 });
 

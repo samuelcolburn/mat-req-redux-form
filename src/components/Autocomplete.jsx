@@ -114,7 +114,9 @@ const useStyles = makeStyles(theme => ({
     zIndex: 1,
     marginTop: theme.spacing(1),
     left: 0,
-    right: 0
+    right: 0,
+    maxHeight: 400,
+    overflowY: "auto"
   },
   chip: {
     margin: theme.spacing(0.5, 0.25)
@@ -143,13 +145,11 @@ let AutoComplete = ({
   itemToString,
   table,
   params,
-  // loading,
-  // error,
   ...rest
 }) => {
   const classes = useStyles();
 
-  const [inputValue, setInputValue] = useState("");
+  const [inputValue, setInputValue] = useState(itemToString(input.value));
 
   function onInputValueChange(inputValue, stateAndHelpers) {
     setInputValue(inputValue);

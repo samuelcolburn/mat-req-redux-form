@@ -5,13 +5,14 @@ import { populate } from "../helpers";
 const alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
 
 const mockPhase = (job, shopDrawings) => {
-  const letter = faker.random.arrayElement(alphabet)
-  const number = faker.random.number({
+  const phaseLetter = faker.random.arrayElement(alphabet)
+  const phaseNumber = faker.random.number({
     min: 1,
     max: 50
   })
+  const number = `${phaseLetter}${phaseNumber}`
 
-  const phase = faker.lorem.words(
+  const description = faker.lorem.words(
     faker.random.number({
       min: 1,
       max: 5
@@ -23,8 +24,9 @@ const mockPhase = (job, shopDrawings) => {
 
   return {
     id: faker.random.uuid(),
-    number: `${letter}${number}`,
-    phase,
+    number,
+    description,
+    phase: `${number} - ${description}`,
     relatedJob: job.id,
     job: {
       ...job

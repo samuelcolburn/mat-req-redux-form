@@ -1,6 +1,7 @@
 import React from "react";
 import uniqueId from "lodash/fp/uniqueId";
 import compose from 'lodash/fp/compose';
+import getOr from 'lodash/fp/getOr';
 
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
@@ -85,11 +86,8 @@ const LineItems = ({ fields, meta: { error }, job, shopDrawing }) => {
     lineItemIdPrefix
   )
 
-  const phaseToString = phase => {
-    return phase ? `${phase.number} - ${phase.phase}` : ''
-  };
-
-  const vendorToString = vendor => vendor ? `${vendor.name}` : ''
+  const phaseToString = phase => getOr('', 'phase', phase);
+  const vendorToString = vendor => getOr('', 'name', vendor);
 
   return (
     <Grid container>
