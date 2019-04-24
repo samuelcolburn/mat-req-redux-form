@@ -265,12 +265,4 @@ let AutoComplete = ({
   );
 };
 
-/* const mapStateToProps = (state, ownProps) => ({
-  loading: autocompleteStateSelector(state, 'loading', ownProps.table),
-  error: autocompleteStateSelector(state, 'error', ownProps.table)
-})
-
-AutoComplete = connect(mapStateToProps)(AutoComplete);
- */
-
 export default AutoComplete;

@@ -4,8 +4,14 @@ import Grid from "@material-ui/core/Grid";
 
 import TextField from "../components/TextField";
 import Autocomplete from "../components/Autocomplete";
-
-const LineItem = (job, shopDrawing, phaseToString) => (lineItem, index, fields) => (
+/*
+            <Field
+              name={`${lineItem}.vendor`}
+              label="Vendor"
+              component={TextField}
+            />
+*/
+const LineItem = (job, shopDrawing, phaseToString, vendorToString) => (lineItem, index, fields) => (
     <Grid key={fields.get(index).id} container>
       <Grid item xs={12} md={3} lg={3}>
         <Grid container>
@@ -43,7 +49,10 @@ const LineItem = (job, shopDrawing, phaseToString) => (lineItem, index, fields) 
             <Field
               name={`${lineItem}.vendor`}
               label="Vendor"
-              component={TextField}
+              placeholder="Search for a Vendor..."
+              table="vendors"
+              itemToString={vendorToString}
+              component={Autocomplete}
             />
           </Grid>
         </Grid>

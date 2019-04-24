@@ -6,13 +6,13 @@ import mockRequisitionLineItems from './requisitionLineItems'
 import mockVendors from './vendors'
 
 const makeSampleData = () => {
+  const vendors = mockVendors(100)
+
   const jobs = mockJobs(10)
   const shopDrawings = mockShopDrawings(jobs, { min: 2, max: 5})
   const phases = mockPhases(jobs, shopDrawings, { min: 2, max: 5})
   const requisitions = mockRequisitions(shopDrawings, { min: 2, max: 5 })
-  const requisitionLineItems = mockRequisitionLineItems(requisitions, phases, { min: 2, max: 5 })
-
-  const vendors = mockVendors(100)
+  const requisitionLineItems = mockRequisitionLineItems(requisitions, vendors, phases, { min: 2, max: 5 })
 
   const sampleData = {
     jobs,

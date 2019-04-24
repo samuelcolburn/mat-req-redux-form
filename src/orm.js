@@ -4,11 +4,12 @@ import {
   ShopDrawing,
   Phase,
   Requisition,
-  RequisitionLineItem
+  RequisitionLineItem,
+  Vendor
 } from "./models";
 
 const orm = new ORM();
-orm.register(Job, ShopDrawing, Phase, Requisition, RequisitionLineItem);
+orm.register(Job, ShopDrawing, Phase, Requisition, RequisitionLineItem, Vendor);
 
 export default orm;
 
@@ -17,5 +18,6 @@ export const tableModelMap = {
   phases: "Phase",
   shopDrawings: 'ShopDrawing',
   requisitions: 'Requisition',
-  requisitionLineItems: "RequisitionLineItem"
+  requisitionLineItems: "RequisitionLineItem",
+  vendors: 'Vendor'
 }

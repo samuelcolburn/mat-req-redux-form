@@ -3,10 +3,11 @@ import { populate } from '../helpers';
 
 const price = () => faker.random.number({ min: 0, max: 100000 }) + (faker.random.number({min: 0, max: 99 })/100)
 
-const mockRequisitionLineItem = (requisition, sdPhases) => {
+const mockRequisitionLineItem = (requisition, vendors, sdPhases) => {
   const phase = sdPhases[faker.random.number({min: 0, max: sdPhases.length  - 1})];
-
   if (!phase) return null;
+
+  const vendor = vendors[faker.random.number({min: 0, max: vendors.length  - 1})];
 
   return {
     id: faker.random.uuid(),
@@ -21,7 +22,6 @@ const mockRequisitionLineItem = (requisition, sdPhases) => {
       'Received',
       'Complete'
     ]),
-    vendor: "",
     type: "",
     description: faker.lorem.words(faker.random.number({ max: 15 })),
     inventoryItem: "",
@@ -34,11 +34,13 @@ const mockRequisitionLineItem = (requisition, sdPhases) => {
     relatedRequisition: requisition.id,
     requisition: {...requisition},
     relatedPhase: phase.id,
-    phase: {...phase}
+    phase: {...phase},
+    relatedVendor: vendor.id,
+    vendor: {...vendor}
   }
 }
 
-const mockRequisitionLineItems = (requisitions, phases, numLineItemsOptions = { min: 1, max: 10 }) => requisitions
+const mockRequisitionLineItems = (requisitions, vendors, phases, numLineItemsOptions = { min: 1, max: 10 }) => requisitions
 .reduce((acc, curr) => {
   const numLineItems = faker.random.number(numLineItemsOptions)
 
@@ -46,7 +48,7 @@ const mockRequisitionLineItems = (requisitions, phases, numLineItemsOptions = { 
 
   if (!sdPhases) return acc;
 
-  return [...acc, ...populate(mockRequisitionLineItem)(numLineItems, curr, sdPhases)]
+  return [...acc, ...populate(mockRequisitionLineItem)(numLineItems, curr, vendors, sdPhases)]
 }, []);
 
 

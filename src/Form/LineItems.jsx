@@ -89,6 +89,8 @@ const LineItems = ({ fields, meta: { error }, job, shopDrawing }) => {
     return phase ? `${phase.number} - ${phase.phase}` : ''
   };
 
+  const vendorToString = vendor => vendor ? `${vendor.name}` : ''
+
   return (
     <Grid container>
       <Grid item xs={12}>
@@ -100,7 +102,7 @@ const LineItems = ({ fields, meta: { error }, job, shopDrawing }) => {
 
         <LineItemColumns />
 
-        {fields.map(LineItem(job, shopDrawing, phaseToString))}
+        {fields.map(LineItem(job, shopDrawing, phaseToString, vendorToString))}
       </Grid>
 
       <Grid item xs={12}>

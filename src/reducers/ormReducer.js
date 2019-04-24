@@ -16,7 +16,10 @@ import {
   CREATE_REQUISITION_LINE_ITEM,
   UPDATE_REQUISITION_LINE_ITEM,
   REMOVE_REQUISITION_LINE_ITEM,
-  AUTOCOMPLETE_FETCH_SUCCESS
+  AUTOCOMPLETE_FETCH_SUCCESS,
+  CREATE_VENDOR,
+  UPDATE_VENDOR,
+  REMOVE_VENDOR
 } from "../actionTypes";
 
 function autocompleteOrmReducer(sess, action) {
@@ -46,7 +49,7 @@ function ormReducer(dbState, action) {
 
   // Session-specific Models are available
   // as properties on the Session instance.
-  const { Job, ShopDrawing, Phase, Requisition, RequisitionLineItem } = sess;
+  const { Job, ShopDrawing, Phase, Requisition, RequisitionLineItem, Vendor } = sess;
 
   switch (action.type) {
     case AUTOCOMPLETE_FETCH_SUCCESS:
@@ -119,6 +122,19 @@ function ormReducer(dbState, action) {
     case REMOVE_REQUISITION_LINE_ITEM:
       RequisitionLineItem.withId(action.payload.id).update(action.payload);
       break;
+
+    case CREATE_VENDOR:
+      Vendor.create(action.payload);
+      break;
+
+    case UPDATE_VENDOR:
+      Vendor.withId(action.payload.id).update(action.payload);
+      break;
+
+    case REMOVE_VENDOR:
+      Vendor.withId(action.payload.id).update(action.payload);
+      break;
+
 
     default:
       break;

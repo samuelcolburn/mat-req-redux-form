@@ -103,3 +103,17 @@ RequisitionLineItem.fields = {
     relatedName: "requisitionLineItems"
   })
 };
+
+export class Vendor extends Model {
+  toString() {
+    return `Vendor: ${this.id}`;
+  }
+}
+Vendor.modelName = "Vendor";
+
+Vendor.fields = {
+  id: attr(),
+  name: attr(),
+  phoneNumber: attr(),
+  website: attr()
+};
