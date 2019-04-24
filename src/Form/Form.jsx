@@ -13,7 +13,7 @@ import { validate } from "../validate";
 import { requisitionSelector } from "../selectors";
 
 let Form = props => {
-  const { handleSubmit, pristine, reset, submitting, rid, job } = props;
+  const { handleSubmit, pristine, reset, submitting, rid, job, shopDrawing } = props;
 
   function onSubmit(e) {
     e.persist();
@@ -88,10 +88,16 @@ let Form = props => {
           component={Autocomplete}
         />
         <Field name="number" label="TO #" component={TextField} />
-        <Field name="subject" label="Subject" component={TextField} />
+        <Field
+        name="subject"
+        label="Subject"
+        component={TextField}
+        multiline={true}
+        rows={2}
+        />
       </section>
 
-      <FieldArray name="lineItems" component={LineItems} />
+      <FieldArray name="lineItems" component={LineItems} job={job} shopDrawing={shopDrawing}/>
 
       <section className="actions">
         <Button
@@ -129,7 +135,8 @@ Form = reduxForm({
 
 const mapStateToProps = (state, props) => ({
   initialValues: requisitionSelector(state, props),
-  job: selector(state, "job")
+  job: selector(state, "job"),
+  shopDrawing: selector(state, "shopDrawing")
 });
 
 Form = connect(mapStateToProps)(Form);
