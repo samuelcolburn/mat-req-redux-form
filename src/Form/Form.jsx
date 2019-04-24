@@ -88,13 +88,7 @@ let Form = props => {
           component={Autocomplete}
         />
         <Field name="number" label="TO #" component={TextField} />
-        <Field
-        name="subject"
-        label="Subject"
-        component={TextField}
-        multiline={true}
-        rows={2}
-        />
+        <Field name="subject" label="Subject" component={TextField} />
       </section>
 
       <FieldArray name="lineItems" component={LineItems} job={job} shopDrawing={shopDrawing}/>

@@ -61,5 +61,18 @@ export const filterTableRecord = params => record =>
 
 const objToArray = (ids, obj) => ids.map(id => obj[id]);
 
-export const tableToArray = table =>
-  table && table.allIds ? objToArray(table.allIds, table.byId) : [];
+export const tableToArray = table => table && table.allIds ? objToArray(table.allIds, table.byId) : [];
+
+export const populate = func => (qty, ...funcArgs) => {
+  let items = [];
+
+  for (let i = 0; i < qty; i++) {
+    const item = func(...funcArgs);
+
+    if (item) {
+      items.push(item);
+    }
+  }
+
+  return items;
+}
