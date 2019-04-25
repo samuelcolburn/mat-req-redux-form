@@ -1,4 +1,4 @@
-import orm, { tableModelMap } from "../orm";
+import orm, { tableModelMap } from '../orm';
 import {
   CREATE_JOB,
   UPDATE_JOB,
@@ -20,28 +20,28 @@ import {
   CREATE_VENDOR,
   UPDATE_VENDOR,
   REMOVE_VENDOR
-} from "../actionTypes";
+} from '../actionTypes';
 
 function autocompleteOrmReducer(sess, action) {
   if (action.type !== AUTOCOMPLETE_FETCH_SUCCESS) return;
 
-  const { data, table } = action.payload
+  const { data, table } = action.payload;
 
   if (!tableModelMap[table]) return;
 
   if (!data || !data.length) return;
 
-  const modelName = tableModelMap[table]
+  const modelName = tableModelMap[table];
 
-  const model = sess[modelName]
+  const model = sess[modelName];
 
   if (!model) return;
 
   data.forEach(record => {
     model.idExists(record.id)
       ? model.withId(record.id).update(record)
-      : model.create(record)
-  })
+      : model.create(record);
+  });
 }
 
 function ormReducer(dbState, action) {
@@ -49,11 +49,18 @@ function ormReducer(dbState, action) {
 
   // Session-specific Models are available
   // as properties on the Session instance.
-  const { Job, ShopDrawing, Phase, Requisition, RequisitionLineItem, Vendor } = sess;
+  const {
+    Job,
+    ShopDrawing,
+    Phase,
+    Requisition,
+    RequisitionLineItem,
+    Vendor
+  } = sess;
 
   switch (action.type) {
     case AUTOCOMPLETE_FETCH_SUCCESS:
-      autocompleteOrmReducer(sess, action)
+      autocompleteOrmReducer(sess, action);
       break;
 
     case CREATE_JOB:
@@ -89,8 +96,8 @@ function ormReducer(dbState, action) {
       break;
 
     case CREATE_REQUISITION:
-      console.log("ormReducer, action: ", action.type);
-      console.log("payload: ", action.payload);
+      console.log('ormReducer, action: ', action.type);
+      console.log('payload: ', action.payload);
       Requisition.create(action.payload);
       break;
 
@@ -103,10 +110,10 @@ function ormReducer(dbState, action) {
       break;
 
     case CREATE_MANY_REQUISITION_LINE_ITEM:
-      console.log("ormReducer, action: ", action.type);
-      console.log("payload: ", action.payload);
+      console.log('ormReducer, action: ', action.type);
+      console.log('payload: ', action.payload);
       action.payload.forEach(requisitionLineItem => {
-        console.log("item: ", requisitionLineItem);
+        console.log('item: ', requisitionLineItem);
         RequisitionLineItem.create(requisitionLineItem);
       });
       break;
@@ -134,7 +141,6 @@ function ormReducer(dbState, action) {
     case REMOVE_VENDOR:
       Vendor.withId(action.payload.id).update(action.payload);
       break;
-
 
     default:
       break;

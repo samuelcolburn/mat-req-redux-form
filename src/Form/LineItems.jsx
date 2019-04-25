@@ -1,15 +1,15 @@
-import React from "react";
-import uniqueId from "lodash/fp/uniqueId";
+import React from 'react';
+import uniqueId from 'lodash/fp/uniqueId';
 import compose from 'lodash/fp/compose';
 import getOr from 'lodash/fp/getOr';
 
-import Typography from "@material-ui/core/Typography";
-import Grid from "@material-ui/core/Grid";
-import Button from "@material-ui/core/Button";
+import Typography from '@material-ui/core/Typography';
+import Grid from '@material-ui/core/Grid';
+import Button from '@material-ui/core/Button';
 // import { makeStyles } from "@material-ui/styles";
 
-import LineItem from "./LineItem";
-import { makeLineItem } from "../helpers";
+import LineItem from './LineItem';
+import { makeLineItem } from '../helpers';
 
 /* const useStyles = makeStyles({
   inputMultiline: {
@@ -77,14 +77,14 @@ const LineItemColumns = () => (
 const LineItems = ({ fields, meta: { error }, job, shopDrawing }) => {
   // const classes = useStyles()
 
-  const lineItemIdPrefix = () => "lineItem_"
+  const lineItemIdPrefix = () => 'lineItem_';
 
   const addLineItem = compose(
     fields.push,
     makeLineItem,
     uniqueId,
     lineItemIdPrefix
-  )
+  );
 
   const phaseToString = phase => getOr('', 'phase', phase);
   const vendorToString = vendor => getOr('', 'name', vendor);
@@ -104,7 +104,7 @@ const LineItems = ({ fields, meta: { error }, job, shopDrawing }) => {
       </Grid>
 
       <Grid item xs={12}>
-        <Button color="primary" onClick={e => addLineItem(e) }>
+        <Button color="primary" onClick={e => addLineItem(e)}>
           Add Line Item
         </Button>
       </Grid>

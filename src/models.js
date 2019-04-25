@@ -1,11 +1,11 @@
-import { fk, many, attr, Model } from "redux-orm";
+import { fk, many, attr, Model } from 'redux-orm';
 
 export class Job extends Model {
   toString() {
     return `Job: ${this.number} - ${this.name}`;
   }
 }
-Job.modelName = "Job";
+Job.modelName = 'Job';
 
 Job.fields = {
   id: attr(),
@@ -18,18 +18,18 @@ export class ShopDrawing extends Model {
     return `Shop Drawing: ${this.number} - ${this.name}`;
   }
 }
-ShopDrawing.modelName = "ShopDrawing";
+ShopDrawing.modelName = 'ShopDrawing';
 
 ShopDrawing.fields = {
   id: attr(),
   number: attr(),
   subject: attr(),
   relatedJob: fk({
-    to: "Job",
+    to: 'Job',
     as: 'job',
-    relatedName: "shopDrawings"
+    relatedName: 'shopDrawings'
   }),
-  phases: many("Phase", "shopDrawings")
+  phases: many('Phase', 'shopDrawings')
 };
 
 export class Phase extends Model {
@@ -37,15 +37,15 @@ export class Phase extends Model {
     return `Phase: ${this.phase}`;
   }
 }
-Phase.modelName = "Phase";
+Phase.modelName = 'Phase';
 
 Phase.fields = {
   id: attr(),
   phase: attr(),
   relatedJob: fk({
-    to: "Job",
+    to: 'Job',
     as: 'job',
-    relatedName: "phases"
+    relatedName: 'phases'
   })
 };
 
@@ -54,7 +54,7 @@ export class Requisition extends Model {
     return `Requisition: ${this.id}`;
   }
 }
-Requisition.modelName = "Requisition";
+Requisition.modelName = 'Requisition';
 
 Requisition.fields = {
   id: attr(),
@@ -64,14 +64,14 @@ Requisition.fields = {
   number: attr(),
   subject: attr(),
   relatedJob: fk({
-    to: "Job",
+    to: 'Job',
     as: 'job',
-    relatedName: "requisitions"
+    relatedName: 'requisitions'
   }),
   relatedShopDrawing: fk({
-    to: "ShopDrawing",
+    to: 'ShopDrawing',
     as: 'shopDrawing',
-    relatedName: "requisitions"
+    relatedName: 'requisitions'
   })
 };
 
@@ -80,7 +80,7 @@ export class RequisitionLineItem extends Model {
     return `Requisition Line Item: ${this.id}`;
   }
 }
-RequisitionLineItem.modelName = "RequisitionLineItem";
+RequisitionLineItem.modelName = 'RequisitionLineItem';
 
 RequisitionLineItem.fields = {
   id: attr(),
@@ -93,14 +93,14 @@ RequisitionLineItem.fields = {
   estimatedCost: attr(),
   currentCost: attr(),
   relatedPhase: fk({
-    to: "Phase",
+    to: 'Phase',
     as: 'phase',
-    relatedName: "requisitionLineItems"
+    relatedName: 'requisitionLineItems'
   }),
   relatedRequisition: fk({
-    to: "Requisition",
+    to: 'Requisition',
     as: 'requisition',
-    relatedName: "requisitionLineItems"
+    relatedName: 'requisitionLineItems'
   })
 };
 
@@ -109,7 +109,7 @@ export class Vendor extends Model {
     return `Vendor: ${this.id}`;
   }
 }
-Vendor.modelName = "Vendor";
+Vendor.modelName = 'Vendor';
 
 Vendor.fields = {
   id: attr(),

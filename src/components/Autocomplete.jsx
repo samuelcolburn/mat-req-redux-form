@@ -1,23 +1,23 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 
-import Downshift from "downshift";
+import Downshift from 'downshift';
 
 // import { connect } from 'react-redux'
 
-import TextField from "@material-ui/core/TextField";
-import IconButton from "@material-ui/core/IconButton";
-import InputAdornment from "@material-ui/core/InputAdornment";
-import Paper from "@material-ui/core/Paper";
-import MenuItem from "@material-ui/core/MenuItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
+import TextField from '@material-ui/core/TextField';
+import IconButton from '@material-ui/core/IconButton';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import Paper from '@material-ui/core/Paper';
+import MenuItem from '@material-ui/core/MenuItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
 
-import CloseIcon from "@material-ui/icons/Close";
-import ArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
-import ErrorIcon from "@material-ui/icons/Error";
-import { makeStyles } from "@material-ui/core/styles";
+import CloseIcon from '@material-ui/icons/Close';
+import ArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
+import ErrorIcon from '@material-ui/icons/Error';
+import { makeStyles } from '@material-ui/core/styles';
 
-import AutocompleteResults from "./AutocompleteResults";
+import AutocompleteResults from './AutocompleteResults';
 
 // import { autocompleteStateSelector } from '../selectors'
 
@@ -99,7 +99,7 @@ function renderSuggestion({
         fontWeight: isSelected ? 500 : 400
       }}
     >
-     {itemToString(item)}
+      {itemToString(item)}
     </MenuItem>
   );
 }
@@ -107,25 +107,25 @@ function renderSuggestion({
 const useStyles = makeStyles(theme => ({
   container: {
     flexGrow: 1,
-    position: "relative"
+    position: 'relative'
   },
   paper: {
-    position: "absolute",
+    position: 'absolute',
     zIndex: 1,
     marginTop: theme.spacing(1),
     left: 0,
     right: 0,
     maxHeight: 400,
-    overflowY: "auto"
+    overflowY: 'auto'
   },
   chip: {
     margin: theme.spacing(0.5, 0.25)
   },
   inputRoot: {
-    flexWrap: "wrap"
+    flexWrap: 'wrap'
   },
   inputInput: {
-    width: "auto",
+    width: 'auto',
     flexGrow: 1
   },
   iconButton: {
@@ -157,7 +157,7 @@ let AutoComplete = ({
   }
 
   const handleKeyDown = event => {
-    if (event.key === "Delete") {
+    if (event.key === 'Delete') {
       input.onChange(null);
     }
   };
@@ -218,7 +218,7 @@ let AutoComplete = ({
                   return <MenuItem>You have to enter a search query</MenuItem>;
                 }
 
-                 return (
+                return (
                   <AutocompleteResults
                     table={table}
                     params={{ q: inputValue, ...params }}

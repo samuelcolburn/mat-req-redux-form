@@ -1,12 +1,16 @@
 import compose from 'lodash/fp/compose';
-import get from 'lodash/fp/get'
-import { createSelector as ormCreateSelector } from "redux-orm";
-import { createSelector } from "reselect";
-import createCachedSelector from "re-reselect";
+import get from 'lodash/fp/get';
+import { createSelector as ormCreateSelector } from 'redux-orm';
+import { createSelector } from 'reselect';
+import createCachedSelector from 're-reselect';
 import {
-  includes, toLowerCase, stringify, values, parseParams
-} from './helpers'
-import orm, { tableModelMap } from "./orm";
+  includes,
+  toLowerCase,
+  stringify,
+  values,
+  parseParams
+} from './helpers';
+import orm, { tableModelMap } from './orm';
 
 const dbStateSelector = state => state.db;
 
@@ -26,13 +30,10 @@ export const jobs = ormCreateSelector([orm, dbStateSelector], session => {
 });
 
 export const requisitionSelector = createSelector(
-  [
-    state => state.db,
-    (state, props) => props,
-  ],
+  [state => state.db, (state, props) => props],
   ormCreateSelector(orm, (session, props) => {
-    console.log("requisitionSelector");
-    console.log("props: ", props);
+    console.log('requisitionSelector');
+    console.log('props: ', props);
     const model = session.Requisition.withId(props.rid);
 
     const obj = model ? model.ref : {};
@@ -46,8 +47,8 @@ export const requisitionSelector = createSelector(
 
 const recordHasRelation = record => relation =>
   record[relation.key] === relation.value;
-const hasAllRelations = params => record => params.related ? params.related.every(recordHasRelation(record)) : true;
-
+const hasAllRelations = params => record =>
+  params.related ? params.related.every(recordHasRelation(record)) : true;
 
 const recordHasQueryString = query => record =>
   compose(
@@ -83,25 +84,24 @@ export const tableQuerySelector = ormCreateSelector(
   (state, table) => table,
   (state, table, indices) => indices,
   (session, table, indices) => {
-    if (!indices || !indices.length) return []
+    if (!indices || !indices.length) return [];
 
-  const modelName = tableModelMap[table]
-  if (!modelName) return [];
+    const modelName = tableModelMap[table];
+    if (!modelName) return [];
 
-  const model = session[modelName]
-  return indices.reduce((acc, curr) => model.idExists(curr)
-  ? [...acc, { ...model.withId(curr).ref }]
-  : acc,
-  [])
-}
+    const model = session[modelName];
+    return indices.reduce(
+      (acc, curr) =>
+        model.idExists(curr) ? [...acc, { ...model.withId(curr).ref }] : acc,
+      []
+    );
+  }
 );
 
-const getAutocompleteData = state => state.autocomplete
+const getAutocompleteData = state => state.autocomplete;
 export const autocompleteStateSelector = createCachedSelector(
   getAutocompleteData,
   (state, aspect) => aspect,
   (state, aspect, table) => table,
-  (state, aspect, table) => get([table, aspect], state),
-)(
-  (state, aspect, table) => `autocomplete:${table}:${aspect}`
-);
+  (state, aspect, table) => get([table, aspect], state)
+)((state, aspect, table) => `autocomplete:${table}:${aspect}`);

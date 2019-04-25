@@ -1,20 +1,20 @@
-import compose from "lodash/fp/compose";
+import compose from 'lodash/fp/compose';
 
 export const makeLineItem = id => ({
   id,
   selected: false,
-  status: "Needs Review",
-  phase: "",
-  vendor: "",
-  type: "",
-  description: "",
-  inventoryItem: "",
-  startingInventory: "",
-  quantityRequested: "",
-  quantityOrdered: "",
-  quantityNeeded: "",
-  estimatedCost: "",
-  currentCost: ""
+  status: 'Needs Review',
+  phase: '',
+  vendor: '',
+  type: '',
+  description: '',
+  inventoryItem: '',
+  startingInventory: '',
+  quantityRequested: '',
+  quantityOrdered: '',
+  quantityNeeded: '',
+  estimatedCost: '',
+  currentCost: ''
 });
 
 export const values = obj => Object.values(obj);
@@ -31,19 +31,23 @@ export const cleanUpStr = str =>
 
 export const delay = ms => new Promise(_ => setTimeout(_, ms));
 
-const recordHasRelation = record => relation => record[relation.key] === relation.value;
+const recordHasRelation = record => relation =>
+  record[relation.key] === relation.value;
 
-export const hasAllRelations = relations => record => relations ? relations.every(recordHasRelation(record)) : true;
+export const hasAllRelations = relations => record =>
+  relations ? relations.every(recordHasRelation(record)) : true;
 
-const recordToQueryString = record => compose(
-  toLowerCase,
-  stringify,
-  values
-)(record)
+const recordToQueryString = record =>
+  compose(
+    toLowerCase,
+    stringify,
+    values
+  )(record);
 
-export const recordHasQueryString = query => record => includes(query)(recordToQueryString(record));
+export const recordHasQueryString = query => record =>
+  includes(query)(recordToQueryString(record));
 
-export const parseQueryString = str => (str ? cleanUpStr(str) : "");
+export const parseQueryString = str => (str ? cleanUpStr(str) : '');
 
 export const parseParams = params => ({
   ...params,
@@ -56,7 +60,8 @@ export const filterTableRecord = params => record =>
 
 const objToArray = (ids, obj) => ids.map(id => obj[id]);
 
-export const tableToArray = table => table && table.allIds ? objToArray(table.allIds, table.byId) : [];
+export const tableToArray = table =>
+  table && table.allIds ? objToArray(table.allIds, table.byId) : [];
 
 export const populate = func => (qty, ...funcArgs) => {
   let items = [];
@@ -70,4 +75,4 @@ export const populate = func => (qty, ...funcArgs) => {
   }
 
   return items;
-}
+};

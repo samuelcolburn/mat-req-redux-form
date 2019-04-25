@@ -1,42 +1,39 @@
-import React from "react";
-import { connect } from "react-redux";
+import React from 'react';
+import { connect } from 'react-redux';
 
-import Container from "@material-ui/core/Container";
-import Typography from "@material-ui/core/Typography";
-import Button from "@material-ui/core/Button";
+import Container from '@material-ui/core/Container';
+import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 
 import CircularProgress from '@material-ui/core/CircularProgress';
 import ErrorIcon from '@material-ui/icons/Error';
 
-import { loadRandomRequisition } from "./actions";
-import Form from "./Form";
+import { loadRandomRequisition } from './actions';
+import Form from './Form';
 
 let App = ({ rid, load, loading, error }) => {
-
-  const form = loading
-  ? (
+  const form = loading ? (
     <CircularProgress />
-  ) : error
-  ? (
+  ) : error ? (
     <Grid container alignItems="center" alignContent="center" justify="center">
-      <Grid item >
-      < ErrorIcon color="error" fontSize="large" />
+      <Grid item>
+        <ErrorIcon color="error" fontSize="large" />
       </Grid>
 
       <Grid item>
         <Typography variant="h2" component="h2" gutterBottom>
-        Error Loading Requisition
+          Error Loading Requisition
         </Typography>
         <Typography variant="h4" component="h4" gutterBottom>
-        {error}
+          {error}
         </Typography>
       </Grid>
     </Grid>
-    ) : (
-      <Form rid={rid} />
-    )
+  ) : (
+    <Form rid={rid} />
+  );
 
   return (
     <Container>
@@ -44,17 +41,11 @@ let App = ({ rid, load, loading, error }) => {
         Create React App v4-alpha example
       </Typography>
 
-      <Button
-        color="primary"
-        variant="contained"
-        onClick={() => load()}
-      >
+      <Button color="primary" variant="contained" onClick={() => load()}>
         Load Requisition
       </Button>
 
-      <Paper>
-        {form}
-      </Paper>
+      <Paper>{form}</Paper>
     </Container>
   );
 };

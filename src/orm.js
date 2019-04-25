@@ -1,4 +1,4 @@
-import { ORM } from "redux-orm";
+import { ORM } from 'redux-orm';
 import {
   Job,
   ShopDrawing,
@@ -6,7 +6,7 @@ import {
   Requisition,
   RequisitionLineItem,
   Vendor
-} from "./models";
+} from './models';
 
 const orm = new ORM();
 orm.register(Job, ShopDrawing, Phase, Requisition, RequisitionLineItem, Vendor);
@@ -14,10 +14,10 @@ orm.register(Job, ShopDrawing, Phase, Requisition, RequisitionLineItem, Vendor);
 export default orm;
 
 export const tableModelMap = {
-  jobs: "Job",
-  phases: "Phase",
+  jobs: 'Job',
+  phases: 'Phase',
   shopDrawings: 'ShopDrawing',
   requisitions: 'Requisition',
-  requisitionLineItems: "RequisitionLineItem",
+  requisitionLineItems: 'RequisitionLineItem',
   vendors: 'Vendor'
-}
+};

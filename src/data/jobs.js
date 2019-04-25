@@ -1,5 +1,5 @@
-import faker from "faker";
-import { populate } from '../helpers'
+import faker from 'faker';
+import { populate } from '../helpers';
 
 const mockJob = () => {
   const number = faker.random.number({
@@ -15,6 +15,6 @@ const mockJob = () => {
   };
 };
 
-const mockJobs = populate(mockJob)
+const mockJobs = populate(mockJob);
 
-export default mockJobs
+export default mockJobs;
