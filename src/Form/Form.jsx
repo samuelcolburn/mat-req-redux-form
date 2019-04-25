@@ -1,45 +1,45 @@
-import React from "react";
-import { connect } from "react-redux";
-import { Field, FieldArray, reduxForm, formValueSelector } from "redux-form";
-import Button from "@material-ui/core/Button";
-import Typography from "@material-ui/core/Typography";
+import React from 'react';
+import { connect } from 'react-redux';
+import { Field, FieldArray, reduxForm, formValueSelector } from 'redux-form';
+import Button from '@material-ui/core/Button';
+import Typography from '@material-ui/core/Typography';
 
-import TextField from "../components/TextField";
-import Autocomplete from "../components/Autocomplete";
-import LineItems from "./LineItems";
+import TextField from '../components/TextField';
+import Autocomplete from '../components/Autocomplete';
+import LineItems from './LineItems';
 
-import { validate } from "../validate";
+import { validate } from '../validate';
 
-import { requisitionSelector } from "../selectors";
+import { requisitionSelector } from '../selectors';
+
+import { onChange } from '../actions';
+
+const jobToString = job => (job ? `${job.number} - ${job.name}` : '');
+
+const shopDrawingToString = shopDrawing =>
+  shopDrawing ? `SD.${shopDrawing.number} - ${shopDrawing.subject}` : '';
 
 let Form = props => {
-  const { handleSubmit, pristine, reset, submitting, rid, job, shopDrawing } = props;
+  const {
+    handleSubmit,
+    pristine,
+    reset,
+    submitting,
+    rid,
+    job,
+    shopDrawing
+  } = props;
 
   function onSubmit(e) {
     e.persist();
     e.preventDefault();
 
-    console.log("onSubmit:");
-    console.log("data: ");
+    console.log('onSubmit:');
+    console.log('data: ');
   }
 
-  const jobToString = job => {
-    return job ? `${job.number} - ${job.name}` : "";
-  };
-
-  const shopDrawingToString = shopDrawing => {
-    return shopDrawing
-      ? `SD.${shopDrawing.number} - ${shopDrawing.subject}`
-      : "";
-  };
-  /*
-** job as text input **
-<Field name="job" label="Job" component={TextField} />
-        <Field name="shopDrawing" label="Shop Drawing" component={TextField} />
-
-*/
   return (
-  <form onSubmit={e => onSubmit(e)}>
+    <form onSubmit={e => onSubmit(e)}>
       <Typography variant="h6" component="h5" gutterBottom>
         <span>Rid: </span>
         <span>{rid}</span>
@@ -79,7 +79,7 @@ let Form = props => {
           params={{
             related: [
               {
-                key: "relatedJob",
+                key: 'relatedJob',
                 value: job && job.id ? job.id : 0
               }
             ]
@@ -88,10 +88,15 @@ let Form = props => {
           component={Autocomplete}
         />
         <Field name="number" label="TO #" component={TextField} />
-        <Field name="subject" label="Subject" component={TextField} />
+        <Field name="subject" label="Subject" component={TextField} fullWidth />
       </section>
 
-      <FieldArray name="lineItems" component={LineItems} job={job} shopDrawing={shopDrawing}/>
+      <FieldArray
+        name="lineItems"
+        component={LineItems}
+        job={job}
+        shopDrawing={shopDrawing}
+      />
 
       <section className="actions">
         <Button
@@ -115,7 +120,7 @@ let Form = props => {
     </form>
   );
 };
-const FORM_NAME = "RequisitionForm";
+const FORM_NAME = 'RequisitionForm';
 
 const selector = formValueSelector(FORM_NAME);
 
@@ -123,14 +128,15 @@ Form = reduxForm({
   form: FORM_NAME, // a unique identifier for this form
   validate,
   enableReinitialize: true,
-  immutableProps: ['rid',  'number', 'subject']
+  immutableProps: ['rid', 'number', 'subject'],
+  onChange
   // asyncBlurFields: ["createdBy", "dateCreated"]
 })(Form);
 
 const mapStateToProps = (state, props) => ({
   initialValues: requisitionSelector(state, props),
-  job: selector(state, "job"),
-  shopDrawing: selector(state, "shopDrawing")
+  job: selector(state, 'job'),
+  shopDrawing: selector(state, 'shopDrawing')
 });
 
 Form = connect(mapStateToProps)(Form);

@@ -1,5 +1,5 @@
-import faker from "faker";
-import { populate } from "../helpers";
+import faker from 'faker';
+import { populate } from '../helpers';
 
 const mockShopDrawing = job => {
   const number = faker.random.number({
@@ -25,11 +25,11 @@ const mockShopDrawing = job => {
   };
 };
 
-const mockShopDrawings = (jobs, numShopDrawingOptions = { min: 1, max: 25 }) => jobs
-  .reduce((acc, curr) => {
-    const numShopDrawings = faker.random.number(numShopDrawingOptions)
+const mockShopDrawings = (jobs, numShopDrawingOptions = { min: 1, max: 25 }) =>
+  jobs.reduce((acc, curr) => {
+    const numShopDrawings = faker.random.number(numShopDrawingOptions);
 
-    return [...acc, ...populate(mockShopDrawing)(numShopDrawings, curr)]
+    return [...acc, ...populate(mockShopDrawing)(numShopDrawings, curr)];
   }, []);
 
-  export default mockShopDrawings
+export default mockShopDrawings;

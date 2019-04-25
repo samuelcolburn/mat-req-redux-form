@@ -1,18 +1,23 @@
-import mockJobs from './jobs'
-import mockShopDrawings from './shopDrawings'
-import mockPhases from './phases'
-import mockRequisitions from './requisitions'
-import mockRequisitionLineItems from './requisitionLineItems'
-import mockVendors from './vendors'
+import mockJobs from './jobs';
+import mockShopDrawings from './shopDrawings';
+import mockPhases from './phases';
+import mockRequisitions from './requisitions';
+import mockRequisitionLineItems from './requisitionLineItems';
+import mockVendors from './vendors';
 
 const makeSampleData = () => {
-  const vendors = mockVendors(100)
+  const vendors = mockVendors(100);
 
-  const jobs = mockJobs(10)
-  const shopDrawings = mockShopDrawings(jobs, { min: 2, max: 5})
-  const phases = mockPhases(jobs, shopDrawings, { min: 2, max: 5})
-  const requisitions = mockRequisitions(shopDrawings, { min: 2, max: 5 })
-  const requisitionLineItems = mockRequisitionLineItems(requisitions, vendors, phases, { min: 2, max: 5 })
+  const jobs = mockJobs(10);
+  const shopDrawings = mockShopDrawings(jobs, { min: 2, max: 5 });
+  const phases = mockPhases(jobs, shopDrawings, { min: 2, max: 5 });
+  const requisitions = mockRequisitions(shopDrawings, { min: 2, max: 5 });
+  const requisitionLineItems = mockRequisitionLineItems(
+    requisitions,
+    vendors,
+    phases,
+    { min: 2, max: 5 }
+  );
 
   const sampleData = {
     jobs,
@@ -21,13 +26,13 @@ const makeSampleData = () => {
     requisitions,
     requisitionLineItems,
     vendors
-  }
+  };
 
-  console.log('sampleData: ', sampleData)
+  console.log('sampleData: ', sampleData);
 
-  return sampleData
-}
+  return sampleData;
+};
 
-const sampleData = makeSampleData()
+const sampleData = makeSampleData();
 
-export default sampleData
+export default sampleData;

@@ -1,14 +1,12 @@
-import { combineReducers } from "redux";
-import { reducer as formReducer } from "redux-form";
+import { combineReducers } from 'redux';
 
-import {
-  SELECT_REQUISITION
-} from "../actionTypes";
+import { SELECT_REQUISITION } from '../actionTypes';
 
-import ormReducer from "./ormReducer";
-import autocompleteReducer from './autocompleteReducer'
-import errorReducer from './errorReducer'
-import loadingReducer from './loadingReducer'
+import { reducer as formReducer } from 'redux-form';
+import ormReducer from './ormReducer';
+import autocompleteReducer from './autocompleteReducer';
+import errorReducer from './errorReducer';
+import loadingReducer from './loadingReducer';
 
 function selectedRequisitionReducer(state = 0, action) {
   const { type, payload } = action;
