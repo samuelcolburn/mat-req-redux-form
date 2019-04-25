@@ -75,6 +75,51 @@ Requisition.fields = {
   })
 };
 
+export class Vendor extends Model {
+  toString() {
+    return `Vendor: ${this.id}`;
+  }
+}
+Vendor.modelName = 'Vendor';
+
+Vendor.fields = {
+  id: attr(),
+  name: attr(),
+  phoneNumber: attr(),
+  website: attr()
+};
+
+export class ItemType extends Model {
+  toString() {
+    return `ItemType: ${this.id}`;
+  }
+}
+ItemType.modelName = 'ItemType';
+
+ItemType.fields = {
+  id: attr(),
+  name: attr(),
+  fullName: attr()
+};
+
+export class InventoryItem extends Model {
+  toString() {
+    return `InventoryItem: ${this.id}`;
+  }
+}
+InventoryItem.modelName = 'InventoryItem';
+
+InventoryItem.fields = {
+  id: attr(),
+  computerEaseNumber: attr(),
+  name: attr(),
+  relatedItemType: fk({
+    to: 'ItemType',
+    as: 'itemType',
+    relatedName: 'inventoryItems'
+  })
+};
+
 export class RequisitionLineItem extends Model {
   toString() {
     return `Requisition Line Item: ${this.id}`;
@@ -101,19 +146,20 @@ RequisitionLineItem.fields = {
     to: 'Requisition',
     as: 'requisition',
     relatedName: 'requisitionLineItems'
+  }),
+  relatedVendor: fk({
+    to: 'Vendor',
+    as: 'vendor',
+    relatedName: 'requisitionLineItems'
+  }),
+  relatedItemType: fk({
+    to: 'ItemType',
+    as: 'itemType',
+    relatedName: 'requisitionLineItems'
+  }),
+  relatedInventoryItem: fk({
+    to: 'InventoryItem',
+    as: 'inventoryItem',
+    relatedName: 'requisitionLineItems'
   })
-};
-
-export class Vendor extends Model {
-  toString() {
-    return `Vendor: ${this.id}`;
-  }
-}
-Vendor.modelName = 'Vendor';
-
-Vendor.fields = {
-  id: attr(),
-  name: attr(),
-  phoneNumber: attr(),
-  website: attr()
 };

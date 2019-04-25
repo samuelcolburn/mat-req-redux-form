@@ -19,7 +19,13 @@ import {
   AUTOCOMPLETE_FETCH_SUCCESS,
   CREATE_VENDOR,
   UPDATE_VENDOR,
-  REMOVE_VENDOR
+  REMOVE_VENDOR,
+  CREATE_ITEM_TYPE,
+  UPDATE_ITEM_TYPE,
+  REMOVE_ITEM_TYPE,
+  CREATE_INVENTORY_ITEM,
+  UPDATE_INVENTORY_ITEM,
+  REMOVE_INVENTORY_ITEM
 } from '../actionTypes';
 
 function autocompleteOrmReducer(sess, action) {
@@ -55,7 +61,9 @@ function ormReducer(dbState, action) {
     Phase,
     Requisition,
     RequisitionLineItem,
-    Vendor
+    Vendor,
+    ItemType,
+    InventoryItem
   } = sess;
 
   switch (action.type) {
@@ -140,6 +148,30 @@ function ormReducer(dbState, action) {
 
     case REMOVE_VENDOR:
       Vendor.withId(action.payload.id).update(action.payload);
+      break;
+
+    case CREATE_ITEM_TYPE:
+      ItemType.create(action.payload);
+      break;
+
+    case UPDATE_ITEM_TYPE:
+      ItemType.withId(action.payload.id).update(action.payload);
+      break;
+
+    case REMOVE_ITEM_TYPE:
+      ItemType.withId(action.payload.id).update(action.payload);
+      break;
+
+    case CREATE_INVENTORY_ITEM:
+      InventoryItem.create(action.payload);
+      break;
+
+    case UPDATE_INVENTORY_ITEM:
+      InventoryItem.withId(action.payload.id).update(action.payload);
+      break;
+
+    case REMOVE_INVENTORY_ITEM:
+      InventoryItem.withId(action.payload.id).update(action.payload);
       break;
 
     default:

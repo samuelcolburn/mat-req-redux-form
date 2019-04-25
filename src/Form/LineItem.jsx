@@ -12,11 +12,14 @@ const currencyMask = createNumberMask({
   locale: 'en-US'
 });
 
-const LineItem = (job, shopDrawing, phaseToString, vendorToString) => (
-  lineItem,
-  index,
-  fields
-) => (
+const LineItem = (
+  job,
+  shopDrawing,
+  phaseToString,
+  vendorToString,
+  itemTypeToString,
+  inventoryItemToString
+) => (lineItem, index, fields) => (
   <Grid key={fields.get(index).id} container>
     <Grid item xs={12} md={3} lg={3}>
       <Grid container>
@@ -66,7 +69,33 @@ const LineItem = (job, shopDrawing, phaseToString, vendorToString) => (
     <Grid item xs={12} md={6} lg={5} xl={6}>
       <Grid container>
         <Grid item xs={12} lg={4}>
-          <Field name={`${lineItem}.type`} label="Type" component={TextField} />
+          <Field
+            name={`${lineItem}.type`}
+            label="Type"
+            placeholder="Search for an Item Type..."
+            table="itemTypes"
+            itemToString={itemTypeToString}
+            component={Autocomplete}
+          />
+        </Grid>
+
+        <Grid item xs={12} lg={8}>
+          <Field
+            name={`${lineItem}.inventoryItem`}
+            label="Inventory Item"
+            placeholder="Search for an Item..."
+            table="inventoryItems"
+            /*             params={{
+              related: [
+                {
+                  key: 'relatedItemType',
+                  value: job && job.id ? job.id : 0
+                }
+              ]
+            }} */
+            itemToString={inventoryItemToString}
+            component={Autocomplete}
+          />
         </Grid>
 
         <Grid item xs={12} lg={8}>

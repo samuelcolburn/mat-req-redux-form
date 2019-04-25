@@ -5,13 +5,31 @@ const price = () =>
   faker.random.number({ min: 0, max: 100000 }) +
   faker.random.number({ min: 0, max: 99 }) / 100;
 
-const mockRequisitionLineItem = (requisition, vendors, sdPhases) => {
+const mockRequisitionLineItem = (
+  requisition,
+  vendors,
+  itemTypes,
+  inventoryItems,
+  sdPhases
+) => {
   const phase =
     sdPhases[faker.random.number({ min: 0, max: sdPhases.length - 1 })];
   if (!phase) return null;
 
   const vendor =
     vendors[faker.random.number({ min: 0, max: vendors.length - 1 })];
+
+  const itemType =
+    itemTypes[faker.random.number({ min: 0, max: itemTypes.length - 1 })];
+  let itemsOfType;
+  let inventoryItem = null;
+  if (itemType.name !== 'Custom') {
+    itemsOfType = inventoryItems.filter(
+      inventoryItem => inventoryItem.relatedItemType === itemType.id
+    );
+    inventoryItem =
+      itemsOfType[faker.random.number({ min: 0, max: itemsOfType.length - 1 })];
+  }
 
   return {
     id: faker.random.uuid(),
@@ -26,9 +44,11 @@ const mockRequisitionLineItem = (requisition, vendors, sdPhases) => {
       'Received',
       'Complete'
     ]),
-    type: '',
+    relatedItemType: itemType.id,
+    itemType: itemType,
     description: faker.lorem.words(faker.random.number({ max: 15 })),
-    inventoryItem: '',
+    relatedInventoryItem: inventoryItem ? inventoryItem.id : null,
+    inventoryItem: inventoryItem,
     startingInventory: faker.random.number({ min: 0, max: 1000 }),
     quantityRequested: faker.random.number({ min: 0, max: 1000 }),
     quantityOrdered: price(),
@@ -48,6 +68,8 @@ const mockRequisitionLineItems = (
   requisitions,
   vendors,
   phases,
+  itemTypes,
+  inventoryItems,
   numLineItemsOptions = { min: 1, max: 10 }
 ) =>
   requisitions.reduce((acc, curr) => {
@@ -65,6 +87,8 @@ const mockRequisitionLineItems = (
         numLineItems,
         curr,
         vendors,
+        itemTypes,
+        inventoryItems,
         sdPhases
       )
     ];

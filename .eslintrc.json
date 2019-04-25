@@ -2,5 +2,14 @@
   "extends": [
     "react-app",
     "plugin:prettier/recommended"
-  ]
+  ],
+  "rules": {
+    "quotes": ["error", "single"],
+    "prettier/quotes": "single",
+    "prettier/singleQuote": true,
+    "prettier/prettier/quotes": "single",
+    "prettier/prettier/singleQuote":true,
+    "prettier/recommended/quotes": "single",
+    "prettier/recommended/singleQuote": true
+  }
 }

@@ -4,9 +4,13 @@ import mockPhases from './phases';
 import mockRequisitions from './requisitions';
 import mockRequisitionLineItems from './requisitionLineItems';
 import mockVendors from './vendors';
+import mockItemTypes from './itemTypes';
+import mockInventoryItems from './inventoryItems';
 
 const makeSampleData = () => {
   const vendors = mockVendors(100);
+  const itemTypes = mockItemTypes(20);
+  const inventoryItems = mockInventoryItems(itemTypes);
 
   const jobs = mockJobs(10);
   const shopDrawings = mockShopDrawings(jobs, { min: 2, max: 5 });
@@ -16,6 +20,8 @@ const makeSampleData = () => {
     requisitions,
     vendors,
     phases,
+    itemTypes,
+    inventoryItems,
     { min: 2, max: 5 }
   );
 
@@ -25,7 +31,9 @@ const makeSampleData = () => {
     phases,
     requisitions,
     requisitionLineItems,
-    vendors
+    vendors,
+    itemTypes,
+    inventoryItems
   };
 
   console.log('sampleData: ', sampleData);

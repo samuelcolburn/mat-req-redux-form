@@ -11,12 +11,12 @@ import Button from '@material-ui/core/Button';
 import LineItem from './LineItem';
 import { makeLineItem } from '../helpers';
 
-/* const useStyles = makeStyles({
-  inputMultiline: {
-    resize: 'vertical'
-  }
-})
- */
+const phaseToString = phase => getOr('', 'phase', phase);
+const vendorToString = vendor => getOr('', 'name', vendor);
+const itemTypeToString = itemType => getOr('', 'fullName', itemType);
+const inventoryItemToString = inventoryItem =>
+  inventoryItem ? `${inventoryItem.name}` : '';
+
 const LineItemColumns = () => (
   <Grid container>
     <Grid item xs={12} md={3} lg={3}>
@@ -86,9 +86,6 @@ const LineItems = ({ fields, meta: { error }, job, shopDrawing }) => {
     lineItemIdPrefix
   );
 
-  const phaseToString = phase => getOr('', 'phase', phase);
-  const vendorToString = vendor => getOr('', 'name', vendor);
-
   return (
     <Grid container>
       <Grid item xs={12}>
@@ -100,7 +97,16 @@ const LineItems = ({ fields, meta: { error }, job, shopDrawing }) => {
 
         <LineItemColumns />
 
-        {fields.map(LineItem(job, shopDrawing, phaseToString, vendorToString))}
+        {fields.map(
+          LineItem(
+            job,
+            shopDrawing,
+            phaseToString,
+            vendorToString,
+            itemTypeToString,
+            inventoryItemToString
+          )
+        )}
       </Grid>
 
       <Grid item xs={12}>

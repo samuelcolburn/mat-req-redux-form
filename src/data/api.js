@@ -1,6 +1,7 @@
 import compose from 'lodash/fp/compose';
 import get from 'lodash/fp/get';
 import filter from 'lodash/fp/filter';
+import take from 'lodash/fp/take';
 import random from 'lodash/random';
 import { delay, filterTableRecord, parseParams } from '../helpers';
 
@@ -11,6 +12,7 @@ export const doQuery = async ({ table, params }) => {
   await delay(500);
 
   const results = compose(
+    take(100),
     filter(filterTableRecord(parseParams(params))),
     get(table)
   )(sampleData);
