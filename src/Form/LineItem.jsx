@@ -1,16 +1,17 @@
 import React from "react";
 import { Field } from "redux-form";
+import { createNumberMask } from 'redux-form-input-masks';
 import Grid from "@material-ui/core/Grid";
+import InputAdornment from "@material-ui/core/InputAdornment";
 
 import TextField from "../components/TextField";
 import Autocomplete from "../components/Autocomplete";
-/*
-            <Field
-              name={`${lineItem}.vendor`}
-              label="Vendor"
-              component={TextField}
-            />
-*/
+
+const currencyMask = createNumberMask({
+  decimalPlaces: 2,
+  locale: 'en-US'
+})
+
 const LineItem = (job, shopDrawing, phaseToString, vendorToString) => (lineItem, index, fields) => (
     <Grid key={fields.get(index).id} container>
       <Grid item xs={12} md={3} lg={3}>
@@ -82,7 +83,7 @@ const LineItem = (job, shopDrawing, phaseToString, vendorToString) => (lineItem,
             <Field
               name={`${lineItem}.startingInventory`}
               label="Inventory"
-              type="number"
+              // type="number"
               component={TextField}
             />
           </Grid>
@@ -91,7 +92,7 @@ const LineItem = (job, shopDrawing, phaseToString, vendorToString) => (lineItem,
             <Field
               name={`${lineItem}.quantityRequested`}
               label="Requested"
-              type="number"
+              // type="number"
               component={TextField}
             />
           </Grid>
@@ -100,7 +101,7 @@ const LineItem = (job, shopDrawing, phaseToString, vendorToString) => (lineItem,
             <Field
               name={`${lineItem}.quantityNeeded`}
               label="Needed"
-              type="number"
+              // type="number"
               component={TextField}
             />
           </Grid>
@@ -109,7 +110,7 @@ const LineItem = (job, shopDrawing, phaseToString, vendorToString) => (lineItem,
             <Field
               name={`${lineItem}.quantityOrdered`}
               label="Ordered"
-              type="number"
+              // type="number"
               component={TextField}
             />
           </Grid>
@@ -122,17 +123,24 @@ const LineItem = (job, shopDrawing, phaseToString, vendorToString) => (lineItem,
             <Field
               name={`${lineItem}.estimatedCost`}
               label="Est Cost"
-              type="number"
+              // type="number"
               component={TextField}
+              InputProps={{
+                startAdornment: <InputAdornment position="start">$</InputAdornment>
+              }}
+              {...currencyMask}
             />
           </Grid>
 
           <Grid item xs={6} sm={6} md={12} lg={6}>
             <Field
               name={`${lineItem}.currentCost`}
-              label="Est Cost"
-              type="number"
+              label="Curr Cost"
               component={TextField}
+              InputProps={{
+                startAdornment: <InputAdornment position="start">$</InputAdornment>
+              }}
+              {...currencyMask}
             />
           </Grid>
         </Grid>

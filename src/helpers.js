@@ -1,9 +1,4 @@
-import map from "lodash/fp/map";
-import filter from "lodash/fp/filter";
 import compose from "lodash/fp/compose";
-import sortBy from "lodash/fp/sortBy";
-import get from "lodash/fp/get";
-
 
 export const makeLineItem = id => ({
   id,

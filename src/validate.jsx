@@ -13,8 +13,8 @@ export const asyncValidate = values => {
 };
 
 export const validate = values => {
-  console.log("validating: ", values);
-  console.log("validationSChema: ", validationSchema);
+  // console.log("validating: ", values);
+  // console.log("validationSChema: ", validationSchema);
   try {
     validationSchema.validateSync(values, { abortEarly: false });
     return {};
