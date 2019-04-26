@@ -220,7 +220,6 @@ const fetchRequisition = id => {
   console.log('fetching Requisition: ', id);
   return (dispatch, getState) => {
     dispatch(reqRequisitionInit(id));
-    dispatch(selectRequisition(id));
 
     return getData({ table: 'requisitions', id });
     /*       .then(
@@ -245,6 +244,7 @@ export const loadRequisitionById = ({ id }) => {
         console.log('load req done fetching: ', data);
         dispatch(reqRequisitionSuccess(data[0]));
         dispatch(createManyRequisitionLineItem(data[1]));
+        dispatch(selectRequisition(data[0].id));
       },
       error => {
         console.log('error fetching data: ', error.message);
@@ -404,8 +404,9 @@ const logChange = (values, dispatch, props, previousValues, ...rest) => {
 };
 
 const handleJobChange = (values, dispatch, props, previousValues) => {
-  const prevId = get(['job', 'id'], previousValues);
-  const id = get(['job', 'id'], values);
+  const getId = get(['job', 'id']);
+  const prevId = getId(previousValues);
+  const id = getId(values);
 
   if (prevId && id !== prevId) {
     // console.log("CHANGE HANDLER: JOB");
@@ -438,9 +439,38 @@ const handleShopDrawingChange = (values, dispatch, props, previousValues) => {
   }
 };
 
+const handleItemTypeChange = (values, dispatch, props, previousValues) => (
+  lineItem,
+  index
+) => {
+  const getId = get(['lineItems', index, 'itemType', 'id']);
+  const prevId = getId(previousValues);
+  const id = getId(values);
+
+  if (id !== prevId) {
+    dispatch(props.change(`lineItems[${index}].relatedItemType`, id || null));
+    dispatch(props.change(`lineItems[${index}].relatedInventoryItem`, null));
+    dispatch(props.change(`lineItems[${index}].inventoryItem`, null));
+  }
+};
+
+const handleLineItemItemTypeChange = (
+  values,
+  dispatch,
+  props,
+  previousValues
+) => {
+  const lineItems = get('lineItems', values);
+  if (!lineItems || !lineItems.length) return;
+
+  lineItems.forEach(
+    handleItemTypeChange(values, dispatch, props, previousValues)
+  );
+};
+
 export const onChange = (values, dispatch, props, previousValues) => {
-  // console.log("CHANGE HANDLER");
-  // console.log("get: ", get);
+  // console.log('CHANGE HANDLER');
+  // console.log('get: ', get);
   // logChange(values, dispatch, props, previousValues);
 
   if (props.pristine) {
@@ -450,4 +480,5 @@ export const onChange = (values, dispatch, props, previousValues) => {
 
   handleJobChange(values, dispatch, props, previousValues);
   handleShopDrawingChange(values, dispatch, props, previousValues);
+  handleLineItemItemTypeChange(values, dispatch, props, previousValues);
 };

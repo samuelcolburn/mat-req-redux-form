@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 
 import Container from '@material-ui/core/Container';
@@ -10,10 +10,24 @@ import Grid from '@material-ui/core/Grid';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import ErrorIcon from '@material-ui/icons/Error';
 
-import { loadRandomRequisition } from './actions';
+import { loadRandomRequisition, loadRequisitionById } from './actions';
 import Form from './Form';
+import { TextField } from '@material-ui/core';
 
-let App = ({ rid, load, loading, error }) => {
+let App = ({
+  rid,
+  loadRequisitionById,
+  loadRandomRequisition,
+  loading,
+  error
+}) => {
+  const [reqId, setReqId] = useState('');
+
+  const loadRequisition = e => {
+    if (reqId && reqId.length) loadRequisitionById({ id: reqId });
+    else loadRandomRequisition();
+  };
+
   const form = loading ? (
     <CircularProgress />
   ) : error ? (
@@ -41,9 +55,10 @@ let App = ({ rid, load, loading, error }) => {
         Create React App v4-alpha example
       </Typography>
 
-      <Button color="primary" variant="contained" onClick={() => load()}>
+      <Button color="primary" variant="contained" onClick={loadRequisition}>
         Load Requisition
       </Button>
+      <TextField value={reqId} onChange={e => setReqId(e.target.value)} />
 
       <Paper>{form}</Paper>
     </Container>
@@ -57,7 +72,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
-  load: loadRandomRequisition
+  loadRequisitionById: loadRequisitionById,
+  loadRandomRequisition: loadRandomRequisition
 };
 
 App = connect(
