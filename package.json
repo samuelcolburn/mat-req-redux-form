@@ -1,23 +1,26 @@
 {
   "name": "req-redux-form-material-ui",
-  "version": "1.0.0-alpha.10",
+  "version": "1.0.0-alpha.11",
   "description": "",
   "keywords": [],
   "main": "src/index.js",
   "dependencies": {
-    "@material-ui/core": "^4.0.0-alpha.8",
-    "@material-ui/icons": "^4.0.0-alpha.8",
-    "@material-ui/styles": "^4.0.0-alpha.8",
-    "downshift": "^3.2.8",
+    "@date-io/date-fns": "^1.3.5",
+    "@material-ui/core": "^4.0.0-beta.0",
+    "@material-ui/icons": "^4.0.0-beta.0",
+    "@material-ui/styles": "^4.0.0-beta.0",
+    "date-fns": "^2.0.0-alpha.27",
+    "downshift": "^3.2.10",
     "faker": "4.1.0",
     "husky": "^2.1.0",
     "lint-staged": "^8.1.5",
     "lodash": "4.17.11",
+    "material-ui-pickers": "^3.0.0-alpha.3",
     "prettier": "^1.17.0",
     "re-reselect": "^3.1.0",
     "react": "16.8.6",
     "react-dom": "16.8.6",
-    "react-redux": "^7.0.2",
+    "react-redux": "^7.0.3",
     "react-scripts": "3.0.0",
     "redux": "4.0.1",
     "redux-devtools-extension": "2.13.8",
@@ -33,7 +36,7 @@
   "devDependencies": {
     "eslint-config-prettier": "^4.2.0",
     "eslint-plugin-prettier": "^3.0.1",
-    "typescript": "^3.4.4"
+    "typescript": "^3.4.5"
   },
   "scripts": {
     "start": "react-scripts start",

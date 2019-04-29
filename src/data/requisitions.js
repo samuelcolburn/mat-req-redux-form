@@ -5,8 +5,11 @@ const mockRequisition = shopDrawing => {
   return {
     id: faker.random.uuid(),
     createdBy: faker.fake('{{name.firstName}} {{name.lastName}}'),
-    dateCreated: faker.date.recent().toLocaleDateString(),
-    dateNeeded: faker.date.future(0, new Date()).toLocaleDateString(),
+    // dateCreated: faker.date.recent().toLocaleDateString(),
+    // dateNeeded: faker.date.future(0, new Date()).toLocaleDateString(),
+    dateCreated: faker.date.recent(),
+    dateNeeded: faker.date.future(0, new Date()),
+
     number: faker.random.number({
       min: 1,
       max: 99

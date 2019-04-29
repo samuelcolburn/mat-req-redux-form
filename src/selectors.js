@@ -1,15 +1,7 @@
-import compose from 'lodash/fp/compose';
 import get from 'lodash/fp/get';
 import { createSelector as ormCreateSelector } from 'redux-orm';
 import { createSelector } from 'reselect';
 import createCachedSelector from 're-reselect';
-import {
-  includes,
-  toLowerCase,
-  stringify,
-  values,
-  parseParams
-} from './helpers';
 import orm, { tableModelMap } from './orm';
 
 const dbStateSelector = state => state.db;
@@ -32,8 +24,8 @@ export const jobs = ormCreateSelector([orm, dbStateSelector], session => {
 export const requisitionSelector = createSelector(
   [state => state.db, (state, props) => props],
   ormCreateSelector(orm, (session, props) => {
-    console.log('requisitionSelector');
-    console.log('props: ', props);
+    // console.log('requisitionSelector');
+    // console.log('props: ', props);
     const model = session.Requisition.withId(props.rid);
 
     const obj = model ? model.ref : {};
@@ -44,7 +36,7 @@ export const requisitionSelector = createSelector(
     };
   })
 );
-
+/*
 const recordHasRelation = record => relation =>
   record[relation.key] === relation.value;
 const hasAllRelations = params => record =>
@@ -57,7 +49,7 @@ const recordHasQueryString = query => record =>
     stringify,
     values
   )(record);
-/*
+
 export const tableQuerySelector = ormCreateSelector(
   orm,
   dbStateSelector,

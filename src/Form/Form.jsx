@@ -6,6 +6,7 @@ import Typography from '@material-ui/core/Typography';
 
 import TextField from '../components/TextField';
 import Autocomplete from '../components/Autocomplete';
+import DebouncedDatePickerField from '../components/DebouncedDatePickerField';
 import LineItems from './LineItems';
 
 import { validate } from '../validate';
@@ -56,12 +57,25 @@ let Form = props => {
         <Field
           name="dateCreated"
           label="Date Created"
+          placeholder="Date Created"
           component={TextField}
-          readOnly
-          disabled
         />
 
-        <Field name="dateNeeded" label="Date Needed" component={TextField} />
+        <Field
+          name="dateCreated"
+          label="Date Created"
+          placeholder="Date Created"
+          dateFormat="MM/dd/yyyy"
+          component={DebouncedDatePickerField}
+        />
+
+        <Field
+          name="dateNeeded"
+          label="Date Needed"
+          placeholder="Date Needed"
+          dateFormat="MM/dd/yyyy"
+          component={DebouncedDatePickerField}
+        />
 
         <Field
           name="job"
