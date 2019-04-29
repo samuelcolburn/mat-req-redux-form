@@ -1,16 +1,15 @@
 import useDebouncedCallback from 'use-debounce/lib/callback';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import TextField from '@material-ui/core/TextField';
 
 const DebouncedTextField = ({ input, meta: { error, dirty }, ...custom }) => {
   const [value, setValue] = useState(input.value);
 
   const [debouncedFunction, cancel] = useDebouncedCallback(
-    value => {
+    useCallback(() => {
       input.onChange(value);
-    },
-    1000,
-    [input.onChange]
+    }, [input, value]),
+    1000
   );
 
   // When the component goes to be unmounted, we will fetch data if the input has changed.

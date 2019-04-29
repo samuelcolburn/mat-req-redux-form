@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import get from 'lodash/fp/get';
 import useDebouncedCallback from 'use-debounce/lib/callback';
 import { KeyboardDatePicker } from 'material-ui-pickers';
@@ -12,9 +12,9 @@ const DebouncedDatePickerField = ({
   const [value, setValue] = useState(get('', ['value'], input));
 
   const [debouncedFunction, cancel] = useDebouncedCallback(
-    val => {
-      input.onChange(val);
-    },
+    useCallback(() => {
+      input.onChange(value);
+    }, [input, value]),
     1000,
     [input.onChange]
   );
