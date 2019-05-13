@@ -52,7 +52,7 @@ let App = ({
   return (
     <Container>
       <Typography variant="h4" component="h1" gutterBottom>
-        Create React App v4-alpha example
+        Material Requisition
       </Typography>
 
       <Button color="primary" variant="contained" onClick={loadRequisition}>
