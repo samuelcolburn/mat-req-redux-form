@@ -1,31 +1,48 @@
-import isEqual from 'lodash/fp/isEqual';
-
 import useDebouncedCallback from 'use-debounce/lib/callback';
+
 import React, { useState, useEffect, useCallback } from 'react';
+
 import TextField from '@material-ui/core/TextField';
 
-const DebouncedTextField = ({ input, meta: { error, dirty }, ...custom }) => {
+import NumberFormat from 'react-number-format';
+
+const NumberFormatCustom = props => {
+  const { inputRef, onChange, ...other } = props;
+
+  return (
+    <NumberFormat
+      {...other}
+      getInputRef={inputRef}
+      onValueChange={values => {
+        onChange({
+          target: {
+            value: values.floatValue
+          }
+        });
+      }}
+      thousandSeparator
+      decimalScale={2}
+    />
+  );
+};
+
+const DebouncedTextField = ({
+  input,
+  meta: { error, dirty },
+  InputProps,
+  ...custom
+}) => {
   const [value, setValue] = useState(input.value);
 
   const [debouncedFunction, cancel] = useDebouncedCallback(
     useCallback(() => {
-      // console.group('DebouncedTextField useCallback: ');
-      // console.log('Input: ', custom.label);
-      // console.log('local value: ', value);
-      // console.log('input value: ', input.value);
-      // console.groupEnd();
       const onChange = input.onChange;
-
       onChange(value);
     }, [input.onChange, value]),
     1000
   );
 
   useEffect(() => {
-    console.group('DebouncedTextField useEffect: ');
-    console.log('local value: ', value);
-    console.groupEnd();
-
     debouncedFunction(value);
 
     return () => {
@@ -35,19 +52,11 @@ const DebouncedTextField = ({ input, meta: { error, dirty }, ...custom }) => {
 
   useEffect(() => {
     setValue(prevValue =>
-      !isEqual(prevValue, input.value) ? input.value : prevValue
+      prevValue !== input.value ? input.value : prevValue
     );
   }, [input.value]);
 
   function handleChange(e) {
-    e.persist();
-    console.group('DebouncedTextField handleChange: ');
-    console.log('Input: ', custom.label);
-    console.log('local value: ', value);
-    console.log('input value: ', input.value);
-    console.log('event value: ', e.target.value);
-    console.groupEnd();
-
     if (e.target.value !== value) setValue(e.target.value);
   }
 
@@ -55,10 +64,14 @@ const DebouncedTextField = ({ input, meta: { error, dirty }, ...custom }) => {
     <TextField
       {...input}
       {...custom}
-      onChange={handleChange}
       value={value}
+      onChange={handleChange}
       error={error && dirty}
       helperText={error && dirty ? error : null}
+      InputProps={{
+        inputComponent: NumberFormatCustom,
+        ...InputProps
+      }}
     />
   );
 };

@@ -1,23 +1,13 @@
 import React from 'react';
 import get from 'lodash/fp/get';
 import { Field, Fields } from 'redux-form';
-import { createNumberMask } from 'redux-form-input-masks';
 import Grid from '@material-ui/core/Grid';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Select from '@material-ui/core/Select';
 
-import TextField from '../components/TextField';
 import Autocomplete from '../components/Autocomplete';
 import DebouncedTextField from '../components/DebouncedTextField';
-
-const numberMask = createNumberMask({
-  locale: 'en-US'
-});
-
-const currencyMask = createNumberMask({
-  decimalPlaces: 2,
-  locale: 'en-US'
-});
+import NumberField from '../components/NumberField';
 
 const renderItemInput = props => {
   const { itemTypeToString, inventoryItemToString, names } = props;
@@ -88,7 +78,7 @@ const LineItem = (
           <Field
             name={`${lineItem}.status`}
             label="Status"
-            component={TextField}
+            component={DebouncedTextField}
           />
         </Grid>
 
@@ -142,20 +132,6 @@ const LineItem = (
           lineItem={lineItem}
         />
       </Grid>
-
-      {/*         <Grid container>
-          <Grid item xs={12} lg={4}>
-            <Field
-              name={`${lineItem}.itemType`}
-              label="Type"
-              placeholder="Search for an Item Type..."
-              table="itemTypes"
-              itemToString={itemTypeToString}
-              component={Autocomplete}
-            />
-          </Grid>
-          {renderItemInput(fields, lineItem, index, inventoryItemToString)}
-        </Grid> */}
     </Grid>
 
     <Grid item xs={12} sm={6} md={2} lg={2}>
@@ -165,8 +141,7 @@ const LineItem = (
             name={`${lineItem}.startingInventory`}
             label="Inventory"
             // type="number"
-            component={TextField}
-            {...numberMask}
+            component={NumberField}
           />
         </Grid>
 
@@ -175,8 +150,7 @@ const LineItem = (
             name={`${lineItem}.quantityRequested`}
             label="Requested"
             // type="number"
-            component={TextField}
-            {...numberMask}
+            component={NumberField}
           />
         </Grid>
 
@@ -185,8 +159,7 @@ const LineItem = (
             name={`${lineItem}.quantityNeeded`}
             label="Needed"
             // type="number"
-            component={TextField}
-            {...numberMask}
+            component={NumberField}
           />
         </Grid>
 
@@ -195,8 +168,7 @@ const LineItem = (
             name={`${lineItem}.quantityOrdered`}
             label="Ordered"
             // type="number"
-            component={TextField}
-            {...numberMask}
+            component={NumberField}
           />
         </Grid>
       </Grid>
@@ -209,13 +181,12 @@ const LineItem = (
             name={`${lineItem}.estimatedCost`}
             label="Est Cost"
             // type="number"
-            component={TextField}
+            component={NumberField}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">$</InputAdornment>
               )
             }}
-            {...currencyMask}
           />
         </Grid>
 
@@ -223,13 +194,12 @@ const LineItem = (
           <Field
             name={`${lineItem}.currentCost`}
             label="Curr Cost"
-            component={TextField}
+            component={NumberField}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">$</InputAdornment>
               )
             }}
-            {...currencyMask}
           />
         </Grid>
       </Grid>

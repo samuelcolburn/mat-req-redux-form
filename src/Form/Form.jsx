@@ -4,6 +4,7 @@ import { Field, FieldArray, reduxForm, formValueSelector } from 'redux-form';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 
+import DebouncedTextField from '../components/DebouncedTextField';
 import TextField from '../components/TextField';
 import Autocomplete from '../components/Autocomplete';
 import DebouncedDatePickerField from '../components/DebouncedDatePickerField';
@@ -54,12 +55,12 @@ let Form = props => {
           disabled
         />
 
-        <Field
+        {/* <Field
           name="dateCreated"
           label="Date Created"
           placeholder="Date Created"
           component={TextField}
-        />
+        /> */}
 
         <Field
           name="dateCreated"
@@ -101,8 +102,13 @@ let Form = props => {
           itemToString={shopDrawingToString}
           component={Autocomplete}
         />
-        <Field name="number" label="TO #" component={TextField} />
-        <Field name="subject" label="Subject" component={TextField} fullWidth />
+        <Field name="number" label="TO #" component={DebouncedTextField} />
+        <Field
+          name="subject"
+          label="Subject"
+          component={DebouncedTextField}
+          fullWidth
+        />
       </section>
 
       <FieldArray

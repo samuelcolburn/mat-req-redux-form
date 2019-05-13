@@ -50,6 +50,11 @@ function autocompleteOrmReducer(sess, action) {
   });
 }
 
+const createOrUpdate = (model, record) =>
+  model.idExists(record.id)
+    ? model.withId(record.id).update(record)
+    : model.create(record);
+
 function ormReducer(dbState, action) {
   const sess = orm.session(dbState);
 
@@ -106,11 +111,13 @@ function ormReducer(dbState, action) {
     case CREATE_REQUISITION:
       console.log('ormReducer, action: ', action.type);
       console.log('payload: ', action.payload);
-      Requisition.create(action.payload);
+      // Requisition.create(action.payload);
+      createOrUpdate(Requisition, action.payload);
       break;
 
     case UPDATE_REQUISITION:
-      Requisition.withId(action.payload.id).update(action.payload);
+      // Requisition.withId(action.payload.id).update(action.payload);
+      createOrUpdate(Requisition, action.payload);
       break;
 
     case REMOVE_REQUISITION:
@@ -122,16 +129,19 @@ function ormReducer(dbState, action) {
       console.log('payload: ', action.payload);
       action.payload.forEach(requisitionLineItem => {
         console.log('item: ', requisitionLineItem);
-        RequisitionLineItem.create(requisitionLineItem);
+        // RequisitionLineItem.create(requisitionLineItem);
+        createOrUpdate(RequisitionLineItem, requisitionLineItem);
       });
       break;
 
     case CREATE_REQUISITION_LINE_ITEM:
-      RequisitionLineItem.create(action.payload);
+      // RequisitionLineItem.create(action.payload);
+      createOrUpdate(RequisitionLineItem, action.payload);
       break;
 
     case UPDATE_REQUISITION_LINE_ITEM:
-      RequisitionLineItem.withId(action.payload.id).update(action.payload);
+      // RequisitionLineItem.withId(action.payload.id).update(action.payload);
+      createOrUpdate(RequisitionLineItem, action.payload);
       break;
 
     case REMOVE_REQUISITION_LINE_ITEM:
