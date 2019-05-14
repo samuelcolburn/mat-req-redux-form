@@ -1,6 +1,6 @@
-import min from 'lodash/fp/min';
-
 import React, { useState, useRef } from 'react';
+
+import memoize from 'memoize-one';
 
 import Downshift from 'downshift';
 
@@ -17,7 +17,7 @@ import ArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import ErrorIcon from '@material-ui/icons/Error';
 import { makeStyles } from '@material-ui/core/styles';
 
-import { FixedSizeList } from 'react-window';
+import { FixedSizeList, areEqual } from 'react-window';
 
 import AutocompleteResults from './AutocompleteResults';
 
@@ -78,7 +78,7 @@ function renderInput(inputProps) {
   );
 }
 
-function SuggestionRenderer({ index, style, data }) {
+const SuggestionRenderer = React.memo(({ index, style, data }) => {
   const {
     getItemProps,
     highlightedIndex,
@@ -106,7 +106,17 @@ function SuggestionRenderer({ index, style, data }) {
       {itemToString(item)}
     </MenuItem>
   );
-}
+}, areEqual);
+
+const createItemData = memoize(
+  (items, itemToString, getItemProps, highlightedIndex, selectedItem) => ({
+    items,
+    itemToString,
+    getItemProps,
+    highlightedIndex,
+    selectedItem
+  })
+);
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -203,8 +213,8 @@ let AutoComplete = ({
         selectedItem,
         inputValue,
         highlightedIndex,
-        setItemCount,
-        selectItem
+        itemCount,
+        setItemCount
       }) => (
         <div className={classes.container}>
           {renderInput({
@@ -258,22 +268,24 @@ let AutoComplete = ({
                         return <MenuItem>No items match your search</MenuItem>;
                       }
 
-                      setItemCount(data.length);
+                      if (itemCount !== data.length) setItemCount(data.length);
+
+                      const itemData = createItemData(
+                        data,
+                        itemToString,
+                        getItemProps,
+                        highlightedIndex,
+                        selectedItem
+                      );
 
                       return (
                         <FixedSizeList
                           ref={listRef}
-                          height={min([300, data.length * 46])}
+                          height={data.length < 7 ? data.length * 46 : 300}
                           width="100%"
                           itemSize={46}
                           itemCount={data.length}
-                          itemData={{
-                            items: data,
-                            itemToString,
-                            getItemProps,
-                            highlightedIndex,
-                            selectedItem
-                          }}
+                          itemData={itemData}
                         >
                           {SuggestionRenderer}
                         </FixedSizeList>
