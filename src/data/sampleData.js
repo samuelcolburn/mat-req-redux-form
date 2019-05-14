@@ -12,7 +12,7 @@ const makeSampleData = () => {
   const itemTypes = mockItemTypes(20);
   const inventoryItems = mockInventoryItems(itemTypes);
 
-  const jobs = mockJobs(100);
+  const jobs = mockJobs(10);
   const shopDrawings = mockShopDrawings(jobs, { min: 2, max: 5 });
   const phases = mockPhases(jobs, shopDrawings, { min: 2, max: 5 });
   const requisitions = mockRequisitions(shopDrawings, { min: 2, max: 5 });

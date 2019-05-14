@@ -3,11 +3,24 @@ import get from 'lodash/fp/get';
 import { Field, Fields } from 'redux-form';
 import Grid from '@material-ui/core/Grid';
 import InputAdornment from '@material-ui/core/InputAdornment';
-import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
 
+import SelectField from '../components/SelectField';
 import Autocomplete from '../components/Autocomplete';
 import DebouncedTextField from '../components/DebouncedTextField';
 import NumberField from '../components/NumberField';
+import CheckboxField from '../components/CheckboxField';
+
+const statusOptions = [
+  { label: 'Needs Review', value: 'needsReview' },
+  { label: 'Needs Pricing', value: 'needsPricing' },
+  { label: 'Needs Approval', value: 'needsApproval' },
+  { label: 'Approved', value: 'approved' },
+  { label: 'Rejected', value: 'rejected' },
+  { label: 'Ordered', value: 'ordered' },
+  { label: 'Received', value: 'received' },
+  { label: 'Complete', value: 'complete' }
+];
 
 const renderItemInput = props => {
   const { itemTypeToString, inventoryItemToString, names } = props;
@@ -72,14 +85,40 @@ const LineItem = (
   inventoryItemToString
 ) => (lineItem, index, fields) => (
   <Grid key={fields.get(index).id} container>
+    <div className="">
+      <Field
+        name={`${lineItem}.selected`}
+        component={CheckboxField}
+        type="checkbox"
+        color="primary"
+      />
+    </div>
+
     <Grid item xs={12} md={3} lg={3}>
       <Grid container>
         <Grid item xs={12} sm={4} lg={5}>
           <Field
             name={`${lineItem}.status`}
             label="Status"
-            component={DebouncedTextField}
-          />
+            component={SelectField}
+            options={statusOptions}
+            native
+            placeholder
+          >
+            {({ options, native }) => {
+              return options.map((option, index) => {
+                return native ? (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ) : (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                );
+              });
+            }}
+          </Field>
         </Grid>
 
         <Grid item xs={12} sm={4} lg={5}>

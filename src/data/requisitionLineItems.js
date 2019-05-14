@@ -35,14 +35,14 @@ const mockRequisitionLineItem = (
     id: faker.random.uuid(),
     selected: false,
     status: faker.random.arrayElement([
-      'Needs Review',
-      'Needs Pricing',
-      'Needs Approval',
-      'Approved',
-      'Rejected',
-      'Ordered',
-      'Received',
-      'Complete'
+      'needsReview',
+      'needsPricing',
+      'needsApproval',
+      'approved',
+      'rejected',
+      'ordered',
+      'received',
+      'complete'
     ]),
     relatedItemType: itemType.id,
     itemType: itemType,

@@ -3,11 +3,15 @@ import { connect } from 'react-redux';
 import { Field, FieldArray, reduxForm, formValueSelector } from 'redux-form';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
+import Grid from '@material-ui/core/Grid';
 
 import DebouncedTextField from '../components/DebouncedTextField';
 import TextField from '../components/TextField';
 import Autocomplete from '../components/Autocomplete';
 import DebouncedDatePickerField from '../components/DebouncedDatePickerField';
+
+import LineItemsHeader from './LineItemsHeader';
+import LineItemColumns from './LineItemColumns';
 import LineItems from './LineItems';
 
 import { validate } from '../validate';
@@ -46,6 +50,7 @@ let Form = props => {
         <span>Rid: </span>
         <span>{rid}</span>
       </Typography>
+
       <section className="header">
         <Field
           name="createdBy"
@@ -54,13 +59,6 @@ let Form = props => {
           readOnly
           disabled
         />
-
-        {/* <Field
-          name="dateCreated"
-          label="Date Created"
-          placeholder="Date Created"
-          component={TextField}
-        /> */}
 
         <Field
           name="dateCreated"
@@ -111,12 +109,18 @@ let Form = props => {
         />
       </section>
 
-      <FieldArray
-        name="lineItems"
-        component={LineItems}
-        job={job}
-        shopDrawing={shopDrawing}
-      />
+      <Grid container>
+        <LineItemsHeader />
+
+        <LineItemColumns />
+
+        <FieldArray
+          name="lineItems"
+          component={LineItems}
+          job={job}
+          shopDrawing={shopDrawing}
+        />
+      </Grid>
 
       <section className="actions">
         <Button
