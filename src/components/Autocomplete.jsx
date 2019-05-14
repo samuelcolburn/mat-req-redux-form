@@ -1,6 +1,6 @@
 import min from 'lodash/fp/min';
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 
 import Downshift from 'downshift';
 
@@ -78,55 +78,30 @@ function renderInput(inputProps) {
   );
 }
 
-function renderSuggestion({
-  item,
-  index,
-  itemProps,
-  highlightedIndex,
-  selectedItem,
-  itemToString
-}) {
-  const isHighlighted = highlightedIndex === index;
-  const isSelected = selectedItem.id === item.id;
-
-  return (
-    <MenuItem
-      {...itemProps}
-      key={item.id}
-      selected={isHighlighted}
-      component="div"
-      style={{
-        fontWeight: isSelected ? 500 : 400
-      }}
-    >
-      {itemToString(item)}
-    </MenuItem>
-  );
-}
-
 function SuggestionRenderer({ index, style, data }) {
-  // console.group('SuggestionRenderer');
-  // console.log('index: ', index);
-  // console.log('data: ', data);
-  // console.groupEnd();
+  const {
+    getItemProps,
+    highlightedIndex,
+    selectedItem,
+    itemToString,
+    items
+  } = data;
 
-  const item = data.itemsArray[index];
-
-  const { getItemProps, highlightedIndex, selectedItem, itemToString } = data;
-
-  const isHighlighted = highlightedIndex === index;
-  const isSelected = selectedItem.id === item.id;
+  const item = items[index];
 
   return (
     <MenuItem
       key={item.id}
-      {...getItemProps({ item })}
-      selected={isHighlighted}
+      {...getItemProps({
+        item,
+        index,
+        selected: highlightedIndex === index,
+        style: {
+          fontWeight: selectedItem.id === item.id ? 500 : 400,
+          ...style
+        }
+      })}
       component="div"
-      style={{
-        fontWeight: isSelected ? 500 : 400,
-        ...style
-      }}
     >
       {itemToString(item)}
     </MenuItem>
@@ -191,6 +166,17 @@ let AutoComplete = ({
     }
   };
 
+  const listRef = useRef(null);
+
+  const onStateChange = (changes, stateAndHelpers) => {
+    if (
+      changes.hasOwnProperty('highlightedIndex') &&
+      listRef.current !== null
+    ) {
+      listRef.current.scrollToItem(changes.highlightedIndex);
+    }
+  };
+
   return (
     <Downshift
       onChange={selectedItem => {
@@ -201,6 +187,8 @@ let AutoComplete = ({
       itemToString={itemToString}
       inputValue={inputValue}
       onInputValueChange={onInputValueChange}
+      onStateChange={onStateChange}
+      defaultHighlightedIndex={0}
       {...rest}
     >
       {({
@@ -215,7 +203,8 @@ let AutoComplete = ({
         selectedItem,
         inputValue,
         highlightedIndex,
-        setItemCount
+        setItemCount,
+        selectItem
       }) => (
         <div className={classes.container}>
           {renderInput({
@@ -243,10 +232,6 @@ let AutoComplete = ({
                 if (!isOpen) {
                   return null;
                 }
-
-                // if (!inputValue) {
-                //   return <MenuItem>You have to enter a search query</MenuItem>;
-                // }
 
                 return (
                   <AutocompleteResults
@@ -277,13 +262,13 @@ let AutoComplete = ({
 
                       return (
                         <FixedSizeList
+                          ref={listRef}
                           height={min([300, data.length * 46])}
                           width="100%"
                           itemSize={46}
                           itemCount={data.length}
-                          // scrollToItem={highlightedIndex || 0}
                           itemData={{
-                            itemsArray: data,
+                            items: data,
                             itemToString,
                             getItemProps,
                             highlightedIndex,
@@ -293,17 +278,6 @@ let AutoComplete = ({
                           {SuggestionRenderer}
                         </FixedSizeList>
                       );
-
-                      // return data.map((item, index) =>
-                      //   renderSuggestion({
-                      //     item,
-                      //     index,
-                      //     itemToString,
-                      //     itemProps: getItemProps({ item }),
-                      //     highlightedIndex,
-                      //     selectedItem
-                      //   })
-                      // );
                     }}
                   </AutocompleteResults>
                 );
