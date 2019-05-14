@@ -337,10 +337,10 @@ const debouncedGetQuery = debounce(
 );
 
 export const search = ({ table, params }) => (dispatch, getState) => {
-  if (!params) return Promise.resolve();
-  if (!params.q) return Promise.resolve();
-  if (!params.q.length) return Promise.resolve();
-  if (!params.q.trim().length) return Promise.resolve();
+  // if (!params) return Promise.resolve();
+  // if (!params.q) return Promise.resolve();
+  // if (!params.q.length) return Promise.resolve();
+  // if (!params.q.trim().length) return Promise.resolve();
 
   console.log('search action');
   console.log('table: ', table);

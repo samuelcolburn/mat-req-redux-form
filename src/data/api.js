@@ -11,9 +11,12 @@ export const doQuery = async ({ table, params }) => {
   console.log('doQuery Called: ', table, params);
   await delay(500);
 
+  const parsedParams = parseParams(params);
+  const filterByParams = filterTableRecord(parsedParams);
+
   const results = compose(
-    take(100),
-    filter(filterTableRecord(parseParams(params))),
+    take(parsedParams && parsedParams.q && parsedParams.q.length ? 100 : 10),
+    filter(filterByParams),
     get(table)
   )(sampleData);
 

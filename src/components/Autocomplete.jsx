@@ -1,3 +1,5 @@
+import min from 'lodash/fp/min';
+
 import React, { useState } from 'react';
 
 import Downshift from 'downshift';
@@ -14,6 +16,8 @@ import CloseIcon from '@material-ui/icons/Close';
 import ArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import ErrorIcon from '@material-ui/icons/Error';
 import { makeStyles } from '@material-ui/core/styles';
+
+import { FixedSizeList } from 'react-window';
 
 import AutocompleteResults from './AutocompleteResults';
 
@@ -100,6 +104,35 @@ function renderSuggestion({
   );
 }
 
+function SuggestionRenderer({ index, style, data }) {
+  // console.group('SuggestionRenderer');
+  // console.log('index: ', index);
+  // console.log('data: ', data);
+  // console.groupEnd();
+
+  const item = data.itemsArray[index];
+
+  const { getItemProps, highlightedIndex, selectedItem, itemToString } = data;
+
+  const isHighlighted = highlightedIndex === index;
+  const isSelected = selectedItem.id === item.id;
+
+  return (
+    <MenuItem
+      key={item.id}
+      {...getItemProps({ item })}
+      selected={isHighlighted}
+      component="div"
+      style={{
+        fontWeight: isSelected ? 500 : 400,
+        ...style
+      }}
+    >
+      {itemToString(item)}
+    </MenuItem>
+  );
+}
+
 const useStyles = makeStyles(theme => ({
   container: {
     flexGrow: 1,
@@ -111,7 +144,7 @@ const useStyles = makeStyles(theme => ({
     marginTop: theme.spacing(1),
     left: 0,
     right: 0,
-    maxHeight: 400,
+    maxHeight: 300,
     overflowY: 'auto'
   },
   chip: {
@@ -181,7 +214,8 @@ let AutoComplete = ({
         clearSelection,
         selectedItem,
         inputValue,
-        highlightedIndex
+        highlightedIndex,
+        setItemCount
       }) => (
         <div className={classes.container}>
           {renderInput({
@@ -210,9 +244,9 @@ let AutoComplete = ({
                   return null;
                 }
 
-                if (!inputValue) {
-                  return <MenuItem>You have to enter a search query</MenuItem>;
-                }
+                // if (!inputValue) {
+                //   return <MenuItem>You have to enter a search query</MenuItem>;
+                // }
 
                 return (
                   <AutocompleteResults
@@ -239,16 +273,37 @@ let AutoComplete = ({
                         return <MenuItem>No items match your search</MenuItem>;
                       }
 
-                      return data.map((item, index) =>
-                        renderSuggestion({
-                          item,
-                          index,
-                          itemToString,
-                          itemProps: getItemProps({ item }),
-                          highlightedIndex,
-                          selectedItem
-                        })
+                      setItemCount(data.length);
+
+                      return (
+                        <FixedSizeList
+                          height={min([300, data.length * 46])}
+                          width="100%"
+                          itemSize={46}
+                          itemCount={data.length}
+                          // scrollToItem={highlightedIndex || 0}
+                          itemData={{
+                            itemsArray: data,
+                            itemToString,
+                            getItemProps,
+                            highlightedIndex,
+                            selectedItem
+                          }}
+                        >
+                          {SuggestionRenderer}
+                        </FixedSizeList>
                       );
+
+                      // return data.map((item, index) =>
+                      //   renderSuggestion({
+                      //     item,
+                      //     index,
+                      //     itemToString,
+                      //     itemProps: getItemProps({ item }),
+                      //     highlightedIndex,
+                      //     selectedItem
+                      //   })
+                      // );
                     }}
                   </AutocompleteResults>
                 );
