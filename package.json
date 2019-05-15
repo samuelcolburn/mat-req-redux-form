@@ -12,8 +12,8 @@
     "date-fns": "^2.0.0-alpha.27",
     "downshift": "^3.2.10",
     "faker": "4.1.0",
-    "husky": "^2.2.0",
-    "lint-staged": "^8.1.6",
+    "husky": "^2.3.0",
+    "lint-staged": "^8.1.7",
     "lodash": "4.17.11",
     "material-ui-pickers": "^3.0.0-alpha.3",
     "memoize-one": "^5.0.4",
@@ -38,7 +38,7 @@
   },
   "devDependencies": {
     "eslint-config-prettier": "^4.2.0",
-    "eslint-plugin-prettier": "^3.0.1",
+    "eslint-plugin-prettier": "^3.1.0",
     "typescript": "^3.4.5"
   },
   "scripts": {
