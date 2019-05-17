@@ -26,8 +26,8 @@ const LineItems = ({ fields, meta: { error, form }, job, shopDrawing }) => {
   );
 
   return (
-    <React.Fragment>
-      <Grid item xs={12}>
+    <Grid item xs={12}>
+      <Grid container spacing={2}>
         {fields.map((name, index, fields) => (
           <LineItem
             lineItem={name}
@@ -39,14 +39,14 @@ const LineItems = ({ fields, meta: { error, form }, job, shopDrawing }) => {
             shopDrawing={shopDrawing}
           />
         ))}
-      </Grid>
 
-      <Grid item xs={12}>
-        <Button color="primary" onClick={e => addLineItem(e)}>
-          Add Line Item
-        </Button>
+        <Grid item xs={12}>
+          <Button color="primary" onClick={e => addLineItem(e)}>
+            Add Line Item
+          </Button>
+        </Grid>
       </Grid>
-    </React.Fragment>
+    </Grid>
   );
 };
 

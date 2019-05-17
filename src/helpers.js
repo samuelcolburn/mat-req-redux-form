@@ -1,5 +1,6 @@
 import compose from 'lodash/fp/compose';
 import uniqueId from 'lodash/fp/uniqueId';
+import { isBoolean, isString, isNumber, isNil } from 'lodash/fp';
 
 export const lineItemIdPrefix = () => 'lineItem_';
 
@@ -147,3 +148,24 @@ export const populate = func => (qty, ...funcArgs) => {
 
   return items;
 };
+
+const stringToBoolean = str => {
+  const truthyStrings = ['1', 'true', 'yes'];
+
+  const strLower = str.toLowerCase();
+
+  return truthyStrings.some(truthyString => truthyString === strLower);
+};
+
+const numToBoolean = num => num > 0;
+
+export const toBoolean = value =>
+  isNil(value)
+    ? false
+    : isBoolean(value)
+    ? value
+    : isString(value)
+    ? stringToBoolean(value)
+    : isNumber(value)
+    ? numToBoolean(value)
+    : false;

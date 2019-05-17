@@ -5,6 +5,7 @@ import { Field, FieldArray, reduxForm, formValueSelector } from 'redux-form';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
+import Divider from '@material-ui/core/Divider';
 import { makeStyles } from '@material-ui/styles';
 
 import DebouncedTextField from '../components/DebouncedTextField';
@@ -30,7 +31,10 @@ const shopDrawingToString = shopDrawing =>
 
 const useStyles = makeStyles(theme => ({
   root: {
-    padding: theme.spacing(4)
+    padding: theme.spacing(8, 4)
+  },
+  title: {
+    paddingLeft: theme.spacing(4)
   },
   header: {},
   lineItems: {}
@@ -61,7 +65,12 @@ let Form = props => {
 
   return (
     <form onSubmit={e => onSubmit(e)} className={classes.root}>
-      <Typography variant="h6" component="h5" gutterBottom>
+      <Typography
+        variant="h6"
+        component="h5"
+        gutterBottom
+        className={classes.title}
+      >
         <span>Rid: </span>
         <span>{rid}</span>
       </Typography>
@@ -150,7 +159,6 @@ let Form = props => {
             name="subject"
             label="Subject"
             component={DebouncedTextField}
-            fullWidth
             margin="dense"
             fullWidth
           />
@@ -161,6 +169,8 @@ let Form = props => {
         <LineItemsHeader form={form} />
 
         <LineItemsColumns />
+
+        <Divider variant="fullWidth" style={{ width: '100%' }} />
 
         <FieldArray
           name="lineItems"

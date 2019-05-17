@@ -1,6 +1,9 @@
 import useDebouncedCallback from 'use-debounce/lib/callback';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
+
+import { toString } from 'lodash/fp';
+import { toBoolean } from '../helpers';
 
 import TextField from '@material-ui/core/TextField';
 
@@ -29,6 +32,15 @@ const NumberFormatCustom = props => {
       decimalScale={2}
     />
   );
+};
+
+const shouldShrink = value => {
+  try {
+    const str = toString(value);
+    return toBoolean(str && str.length);
+  } catch (error) {
+    return true;
+  }
 };
 
 const NumberField = ({
@@ -97,6 +109,8 @@ const NumberField = ({
     if (e.target.value !== value) setValue(e.target.value);
   }
 
+  const memoShrink = useMemo(() => shouldShrink(value), [value]);
+
   return (
     <TextField
       {...input}
@@ -105,6 +119,9 @@ const NumberField = ({
       onChange={handleChange}
       error={error && dirty}
       helperText={error && dirty ? error : null}
+      InputLabelProps={{
+        shrink: memoShrink
+      }}
       InputProps={{
         inputComponent: NumberFormatCustom,
         ...InputProps

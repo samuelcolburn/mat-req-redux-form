@@ -5,6 +5,8 @@ import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 
+import { toBoolean } from '../helpers';
+
 const ErrorMessage = ({ error, dirty }) =>
   error && dirty ? <FormHelperText error>{error}</FormHelperText> : null;
 
@@ -40,7 +42,7 @@ const SelectField = ({
   ...custom
 }) => (
   <FormControl {...formControlProps} fullWidth>
-    <InputLabel shrink htmlFor={input.name}>
+    <InputLabel shrink={toBoolean(placeholder)} htmlFor={input.name}>
       {label}
     </InputLabel>
     <Select native={native} {...input} {...custom}>

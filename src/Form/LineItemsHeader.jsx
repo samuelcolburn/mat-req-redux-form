@@ -1,28 +1,22 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { formValueSelector } from 'redux-form';
-// import { getFormValues, formValueSelector } from 'redux-form';
-
-// import get from 'lodash/fp/get';
-// import uniqueId from 'lodash/fp/uniqueId';
-// import compose from 'lodash/fp/compose';
-// import getOr from 'lodash/fp/getOr';
 
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import Checkbox from '@material-ui/core/Checkbox';
-
-import { makeStyles } from '@material-ui/styles';
-
 import CheckIcon from '@material-ui/icons/Check';
 import BlockIcon from '@material-ui/icons/Block';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import DeleteIcon from '@material-ui/icons/Delete';
 
+import { makeStyles } from '@material-ui/styles';
+// import useMediaQueryWithTheme from '../components/useMediaQueryWithTheme';
+import Hidden from '@material-ui/core/Hidden';
+
 import { SELECTED_ALL, SELECTED_NONE, SELECTED_SOME } from '../constants';
-// import { selectAllSelector } from '../selectors';
 import {
   selectAll,
   deselectAll,
@@ -31,7 +25,13 @@ import {
   removeSelected
 } from '../actions';
 
-let SelectAllCheckBox = ({ checkboxState, selectAll, deselectAll, form }) => {
+let SelectAllCheckBox = ({
+  checkboxState,
+  selectAll,
+  deselectAll,
+  form,
+  classes
+}) => {
   function handleChange(e) {
     // If none are selected, select all, otherwise deselect all
     checkboxState === SELECTED_NONE
@@ -41,6 +41,7 @@ let SelectAllCheckBox = ({ checkboxState, selectAll, deselectAll, form }) => {
 
   return (
     <Checkbox
+      className={classes.selectAll}
       checked={checkboxState !== SELECTED_NONE}
       onChange={handleChange}
       value="selected-items"
@@ -81,12 +82,6 @@ SelectAllCheckBox = connect(
     deselectAll
   }
 )(SelectAllCheckBox);
-
-const useStyles = makeStyles(theme => ({
-  button: {
-    margin: theme.spacing(1)
-  }
-}));
 
 let HeaderActions = ({
   checkboxState,
@@ -146,35 +141,22 @@ let HeaderActions = ({
   );
 };
 
+const useStyles = makeStyles(theme => ({
+  root: {},
+  title: {
+    paddingLeft: theme.spacing(4)
+  },
+  selectAll: {
+    height: 36,
+    width: 30
+  },
+  button: {
+    margin: theme.spacing(1)
+  }
+}));
+
 HeaderActions = connect(
   getSelectAllState,
-  // (state, props) => ({
-  //   // checkboxState: selectAllSelector(state, props)
-  //   checkboxState:
-  // }),
-  // (state, props) => {
-  //   const { form } = props;
-  //   if (!form) return { checkboxState: SELECTED_NONE };
-
-  //   const formValues = getFormValues(props.form);
-  //   const lineItems = get(['lineItems'], formValues);
-  //   const selectedLineItems = state[props.form];
-  //   if (!lineItems) return { checkboxState: SELECTED_NONE };
-  //   if (!selectedLineItems) return { checkboxState: SELECTED_NONE };
-  //   if (!selectedLineItems.length) return { checkboxState: SELECTED_NONE };
-  //   const lineItemsLength = lineItems.length;
-  //   const selectedLength = selectedLineItems.length;
-
-  //   const checkboxState = !selectedLength
-  //     ? SELECTED_NONE
-  //     : selectedLength >= 0 && selectedLength < lineItemsLength
-  //     ? SELECTED_SOME
-  //     : selectedLength === lineItems.length
-  //     ? SELECTED_ALL
-  //     : SELECTED_NONE;
-
-  //   return { checkboxState };
-  // },
   {
     updateStatus,
     copySelected,
@@ -183,36 +165,21 @@ HeaderActions = connect(
 )(HeaderActions);
 
 let LineItemsHeader = ({ form }) => {
+  // const mdAndUp = useMediaQueryWithTheme(theme => theme.breakpoints.up('md'));
+  const classes = useStyles();
   return (
-    <Grid container alignItems="center">
-      <SelectAllCheckBox form={form} />
+    <Grid container alignItems="center" className={classes.root}>
+      <Hidden smDown>
+        <SelectAllCheckBox form={form} classes={classes} />
+      </Hidden>
 
-      <Typography variant="h6" component="h5">
+      <Typography variant="h6" component="h5" className={classes.title}>
         Line Items
       </Typography>
 
-      <HeaderActions form={form} />
+      <HeaderActions form={form} classes={classes} />
     </Grid>
   );
 };
-
-// const mapStateToProps = (state, props) => ({
-//   selectedLineItems: selectedLineItemsSelector(state),
-//   lineItems: lineItemsSelector(state)
-// });
-
-// const mapStateToProps = (state, props) => ({
-//   checkboxState: selectAllSelector(state)
-// });
-
-// const mapDispatchToProps = {
-//   selectAll,
-//   deselectAll
-// };
-
-// LineItemsHeader = connect(
-//   mapStateToProps,
-//   mapDispatchToProps
-// )(LineItemsHeader);
 
 export default LineItemsHeader;

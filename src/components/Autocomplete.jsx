@@ -4,7 +4,6 @@ import memoize from 'memoize-one';
 
 import Downshift from 'downshift';
 
-import TextField from '@material-ui/core/TextField';
 import IconButton from '@material-ui/core/IconButton';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Paper from '@material-ui/core/Paper';
@@ -26,6 +25,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import { FixedSizeList, areEqual } from 'react-window';
 
 import AutocompleteResults from './AutocompleteResults';
+
+import { toBoolean } from '../helpers';
 
 const ControllerButton = ({
   classes,
@@ -114,7 +115,7 @@ const useStyles = makeStyles(theme => ({
     margin: theme.spacing(0.5, 0.25)
   },
   inputRoot: {
-    flexWrap: 'wrap'
+    flexWrap: 'nowrap'
   },
   inputInput: {
     width: 'auto',
@@ -214,7 +215,16 @@ let AutoComplete = ({
         <div className={classes.container}>
           {
             <FormControl error={meta.error && meta.touched} fullWidth {...rest}>
-              <InputLabel shrink htmlFor={input.name} {...getLabelProps()}>
+              <InputLabel
+                {...getLabelProps({
+                  shrink: toBoolean(
+                    (placeholder && placeholder.length) ||
+                      (inputValue && inputValue.length)
+                  ),
+                  htmlFor: input.name,
+                  ...rest
+                })}
+              >
                 {label}
               </InputLabel>
               <Input
