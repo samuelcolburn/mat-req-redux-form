@@ -41,9 +41,9 @@ let SelectAllCheckBox = ({ checkboxState, selectAll, deselectAll, form }) => {
 
   return (
     <Checkbox
-      checked={checkboxState === SELECTED_ALL}
+      checked={checkboxState !== SELECTED_NONE}
       onChange={handleChange}
-      value="selected"
+      value="selected-items"
       color="primary"
       indeterminate={checkboxState === SELECTED_SOME}
     />
