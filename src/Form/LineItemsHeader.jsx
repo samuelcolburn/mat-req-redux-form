@@ -1,8 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { getFormValues, formValueSelector } from 'redux-form';
+import { formValueSelector } from 'redux-form';
+// import { getFormValues, formValueSelector } from 'redux-form';
 
-import get from 'lodash/fp/get';
+// import get from 'lodash/fp/get';
 // import uniqueId from 'lodash/fp/uniqueId';
 // import compose from 'lodash/fp/compose';
 // import getOr from 'lodash/fp/getOr';
@@ -21,7 +22,7 @@ import FileCopyIcon from '@material-ui/icons/FileCopy';
 import DeleteIcon from '@material-ui/icons/Delete';
 
 import { SELECTED_ALL, SELECTED_NONE, SELECTED_SOME } from '../constants';
-import { selectAllSelector } from '../selectors';
+// import { selectAllSelector } from '../selectors';
 import {
   selectAll,
   deselectAll,

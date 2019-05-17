@@ -1,7 +1,5 @@
 import faker from 'faker';
 
-import { populate } from '../helpers';
-
 const mockItemType = parentTypes => {
   const name = faker.commerce.department();
   const parentNames =

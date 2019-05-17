@@ -31,7 +31,7 @@ const alphabet = [
   'Z'
 ];
 
-const mockPhase = (job, shopDrawings) => {
+const mockPhase = (job, shopDrawing) => {
   const phaseLetter = faker.random.arrayElement(alphabet);
   const phaseNumber = faker.random.number({
     min: 1,
@@ -46,9 +46,6 @@ const mockPhase = (job, shopDrawings) => {
     })
   );
 
-  const shopDrawingIndex = random(0, shopDrawings.length - 1);
-  const sd = shopDrawings[shopDrawingIndex];
-
   return {
     id: faker.random.uuid(),
     number,
@@ -58,23 +55,29 @@ const mockPhase = (job, shopDrawings) => {
     job: {
       ...job
     },
-    relatedShopDrawing: sd.id,
+    relatedShopDrawing: shopDrawing.id,
     shopDrawing: {
-      ...sd
+      ...shopDrawing
     }
   };
 };
+
+const populatePhase = populate(mockPhase);
 
 const mockPhases = (
   jobs,
   shopDrawings,
   numPhasesOptions = { min: 5, max: 25 }
 ) =>
-  jobs.reduce((acc, curr) => {
+  jobs.reduce((acc, job) => {
     const numPhases = faker.random.number(numPhasesOptions);
-    const sds = shopDrawings.filter(sd => sd.relatedJob === curr.id);
+    const jobDrawings = shopDrawings.filter(sd => sd.relatedJob === job.id);
 
-    return [...acc, ...populate(mockPhase)(numPhases, curr, sds)];
+    const jobPhases = jobDrawings.reduce((sdPhases, sd) => {
+      return [...sdPhases, ...populatePhase(numPhases, job, sd)];
+    }, []);
+
+    return [...acc, ...jobPhases];
   }, []);
 
 export default mockPhases;

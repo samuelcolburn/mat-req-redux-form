@@ -22,7 +22,7 @@ const makeSampleData = () => {
     phases,
     itemTypes,
     inventoryItems,
-    { min: 2, max: 5 }
+    { min: 4, max: 10 }
   );
 
   const sampleData = {
@@ -35,7 +35,6 @@ const makeSampleData = () => {
     itemTypes,
     inventoryItems
   };
-
   console.log('sampleData: ', sampleData);
 
   return sampleData;

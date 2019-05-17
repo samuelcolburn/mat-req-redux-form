@@ -45,7 +45,7 @@ import {
   getLineItemsForReq
 } from './data/api';
 import orm from './orm';
-import { getSelectedLineItems } from './selectors';
+// import { getSelectedLineItems } from './selectors';
 
 export const createJob = props => {
   return {
@@ -638,7 +638,7 @@ export const removeSelected = ({ form }) => (dispatch, getState) => {
   console.log('arrayRemove: ', arrayRemove);
 
   // create an array of selected items
-  const selectedLineItems = lineItems.reduce((acc, lineItem, index) => {
+  const selectedLineItems = lineItems.reduceRight((acc, lineItem, index) => {
     if (!lineItem.selected) return acc;
 
     return [
@@ -659,21 +659,17 @@ export const removeSelected = ({ form }) => (dispatch, getState) => {
     dispatch(arrayRemoveAll(form, 'lineItems'));
     return;
   }
-  // else {
-  //   lineItems.forEach((lineItem, index) => {
-  //     if (lineItem.selected) {
-  //       dispatch(arrayRemove(form, 'lineItems', index));
-  //     }
-  //   });
-  // }
-  lineItems.forEach((lineItem, index, arr) => {
-    console.group('remove selected forEach: ');
-    console.log('lineItem: ', lineItem);
-    console.log('index: ', index);
-    console.log('lineItems: ', arr);
-    if (lineItem.selected) {
-      dispatch(arrayRemove(form, 'lineItems', index));
-    }
+
+  let temp = [...selectedLineItems];
+  selectedLineItems.forEach((lineItem, index, arr) => {
+    const itemToRemove = temp.find(li => li.id === lineItem.id);
+    const indexToRemove = itemToRemove.updatedIndex;
+    dispatch(arrayRemove(form, 'lineItems', indexToRemove));
+
+    temp = temp.map(li => ({
+      ...li,
+      updatedIndex:
+        li.updatedIndex > indexToRemove ? li.updatedIndex - 1 : li.updatedIndex
+    }));
   });
-  // selectedLineItems.
 };
