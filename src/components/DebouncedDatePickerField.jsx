@@ -2,6 +2,17 @@ import React, { useState, useEffect, useCallback } from 'react';
 import get from 'lodash/fp/get';
 import useDebouncedCallback from 'use-debounce/lib/callback';
 import { KeyboardDatePicker } from 'material-ui-pickers';
+import { makeStyles } from '@material-ui/styles';
+
+const useStyles = makeStyles(theme => ({
+  datePicker: {},
+  inputAdornment: {
+    '& button': {
+      padding: 3,
+      fontSize: '1.125rem'
+    }
+  }
+}));
 
 const DebouncedDatePickerField = ({
   input,
@@ -9,6 +20,7 @@ const DebouncedDatePickerField = ({
   dateFormat,
   ...custom
 }) => {
+  const classes = useStyles();
   const [value, setValue] = useState(get('', ['value'], input));
 
   const [debouncedFunction, cancel] = useDebouncedCallback(
@@ -43,7 +55,10 @@ const DebouncedDatePickerField = ({
       value={value}
       autoOk
       variant="inline"
-      InputAdornmentProps={{ position: 'end' }}
+      InputAdornmentProps={{
+        position: 'end',
+        className: classes.inputAdornment
+      }}
       disablePast
       onlyCalendar
       format={dateFormat}

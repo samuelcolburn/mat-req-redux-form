@@ -29,6 +29,9 @@ const shopDrawingToString = shopDrawing =>
   shopDrawing ? `SD.${shopDrawing.number} - ${shopDrawing.subject}` : '';
 
 const useStyles = makeStyles(theme => ({
+  root: {
+    padding: theme.spacing(4)
+  },
   header: {},
   lineItems: {}
 }));
@@ -57,7 +60,7 @@ let Form = props => {
   }
 
   return (
-    <form onSubmit={e => onSubmit(e)}>
+    <form onSubmit={e => onSubmit(e)} className={classes.root}>
       <Typography variant="h6" component="h5" gutterBottom>
         <span>Rid: </span>
         <span>{rid}</span>
@@ -72,6 +75,7 @@ let Form = props => {
             readOnly
             disabled
             margin="dense"
+            fullWidth
           />
         </Grid>
 
@@ -83,6 +87,7 @@ let Form = props => {
             dateFormat="MM/dd/yyyy"
             component={DebouncedDatePickerField}
             margin="dense"
+            fullWidth
           />
         </Grid>
 
@@ -94,6 +99,7 @@ let Form = props => {
             dateFormat="MM/dd/yyyy"
             component={DebouncedDatePickerField}
             margin="dense"
+            fullWidth
           />
         </Grid>
 
@@ -135,6 +141,7 @@ let Form = props => {
             label="TO #"
             component={DebouncedTextField}
             margin="dense"
+            fullWidth
           />
         </Grid>
 
@@ -145,6 +152,7 @@ let Form = props => {
             component={DebouncedTextField}
             fullWidth
             margin="dense"
+            fullWidth
           />
         </Grid>
       </Grid>
