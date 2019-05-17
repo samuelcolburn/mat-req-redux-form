@@ -21,7 +21,7 @@ const DebouncedDatePickerField = ({
 
   // When the component goes to be unmounted, we will fetch data if the input has changed.
   useEffect(() => {
-    console.log('datepicker value changed: ', value);
+    // console.log('datepicker value changed: ', value);
     debouncedFunction(value);
 
     return () => {
@@ -30,7 +30,7 @@ const DebouncedDatePickerField = ({
   }, [debouncedFunction, cancel, value]);
 
   useEffect(() => {
-    console.log('datepicker input changed: ', input.value);
+    // console.log('datepicker input changed: ', input.value);
     setValue(input.value);
   }, [input.value]);
 

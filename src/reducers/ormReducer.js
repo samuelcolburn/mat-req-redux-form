@@ -26,7 +26,7 @@ import {
   CREATE_INVENTORY_ITEM,
   UPDATE_INVENTORY_ITEM,
   REMOVE_INVENTORY_ITEM
-} from '../actionTypes';
+} from '../constants';
 
 function autocompleteOrmReducer(sess, action) {
   if (action.type !== AUTOCOMPLETE_FETCH_SUCCESS) return;

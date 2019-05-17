@@ -1,15 +1,13 @@
-import { get } from 'lodash/fp';
+import { get, cloneDeepWith } from 'lodash/fp';
 import debounce from 'lodash/debounce';
-
-import { stringify } from './helpers';
-
 import {
-  doQuery,
-  getData,
-  getRandomData,
-  getLineItemsForReq
-} from './data/api';
-
+  arrayPush,
+  arrayRemove,
+  arrayRemoveAll,
+  change,
+  formValueSelector
+  // getFormValues
+} from 'redux-form';
 import {
   AUTOCOMPLETE_FETCH_INIT,
   AUTOCOMPLETE_FETCH_ERROR,
@@ -33,11 +31,21 @@ import {
   CREATE_MANY_REQUISITION_LINE_ITEM,
   CREATE_REQUISITION_LINE_ITEM,
   UPDATE_REQUISITION_LINE_ITEM,
-  REMOVE_REQUISITION_LINE_ITEM,
-  SAVE_QUERY
-} from './actionTypes';
-
+  REMOVE_REQUISITION_LINE_ITEM
+  // SELECT_LINE_ITEM,
+  // DESELECT_LINE_ITEM,
+  // SELECT_LINE_ITEMS,
+  // DESELECT_LINE_ITEMS
+} from './constants';
+import { stringify, makeLineItemId } from './helpers';
+import {
+  doQuery,
+  getData,
+  getRandomData,
+  getLineItemsForReq
+} from './data/api';
 import orm from './orm';
+import { getSelectedLineItems } from './selectors';
 
 export const createJob = props => {
   return {
@@ -125,7 +133,7 @@ export const createManyRequisitionLineItem = props => {
 };
 
 export const createRequisitionLineItem = props => {
-  console.log('createRequisitionLineItem: ', props);
+  // console.log('createRequisitionLineItem: ', props);
   return {
     type: CREATE_REQUISITION_LINE_ITEM,
     payload: props
@@ -217,7 +225,7 @@ const reqRequisitionError = error => {
   };
 };
 const fetchRequisition = id => {
-  console.log('fetching Requisition: ', id);
+  // console.log('fetching Requisition: ', id);
   return (dispatch, getState) => {
     dispatch(reqRequisitionInit(id));
 
@@ -301,13 +309,6 @@ const autocompleteFetchError = props => {
   };
 };
 
-const saveQuery = props => {
-  return {
-    type: SAVE_QUERY,
-    payload: props
-  };
-};
-
 export const getQuery = ({ table, params }) => {
   return (dispatch, getState) => {
     const { autocomplete } = getState();
@@ -342,19 +343,19 @@ export const search = ({ table, params }) => (dispatch, getState) => {
   // if (!params.q.length) return Promise.resolve();
   // if (!params.q.trim().length) return Promise.resolve();
 
-  console.log('search action');
-  console.log('table: ', table);
-  console.log('params: ', params);
+  // console.log('search action');
+  // console.log('table: ', table);
+  // console.log('params: ', params);
   const { autocomplete } = getState();
-  console.log('autcomplete state: ', autocomplete);
+  // console.log('autcomplete state: ', autocomplete);
   const searchKey = stringify(params);
-  console.log('searchKey: ', searchKey);
+  // console.log('searchKey: ', searchKey);
 
   const cachedSearch = get([table, 'byId', searchKey], autocomplete);
-  console.log('cachedSearch: ', cachedSearch);
+  // console.log('cachedSearch: ', cachedSearch);
 
   if (cachedSearch) {
-    console.log('already searched this value, returning resolved promise: ');
+    // console.log('already searched this value, returning resolved promise: ');
     return Promise.resolve();
   }
 
@@ -393,16 +394,10 @@ const determineNewSubject = (previousValues, newShopDrawing) => {
   return prevSubject;
 };
 
-const logChange = (values, dispatch, props, previousValues, ...rest) => {
-  console.group('ONCHANGE ACTION');
-  console.log('values: ', values);
-  console.log('dispatch: ', dispatch);
-  console.log('props: ', props);
-  console.log('previousValues: ', previousValues);
-  rest.forEach((arg, i) => console.log(`arg ${i}: `, arg));
-  console.groupEnd();
-};
-
+/**
+ * @name handleJobChange
+ * @description when the Job is changed on the form, empty the ShopDrawing value
+ */
 const handleJobChange = (values, dispatch, props, previousValues) => {
   const getId = get(['job', 'id']);
   const prevId = getId(previousValues);
@@ -416,6 +411,12 @@ const handleJobChange = (values, dispatch, props, previousValues) => {
   }
 };
 
+/**
+ * @name handleShopDrawingChange
+ * @description when the ShopDrawing is changed on the form:
+ *  1. Update the subject if necessary
+ *  2. Clear all phase values on all line Items
+ */
 const handleShopDrawingChange = (values, dispatch, props, previousValues) => {
   const prevId = get(['shopDrawing', 'id'], previousValues);
   const shopDrawing = get('shopDrawing', values);
@@ -439,6 +440,10 @@ const handleShopDrawingChange = (values, dispatch, props, previousValues) => {
   }
 };
 
+/**
+ * @name handleItemTypeChange
+ * @description If the Item Type for a Line Item is changed, clear related inventory item
+ */
 const handleItemTypeChange = (values, dispatch, props, previousValues) => (
   lineItem,
   index
@@ -454,6 +459,10 @@ const handleItemTypeChange = (values, dispatch, props, previousValues) => (
   }
 };
 
+/**
+ * @name handleLineItemItemTypeChange
+ * @description Handle item type changes for all line items if lineItems has changed
+ */
 const handleLineItemItemTypeChange = (
   values,
   dispatch,
@@ -469,16 +478,202 @@ const handleLineItemItemTypeChange = (
 };
 
 export const onChange = (values, dispatch, props, previousValues) => {
-  // console.log('CHANGE HANDLER');
-  // console.log('get: ', get);
-  // logChange(values, dispatch, props, previousValues);
-
+  // Ignore change handlers if the form is still pristine
   if (props.pristine) {
-    // console.log("pristine values, do nothing");
     return;
   }
 
   handleJobChange(values, dispatch, props, previousValues);
   handleShopDrawingChange(values, dispatch, props, previousValues);
   handleLineItemItemTypeChange(values, dispatch, props, previousValues);
+};
+
+// ** select as separate piece of state **
+
+// const selectLineItem = props => ({
+//   type: SELECT_LINE_ITEM,
+//   payload: props
+// });
+
+// const deselectLineItem = props => ({
+//   type: DESELECT_LINE_ITEM,
+//   payload: props
+// });
+
+// const deselectLineItems = props => ({
+//   type: DESELECT_LINE_ITEMS,
+//   payload: props
+// });
+
+// const selectLineItems = props => ({
+//   type: SELECT_LINE_ITEMS,
+//   payload: props
+// });
+
+// export const selectItem = ({ form, id }) => (dispatch, getState) => {
+//   dispatch(selectLineItem({ form, id }));
+// };
+
+// export const deselectItem = ({ form, id }) => (dispatch, getState) => {
+//   dispatch(deselectLineItem({ form, id }));
+// };
+
+// export const selectAll = ({ form }) => (dispatch, getState) => {
+//   console.log('selectAll');
+//   console.log('dispatch: ', dispatch);
+//   console.log('getstate: ', getState);
+//   console.log('form: ', form);
+//   // const lineItems = formValueSelector(getState(), form);
+//   const formValues = getFormValues(form)(getState());
+//   const lineItems = get(['lineItems'], formValues);
+
+//   console.log('lineItems: ', lineItems);
+
+//   dispatch(selectLineItems({ form, lineItems }));
+// };
+
+// export const deselectAll = ({ form }) => (dispatch, getState) => {
+//   console.log('deselectAll');
+//   console.log('dispatch: ', dispatch);
+//   console.log('getstate: ', getState);
+//   console.log('form: ', form);
+
+//   dispatch(deselectLineItems({ form }));
+// };
+
+const selector = (form, ...other) => formValueSelector(form)(...other);
+
+export const selectAll = ({ form }) => (dispatch, getState) => {
+  console.log('selectAll');
+  console.log('dispatch: ', dispatch);
+  console.log('getstate: ', getState);
+  console.log('form: ', form);
+  // const lineItems = formValueSelector(getState(), form);
+  // const formValues = getFormValues(form)(getState());
+  // const lineItems = get(['lineItems'], formValues);
+
+  const lineItems = selector(form, getState(), 'lineItems');
+
+  console.log('lineItems: ', lineItems);
+  lineItems.forEach((lineItem, index) => {
+    dispatch(change(form, `lineItems.${index}.selected`, true, false));
+  });
+};
+
+export const deselectAll = ({ form }) => (dispatch, getState) => {
+  console.log('deselectAll');
+  console.log('dispatch: ', dispatch);
+  console.log('getstate: ', getState);
+  console.log('form: ', form);
+
+  const lineItems = selector(form, getState(), 'lineItems');
+
+  console.log('lineItems: ', lineItems);
+  lineItems.forEach((lineItem, index) => {
+    dispatch(change(form, `lineItems.${index}.selected`, false, false));
+  });
+};
+
+export const updateStatus = ({ form, status }) => (dispatch, getState) => {
+  console.log('updateStatus');
+  console.log('props: ', status);
+
+  const lineItems = selector(form, getState(), 'lineItems');
+
+  console.log('lineItems: ', lineItems);
+  console.log('dispatch: ', dispatch);
+  console.log('change: ', change);
+
+  lineItems.forEach((lineItem, index) => {
+    if (lineItem.selected) {
+      dispatch(change(form, `lineItems.${index}.status`, status));
+    }
+  });
+};
+
+// const lineItemIdPrefix = () => 'lineItem_';
+// const makeLineItemCopy = lineItem => ({
+//   ...lineItem,
+//   id: uniqueId(lineItemIdPrefix()),
+//   selected: false
+// });
+
+const copyLineItem = cloneDeepWith((val, key, obj, stack) => {
+  switch (key) {
+    case 'id':
+      return makeLineItemId();
+
+    case 'selected':
+      return false;
+
+    default:
+      break;
+  }
+});
+
+export const copySelected = ({ form }) => (dispatch, getState) => {
+  console.log('copySelected');
+  console.log('form: ', form);
+
+  const lineItems = selector(form, getState(), 'lineItems');
+
+  console.log('lineItems: ', lineItems);
+  console.log('arrayPush: ', arrayPush);
+
+  lineItems.forEach((lineItem, index) => {
+    if (lineItem.selected) {
+      console.log('copyLineItem: ', copyLineItem);
+      const copiedItem = copyLineItem(lineItem);
+      dispatch(arrayPush(form, 'lineItems', copiedItem));
+    }
+  });
+};
+export const removeSelected = ({ form }) => (dispatch, getState) => {
+  console.log('removeSelected');
+  console.log('form: ', form);
+
+  // get the current lineItems on the form
+  const lineItems = selector(form, getState(), 'lineItems');
+  console.log('lineItems: ', lineItems);
+  console.log('arrayRemove: ', arrayRemove);
+
+  // create an array of selected items
+  const selectedLineItems = lineItems.reduce((acc, lineItem, index) => {
+    if (!lineItem.selected) return acc;
+
+    return [
+      ...acc,
+      {
+        id: lineItem.id,
+        originalIndex: index,
+        updatedIndex: index
+      }
+    ];
+  }, []);
+
+  console.log('selectedLineItems: ', selectedLineItems);
+
+  if (lineItems.length === selectedLineItems.length) {
+    // if their lengths are equal, we can use the arrayRemoveAll
+    // action creator instead.
+    dispatch(arrayRemoveAll(form, 'lineItems'));
+    return;
+  }
+  // else {
+  //   lineItems.forEach((lineItem, index) => {
+  //     if (lineItem.selected) {
+  //       dispatch(arrayRemove(form, 'lineItems', index));
+  //     }
+  //   });
+  // }
+  lineItems.forEach((lineItem, index, arr) => {
+    console.group('remove selected forEach: ');
+    console.log('lineItem: ', lineItem);
+    console.log('index: ', index);
+    console.log('lineItems: ', arr);
+    if (lineItem.selected) {
+      dispatch(arrayRemove(form, 'lineItems', index));
+    }
+  });
+  // selectedLineItems.
 };

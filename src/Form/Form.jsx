@@ -1,4 +1,5 @@
 import React from 'react';
+import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { Field, FieldArray, reduxForm, formValueSelector } from 'redux-form';
 import Button from '@material-ui/core/Button';
@@ -11,12 +12,13 @@ import Autocomplete from '../components/Autocomplete';
 import DebouncedDatePickerField from '../components/DebouncedDatePickerField';
 
 import LineItemsHeader from './LineItemsHeader';
-import LineItemColumns from './LineItemColumns';
+import LineItemsColumns from './LineItemsColumns';
+// import LineItems from './LineItems';
 import LineItems from './LineItems';
 
 import { validate } from '../validate';
 
-import { requisitionSelector } from '../selectors';
+import { getSelectedRequisitionId, getSelectedRequisition } from '../selectors';
 
 import { onChange } from '../actions';
 
@@ -27,11 +29,12 @@ const shopDrawingToString = shopDrawing =>
 
 let Form = props => {
   const {
+    rid,
+    form,
     handleSubmit,
     pristine,
     reset,
     submitting,
-    rid,
     job,
     shopDrawing
   } = props;
@@ -110,9 +113,9 @@ let Form = props => {
       </section>
 
       <Grid container>
-        <LineItemsHeader />
+        <LineItemsHeader form={form} />
 
-        <LineItemColumns />
+        <LineItemsColumns />
 
         <FieldArray
           name="lineItems"
@@ -121,6 +124,12 @@ let Form = props => {
           shopDrawing={shopDrawing}
         />
       </Grid>
+      {/* <FieldArray
+        name="lineItems"
+        component={LineItems}
+        job={job}
+        shopDrawing={shopDrawing}
+      /> */}
 
       <section className="actions">
         <Button
@@ -144,25 +153,42 @@ let Form = props => {
     </form>
   );
 };
-const FORM_NAME = 'RequisitionForm';
 
-const selector = formValueSelector(FORM_NAME);
+// Form = reduxForm({
+//   validate,
+//   // enableReinitialize: true,
+//   // immutableProps: [
+//   //   'rid',
+//   //   'number',
+//   //   'subject',
+//   //   'createdBy',
+//   //   'dateCreated',
+//   //   'dateNeeded'
+//   // ],
+//   // asyncBlurFields: ["createdBy", "dateCreated"]
+//   onChange
+// })(Form);
 
-Form = reduxForm({
-  form: FORM_NAME, // a unique identifier for this form
-  validate,
-  enableReinitialize: true,
-  immutableProps: ['rid', 'number', 'subject'],
-  onChange
-  // asyncBlurFields: ["createdBy", "dateCreated"]
-})(Form);
+// const selector = (form, ...other) => formValueSelector(form)(...other);
+const selector = formValueSelector('RequisitionForm');
 
-const mapStateToProps = (state, props) => ({
-  initialValues: requisitionSelector(state, props),
-  job: selector(state, 'job'),
-  shopDrawing: selector(state, 'shopDrawing')
-});
+const mapStateToProps = (state, props) => {
+  return {
+    rid: getSelectedRequisitionId(state),
+    initialValues: getSelectedRequisition(state),
+    job: selector(state, 'job'),
+    shopDrawing: selector(state, 'shopDrawing')
+  };
+};
 
-Form = connect(mapStateToProps)(Form);
+// Form = connect(mapStateToProps)(Form);
 
-export default Form;
+export default compose(
+  connect(mapStateToProps),
+  reduxForm({
+    validate,
+    onChange,
+    form: 'RequisitionForm',
+    enableReinitialize: true
+  })
+)(Form);

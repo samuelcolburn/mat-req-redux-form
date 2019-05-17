@@ -1,9 +1,17 @@
 import compose from 'lodash/fp/compose';
+import uniqueId from 'lodash/fp/uniqueId';
+
+export const lineItemIdPrefix = () => 'lineItem_';
+
+export const makeLineItemId = compose(
+  uniqueId,
+  lineItemIdPrefix
+);
 
 export const makeLineItem = id => ({
   id,
   selected: false,
-  status: 'Needs Review',
+  status: 'needsReview',
   phase: '',
   vendor: '',
   type: '',
@@ -16,6 +24,11 @@ export const makeLineItem = id => ({
   estimatedCost: '',
   currentCost: ''
 });
+
+export const makeLineItemWithId = compose(
+  makeLineItem,
+  makeLineItemId
+);
 
 /**
  * Functional Object.values

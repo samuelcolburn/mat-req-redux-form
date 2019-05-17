@@ -2,7 +2,7 @@ import {
   REQ_REQUISITION,
   REQ_REQUISITION_ERROR,
   REQ_REQUISITION_SUCCESS
-} from '../actionTypes';
+} from '../constants';
 
 export default function loadingReducer(state = false, action) {
   switch (action.type) {

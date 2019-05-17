@@ -1,45 +1,44 @@
 import React from 'react';
-import uniqueId from 'lodash/fp/uniqueId';
+// import uniqueId from 'lodash/fp/uniqueId';
 import compose from 'lodash/fp/compose';
-import getOr from 'lodash/fp/getOr';
+// import getOr from 'lodash/fp/getOr';
 
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 
+// import LineItemsHeader from './LineItemsHeader';
+// import LineItemsColumns from './LineItemsColumns';
 import LineItem from './LineItem';
-import { makeLineItem } from '../helpers';
+import { makeLineItemWithId } from '../helpers';
 
-const phaseToString = phase => getOr('', 'phase', phase);
-const vendorToString = vendor => getOr('', 'name', vendor);
-const itemTypeToString = itemType => getOr('', 'fullName', itemType);
-const inventoryItemToString = inventoryItem =>
-  inventoryItem ? `${inventoryItem.name}` : '';
+// const useStyles = makeStyles(theme => ({
+//   root: {
+//     marginTop: theme.spacing(12)
+//   }
+// }));
 
-const LineItems = ({ fields, meta: { error }, job, shopDrawing }) => {
-  // const classes = useStyles()
-
-  const lineItemIdPrefix = () => 'lineItem_';
+const LineItems = ({ fields, meta: { error, form }, job, shopDrawing }) => {
+  // const classes = useStyles();
 
   const addLineItem = compose(
     fields.push,
-    makeLineItem,
-    uniqueId,
-    lineItemIdPrefix
+    makeLineItemWithId
   );
 
   return (
     <React.Fragment>
       <Grid item xs={12}>
-        {fields.map(
-          LineItem(
-            job,
-            shopDrawing,
-            phaseToString,
-            vendorToString,
-            itemTypeToString,
-            inventoryItemToString
-          )
-        )}
+        {fields.map((name, index, fields) => (
+          <LineItem
+            lineItem={name}
+            form={form}
+            fields={fields}
+            index={index}
+            key={fields.get(index).id}
+            job={job}
+            shopDrawing={shopDrawing}
+          />
+        ))}
       </Grid>
 
       <Grid item xs={12}>

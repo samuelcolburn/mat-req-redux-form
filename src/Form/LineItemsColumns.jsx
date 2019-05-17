@@ -1,7 +1,7 @@
 import React from 'react';
 import Grid from '@material-ui/core/Grid';
 
-const LineItemColumns = () => (
+const LineItemsColumns = () => (
   <Grid container>
     <Grid item xs={12} md={3} lg={3}>
       <Grid container>
@@ -58,4 +58,4 @@ const LineItemColumns = () => (
   </Grid>
 );
 
-export default LineItemColumns;
+export default LineItemsColumns;

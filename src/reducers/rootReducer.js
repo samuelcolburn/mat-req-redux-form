@@ -1,14 +1,15 @@
 import { combineReducers } from 'redux';
 
-import { SELECT_REQUISITION } from '../actionTypes';
+import { SELECT_REQUISITION } from '../constants';
 
 import { reducer as formReducer } from 'redux-form';
 import ormReducer from './ormReducer';
 import autocompleteReducer from './autocompleteReducer';
 import errorReducer from './errorReducer';
 import loadingReducer from './loadingReducer';
+// import selectedLineItemsReducer from './selectedLineItemsReducer';
 
-function selectedRequisitionReducer(state = 0, action) {
+function selectedRequisitionReducer(state = 'new_req_form', action) {
   const { type, payload } = action;
 
   switch (type) {
@@ -26,6 +27,7 @@ const rootReducer = combineReducers({
   loading: loadingReducer,
   error: errorReducer,
   autocomplete: autocompleteReducer
+  // selectedLineItems: selectedLineItemsReducer
 });
 
 export default rootReducer;

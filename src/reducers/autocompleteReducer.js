@@ -4,7 +4,7 @@ import {
   AUTOCOMPLETE_FETCH_INIT,
   AUTOCOMPLETE_FETCH_ERROR,
   AUTOCOMPLETE_FETCH_SUCCESS
-} from '../actionTypes';
+} from '../constants';
 
 import createReducer from './createReducer';
 

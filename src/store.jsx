@@ -1,8 +1,13 @@
-import { createStore, applyMiddleware } from "redux";
-import thunk from "redux-thunk";
-import { composeWithDevTools } from "redux-devtools-extension";
+import { createStore, applyMiddleware } from 'redux';
+import thunk from 'redux-thunk';
+import { composeWithDevTools } from 'redux-devtools-extension';
 
-import rootReducer from "./reducers";
+import rootReducer from './reducers';
+
+const composedEnhancer = composeWithDevTools({
+  trace: true,
+  maxAge: 100
+});
 
 export default function configureStore(preloadedState) {
   const middlewares = [thunk];
@@ -10,9 +15,11 @@ export default function configureStore(preloadedState) {
 
   const storeEnhancers = [middlewareEnhancer];
 
-  const composedEnhancer = composeWithDevTools(...storeEnhancers);
-
-  const store = createStore(rootReducer, preloadedState, composedEnhancer);
+  const store = createStore(
+    rootReducer,
+    preloadedState,
+    composedEnhancer(...storeEnhancers)
+  );
 
   return store;
 }
