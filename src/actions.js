@@ -544,45 +544,45 @@ export const onChange = (values, dispatch, props, previousValues) => {
 const selector = (form, ...other) => formValueSelector(form)(...other);
 
 export const selectAll = ({ form }) => (dispatch, getState) => {
-  console.log('selectAll');
-  console.log('dispatch: ', dispatch);
-  console.log('getstate: ', getState);
-  console.log('form: ', form);
+  // console.log('selectAll');
+  // console.log('dispatch: ', dispatch);
+  // console.log('getstate: ', getState);
+  // console.log('form: ', form);
   // const lineItems = formValueSelector(getState(), form);
   // const formValues = getFormValues(form)(getState());
   // const lineItems = get(['lineItems'], formValues);
 
   const lineItems = selector(form, getState(), 'lineItems');
 
-  console.log('lineItems: ', lineItems);
+  // console.log('lineItems: ', lineItems);
   lineItems.forEach((lineItem, index) => {
     dispatch(change(form, `lineItems.${index}.selected`, true, false));
   });
 };
 
 export const deselectAll = ({ form }) => (dispatch, getState) => {
-  console.log('deselectAll');
-  console.log('dispatch: ', dispatch);
-  console.log('getstate: ', getState);
-  console.log('form: ', form);
+  // console.log('deselectAll');
+  // console.log('dispatch: ', dispatch);
+  // console.log('getstate: ', getState);
+  // console.log('form: ', form);
 
   const lineItems = selector(form, getState(), 'lineItems');
 
-  console.log('lineItems: ', lineItems);
+  // console.log('lineItems: ', lineItems);
   lineItems.forEach((lineItem, index) => {
     dispatch(change(form, `lineItems.${index}.selected`, false, false));
   });
 };
 
 export const updateStatus = ({ form, status }) => (dispatch, getState) => {
-  console.log('updateStatus');
-  console.log('props: ', status);
+  // console.log('updateStatus');
+  // console.log('props: ', status);
 
   const lineItems = selector(form, getState(), 'lineItems');
 
-  console.log('lineItems: ', lineItems);
-  console.log('dispatch: ', dispatch);
-  console.log('change: ', change);
+  // console.log('lineItems: ', lineItems);
+  // console.log('dispatch: ', dispatch);
+  // console.log('change: ', change);
 
   lineItems.forEach((lineItem, index) => {
     if (lineItem.selected) {
@@ -612,30 +612,30 @@ const copyLineItem = cloneDeepWith((val, key, obj, stack) => {
 });
 
 export const copySelected = ({ form }) => (dispatch, getState) => {
-  console.log('copySelected');
-  console.log('form: ', form);
+  // console.log('copySelected');
+  // console.log('form: ', form);
 
   const lineItems = selector(form, getState(), 'lineItems');
 
-  console.log('lineItems: ', lineItems);
-  console.log('arrayPush: ', arrayPush);
+  // console.log('lineItems: ', lineItems);
+  // console.log('arrayPush: ', arrayPush);
 
   lineItems.forEach((lineItem, index) => {
     if (lineItem.selected) {
-      console.log('copyLineItem: ', copyLineItem);
+      // console.log('copyLineItem: ', copyLineItem);
       const copiedItem = copyLineItem(lineItem);
       dispatch(arrayPush(form, 'lineItems', copiedItem));
     }
   });
 };
 export const removeSelected = ({ form }) => (dispatch, getState) => {
-  console.log('removeSelected');
-  console.log('form: ', form);
+  // console.log('removeSelected');
+  // console.log('form: ', form);
 
   // get the current lineItems on the form
   const lineItems = selector(form, getState(), 'lineItems');
-  console.log('lineItems: ', lineItems);
-  console.log('arrayRemove: ', arrayRemove);
+  // console.log('lineItems: ', lineItems);
+  // console.log('arrayRemove: ', arrayRemove);
 
   // create an array of selected items
   const selectedLineItems = lineItems.reduceRight((acc, lineItem, index) => {
@@ -651,7 +651,7 @@ export const removeSelected = ({ form }) => (dispatch, getState) => {
     ];
   }, []);
 
-  console.log('selectedLineItems: ', selectedLineItems);
+  // console.log('selectedLineItems: ', selectedLineItems);
 
   if (lineItems.length === selectedLineItems.length) {
     // if their lengths are equal, we can use the arrayRemoveAll

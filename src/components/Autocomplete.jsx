@@ -12,6 +12,12 @@ import MenuItem from '@material-ui/core/MenuItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 
+import FormControl from '@material-ui/core/FormControl';
+// import InputBase from '@material-ui/core/InputBase';
+import Input from '@material-ui/core/Input';
+import InputLabel from '@material-ui/core/InputLabel';
+import FormHelperText from '@material-ui/core/FormHelperText';
+
 import CloseIcon from '@material-ui/icons/Close';
 import ArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import ErrorIcon from '@material-ui/icons/Error';
@@ -49,34 +55,6 @@ const ControllerButton = ({
     )}
   </InputAdornment>
 );
-
-function renderInput(inputProps) {
-  const {
-    error,
-    touched,
-    InputProps,
-    endAdornment,
-    classes,
-    ref,
-    ...other
-  } = inputProps;
-
-  return (
-    <TextField
-      helperText={error && touched ? error : null}
-      InputProps={{
-        inputRef: ref,
-        classes: {
-          root: classes.inputRoot,
-          input: classes.inputInput
-        },
-        ...InputProps,
-        endAdornment
-      }}
-      {...other}
-    />
-  );
-}
 
 const SuggestionRenderer = React.memo(({ index, style, data }) => {
   const {
@@ -176,14 +154,30 @@ let AutoComplete = ({
     }
   };
 
+  const handleFocus = event => {
+    console.log('handleFocus: ', input.name);
+    input.onFocus(input.value);
+  };
+
+  const handleBlur = event => {
+    console.log('handleBlur', input.name);
+    input.onBlur(input.value);
+  };
+
   const listRef = useRef(null);
 
   const onStateChange = (changes, stateAndHelpers) => {
+    console.log('Downshift: onStateChange: ', changes, stateAndHelpers);
     if (
       changes.hasOwnProperty('highlightedIndex') &&
       listRef.current !== null
     ) {
       listRef.current.scrollToItem(changes.highlightedIndex);
+    }
+
+    if (changes.type === Downshift.stateChangeTypes.blurInput) {
+      console.log('Downshift: blurred input: ', changes);
+      input.onBlur(input.value);
     }
   };
 
@@ -203,9 +197,10 @@ let AutoComplete = ({
     >
       {({
         getInputProps,
-        getButtonProps,
         getItemProps,
         getMenuProps,
+        getLabelProps,
+        getToggleButtonProps,
 
         isOpen,
         toggleMenu,
@@ -217,25 +212,41 @@ let AutoComplete = ({
         setItemCount
       }) => (
         <div className={classes.container}>
-          {renderInput({
-            fullWidth: true,
-            classes,
-            error: meta.error,
-            touched: meta.touched,
-            endAdornment: (
-              <ControllerButton
-                classes={classes}
-                clearSelection={clearSelection}
-                toggleMenu={toggleMenu}
-                selectedItem={selectedItem}
+          {
+            <FormControl error={meta.error && meta.touched} fullWidth {...rest}>
+              <InputLabel shrink htmlFor={input.name} {...getLabelProps()}>
+                {label}
+              </InputLabel>
+              <Input
+                {...getInputProps({
+                  error: meta.error && meta.touched,
+                  classes: {
+                    root: classes.inputRoot,
+                    input: classes.inputInput
+                  },
+                  onBlur: handleBlur,
+                  onFocus: handleFocus,
+                  endAdornment: (
+                    <ControllerButton
+                      classes={classes}
+                      clearSelection={clearSelection}
+                      toggleMenu={toggleMenu}
+                      selectedItem={selectedItem}
+                      {...getToggleButtonProps()}
+                    />
+                  ),
+                  inputProps: {
+                    name: input.name,
+                    placeholder,
+                    onKeyDown: handleKeyDown
+                  }
+                })}
               />
-            ),
-
-            InputProps: getInputProps({
-              placeholder,
-              onKeyDown: handleKeyDown
-            })
-          })}
+              {meta.error && meta.touched ? (
+                <FormHelperText>{meta.error}</FormHelperText>
+              ) : null}
+            </FormControl>
+          }
           {isOpen ? (
             <Paper className={classes.paper} square>
               {(() => {

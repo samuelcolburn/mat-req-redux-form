@@ -5,6 +5,7 @@ import { Field, FieldArray, reduxForm, formValueSelector } from 'redux-form';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
+import { makeStyles } from '@material-ui/styles';
 
 import DebouncedTextField from '../components/DebouncedTextField';
 import TextField from '../components/TextField';
@@ -27,6 +28,12 @@ const jobToString = job => (job ? `${job.number} - ${job.name}` : '');
 const shopDrawingToString = shopDrawing =>
   shopDrawing ? `SD.${shopDrawing.number} - ${shopDrawing.subject}` : '';
 
+const useStyles = makeStyles(theme => ({
+  header: {},
+  lineItems: {}
+}));
+//       <Grid container className={classes.header} component="section">
+
 let Form = props => {
   const {
     rid,
@@ -38,6 +45,8 @@ let Form = props => {
     job,
     shopDrawing
   } = props;
+
+  const classes = useStyles();
 
   function onSubmit(e) {
     e.persist();
@@ -54,65 +63,93 @@ let Form = props => {
         <span>{rid}</span>
       </Typography>
 
-      <section className="header">
-        <Field
-          name="createdBy"
-          label="Created By"
-          component={TextField}
-          readOnly
-          disabled
-        />
+      <Grid container className={classes.header} spacing={4}>
+        <Grid item xs={6} md={4}>
+          <Field
+            name="createdBy"
+            label="Created By"
+            component={TextField}
+            readOnly
+            disabled
+            margin="dense"
+          />
+        </Grid>
 
-        <Field
-          name="dateCreated"
-          label="Date Created"
-          placeholder="Date Created"
-          dateFormat="MM/dd/yyyy"
-          component={DebouncedDatePickerField}
-        />
+        <Grid item xs={6} md={4}>
+          <Field
+            name="dateCreated"
+            label="Date Created"
+            placeholder="Date Created"
+            dateFormat="MM/dd/yyyy"
+            component={DebouncedDatePickerField}
+            margin="dense"
+          />
+        </Grid>
 
-        <Field
-          name="dateNeeded"
-          label="Date Needed"
-          placeholder="Date Needed"
-          dateFormat="MM/dd/yyyy"
-          component={DebouncedDatePickerField}
-        />
+        <Grid item xs={12} md={4}>
+          <Field
+            name="dateNeeded"
+            label="Date Needed"
+            placeholder="Date Needed"
+            dateFormat="MM/dd/yyyy"
+            component={DebouncedDatePickerField}
+            margin="dense"
+          />
+        </Grid>
 
-        <Field
-          name="job"
-          label="Job"
-          placeholder="Search for a Job..."
-          table="jobs"
-          itemToString={jobToString}
-          component={Autocomplete}
-        />
-        <Field
-          name="shopDrawing"
-          label="Shop Drawing"
-          placeholder="Search for a Shop Drawing..."
-          table="shopDrawings"
-          params={{
-            related: [
-              {
-                key: 'relatedJob',
-                value: job && job.id ? job.id : 0
-              }
-            ]
-          }}
-          itemToString={shopDrawingToString}
-          component={Autocomplete}
-        />
-        <Field name="number" label="TO #" component={DebouncedTextField} />
-        <Field
-          name="subject"
-          label="Subject"
-          component={DebouncedTextField}
-          fullWidth
-        />
-      </section>
+        <Grid item xs={12} sm={12} md={6} lg={4}>
+          <Field
+            name="job"
+            label="Job"
+            placeholder="Search for a Job..."
+            table="jobs"
+            itemToString={jobToString}
+            component={Autocomplete}
+            margin="dense"
+          />
+        </Grid>
 
-      <Grid container>
+        <Grid item xs={12} sm={12} md={6} lg={8}>
+          <Field
+            name="shopDrawing"
+            label="Shop Drawing"
+            placeholder="Search for a Shop Drawing..."
+            table="shopDrawings"
+            params={{
+              related: [
+                {
+                  key: 'relatedJob',
+                  value: job && job.id ? job.id : 0
+                }
+              ]
+            }}
+            itemToString={shopDrawingToString}
+            component={Autocomplete}
+            margin="dense"
+          />
+        </Grid>
+
+        <Grid item xs={2} md={1}>
+          <Field
+            name="number"
+            label="TO #"
+            component={DebouncedTextField}
+            margin="dense"
+          />
+        </Grid>
+
+        <Grid item xs={10} md={11}>
+          <Field
+            name="subject"
+            label="Subject"
+            component={DebouncedTextField}
+            fullWidth
+            margin="dense"
+          />
+        </Grid>
+      </Grid>
+
+      <Grid container className={classes.lineItems} component="section">
         <LineItemsHeader form={form} />
 
         <LineItemsColumns />
@@ -124,6 +161,7 @@ let Form = props => {
           shopDrawing={shopDrawing}
         />
       </Grid>
+
       {/* <FieldArray
         name="lineItems"
         component={LineItems}

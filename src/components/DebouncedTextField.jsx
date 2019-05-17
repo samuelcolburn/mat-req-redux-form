@@ -9,9 +9,9 @@ const DebouncedTextField = ({ input, meta: { error, dirty }, ...custom }) => {
 
   const [debouncedFunction, cancel] = useDebouncedCallback(
     useCallback(() => {
-      console.group('DebouncedTextField useCallback: ');
-      console.log('local value: ', value);
-      console.groupEnd();
+      // console.group('DebouncedTextField useCallback: ');
+      // console.log('local value: ', value);
+      // console.groupEnd();
       const onChange = input.onChange;
 
       onChange(value);

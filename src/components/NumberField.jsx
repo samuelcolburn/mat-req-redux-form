@@ -41,11 +41,11 @@ const NumberField = ({
 
   const [debouncedFunction, cancel] = useDebouncedCallback(
     useCallback(() => {
-      console.group('NumberField useCallback: useDebouncedCallback');
-      console.log('Deps: [input.onChange, value]');
-      console.log('input.onChange: ', input.onChange);
-      console.log('value: ', value);
-      console.groupEnd();
+      // console.group('NumberField useCallback: useDebouncedCallback');
+      // console.log('Deps: [input.onChange, value]');
+      // console.log('input.onChange: ', input.onChange);
+      // console.log('value: ', value);
+      // console.groupEnd();
 
       const onChange = input.onChange;
       onChange(value);
@@ -54,19 +54,21 @@ const NumberField = ({
   );
 
   useEffect(() => {
-    console.group('NumberField useEffect: Debounce value change');
-    console.log('Deps: [debouncedFunction, cancel, value]');
-    // console.log('debouncedFunction: ', debouncedFunction);
-    // console.log('cancel: ', cancel);
-    console.log('value: ', value);
-    console.groupEnd();
+    // console.group('NumberField useEffect: Debounce value change');
+    // console.log('Deps: [debouncedFunction, cancel, value]');
+    // // console.log('debouncedFunction: ', debouncedFunction);
+    // // console.log('cancel: ', cancel);
+    // console.log('value: ', value);
+    // console.groupEnd();
 
-    debouncedFunction(value);
+    if (input.value !== value) {
+      debouncedFunction(value);
+    }
 
     return () => {
       cancel();
     };
-  }, [debouncedFunction, cancel, value]);
+  }, [debouncedFunction, cancel, input.value, value]);
 
   // Update value when changes are passed down from redux-form
   // Normally we wouldn't need this, since we init with the input.value,
@@ -84,12 +86,12 @@ const NumberField = ({
 
   // Accept input value changes
   function handleChange(e) {
-    console.group('NumberField handleChange: ');
-    console.log('Input: ', input.name + custom.label);
-    console.log('local value: ', value);
-    console.log('input value: ', input.value);
-    console.log('event value: ', e.target.value);
-    console.groupEnd();
+    // console.group('NumberField handleChange: ');
+    // console.log('Input: ', input.name + custom.label);
+    // console.log('local value: ', value);
+    // console.log('input value: ', input.value);
+    // console.log('event value: ', e.target.value);
+    // console.groupEnd();
 
     // only update the local state if the value is different
     if (e.target.value !== value) setValue(e.target.value);
