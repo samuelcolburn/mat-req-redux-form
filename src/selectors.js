@@ -29,7 +29,7 @@ export const requisitionSelector = createSelector(
   ormCreateSelector(orm, (session, props) => {
     // console.log('requisitionSelector');
     // console.log('props: ', props);
-    const model = session.Requisition.withId(props.rid);
+    const model = session.Requisition.withId(props.id);
 
     const obj = model ? model.ref : {};
 
@@ -37,6 +37,17 @@ export const requisitionSelector = createSelector(
       ...obj,
       lineItems: model ? model.requisitionLineItems.toRefArray() : []
     };
+  })
+);
+
+export const noteSelector = createSelector(
+  [dbStateSelector, (_state, props) => props],
+  ormCreateSelector(orm, (session, props) => {
+    return session.Note.filter(
+      note => note.relatedRequisitionLineItem === props.id
+    )
+      .orderBy('dateCreated')
+      .toRefArray();
   })
 );
 

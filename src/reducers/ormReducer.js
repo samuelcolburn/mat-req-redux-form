@@ -25,7 +25,11 @@ import {
   REMOVE_ITEM_TYPE,
   CREATE_INVENTORY_ITEM,
   UPDATE_INVENTORY_ITEM,
-  REMOVE_INVENTORY_ITEM
+  REMOVE_INVENTORY_ITEM,
+  CREATE_MANY_NOTES,
+  CREATE_NOTE,
+  UPDATE_NOTE,
+  REMOVE_NOTE
 } from '../constants';
 
 function autocompleteOrmReducer(sess, action) {
@@ -68,7 +72,8 @@ function ormReducer(dbState, action) {
     RequisitionLineItem,
     Vendor,
     ItemType,
-    InventoryItem
+    InventoryItem,
+    Note
   } = sess;
 
   switch (action.type) {
@@ -109,8 +114,8 @@ function ormReducer(dbState, action) {
       break;
 
     case CREATE_REQUISITION:
-      console.log('ormReducer, action: ', action.type);
-      console.log('payload: ', action.payload);
+      // console.log('ormReducer, action: ', action.type);
+      // console.log('payload: ', action.payload);
       // Requisition.create(action.payload);
       createOrUpdate(Requisition, action.payload);
       break;
@@ -125,10 +130,10 @@ function ormReducer(dbState, action) {
       break;
 
     case CREATE_MANY_REQUISITION_LINE_ITEM:
-      console.log('ormReducer, action: ', action.type);
-      console.log('payload: ', action.payload);
+      // console.log('ormReducer, action: ', action.type);
+      // console.log('payload: ', action.payload);
       action.payload.forEach(requisitionLineItem => {
-        console.log('item: ', requisitionLineItem);
+        // console.log('item: ', requisitionLineItem);
         // RequisitionLineItem.create(requisitionLineItem);
         createOrUpdate(RequisitionLineItem, requisitionLineItem);
       });
@@ -182,6 +187,24 @@ function ormReducer(dbState, action) {
 
     case REMOVE_INVENTORY_ITEM:
       InventoryItem.withId(action.payload.id).update(action.payload);
+      break;
+
+    case CREATE_MANY_NOTES:
+      action.payload.forEach(note => {
+        createOrUpdate(Note, note);
+      });
+      break;
+
+    case CREATE_NOTE:
+      Note.create(action.payload);
+      break;
+
+    case UPDATE_NOTE:
+      Note.withId(action.payload.id).update(action.payload);
+      break;
+
+    case REMOVE_NOTE:
+      Note.withId(action.payload.id).update(action.payload);
       break;
 
     default:

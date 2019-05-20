@@ -6,6 +6,7 @@ import mockRequisitionLineItems from './requisitionLineItems';
 import mockVendors from './vendors';
 import mockItemTypes from './itemTypes';
 import mockInventoryItems from './inventoryItems';
+import mockNotes from './notes';
 
 const makeSampleData = () => {
   const vendors = mockVendors(100);
@@ -24,6 +25,7 @@ const makeSampleData = () => {
     inventoryItems,
     { min: 4, max: 10 }
   );
+  const notes = mockNotes(requisitionLineItems);
 
   const sampleData = {
     jobs,
@@ -33,7 +35,8 @@ const makeSampleData = () => {
     requisitionLineItems,
     vendors,
     itemTypes,
-    inventoryItems
+    inventoryItems,
+    notes
   };
   console.log('sampleData: ', sampleData);
 

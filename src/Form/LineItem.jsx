@@ -4,21 +4,19 @@ import { Field, Fields } from 'redux-form';
 import get from 'lodash/fp/get';
 import getOr from 'lodash/fp/getOr';
 
+import { makeStyles } from '@material-ui/styles';
 import Grid from '@material-ui/core/Grid';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import MenuItem from '@material-ui/core/MenuItem';
-import { makeStyles } from '@material-ui/styles';
-
+import Hidden from '@material-ui/core/Hidden';
 import SelectField from '../components/SelectField';
 import Autocomplete from '../components/Autocomplete';
 import DebouncedTextField from '../components/DebouncedTextField';
 import NumberField from '../components/NumberField';
 import CheckboxField from '../components/CheckboxField';
-import { IconButton, Badge, Hidden } from '@material-ui/core';
-import ChatIcon from '@material-ui/icons/Chat';
-// import { selectItem, deselectItem } from '../actions';
-// import { getLineItemIsSelected } from '../selectors';
+
 import useMediaQueryWithTheme from '../components/useMediaQueryWithTheme';
+import LineItemNotes from './LineItemNotes';
 
 const statusOptions = [
   { label: 'Needs Review', value: 'needsReview' },
@@ -141,7 +139,9 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const LineItem = ({ lineItem, index, fields, job, shopDrawing }) => {
+const LineItem = props => {
+  const { lineItem, index, id, fields, job, form, shopDrawing } = props;
+
   // const classes = useStyles({ fields, index });
   const mdAndDown = useMediaQueryWithTheme(theme =>
     theme.breakpoints.down('md')
@@ -327,52 +327,30 @@ const LineItem = ({ lineItem, index, fields, job, shopDrawing }) => {
                 </Grid>
               </Grid>
             </Grid>
+
+            <Hidden mdUp>
+              <Grid item xs={12}>
+                <Field
+                  name={`${lineItem}.addNote`}
+                  label="Add Note"
+                  component={DebouncedTextField}
+                  fullWidth
+                  multiline
+                />
+              </Grid>
+            </Hidden>
           </Grid>
         </Grid>
 
         {/* Actions */}
-        <Grid item className={classes.actions}>
-          <IconButton size="small">
-            <Badge badgeContent={4} color="primary">
-              <ChatIcon />
-            </Badge>
-          </IconButton>
-        </Grid>
+        <Hidden smDown>
+          <Grid item className={classes.actions}>
+            <LineItemNotes {...props} />
+          </Grid>
+        </Hidden>
       </Grid>
     </Grid>
   );
 };
-
-// const mapStateToProps = (state, props) => {
-//   if (!props) return { isSelected: false };
-
-//   // console.group('mapStateToProps: ');
-//   const { form, fields, index } = props;
-//   const item = fields.get(index);
-//   const id = item.id;
-
-//   const selectedLineItems = state['selectedLineItems'][form];
-
-//   // console.log('item:', item);
-//   // console.log('id:', id);
-//   // console.log('selectedLineItems:', selectedLineItems);
-//   // console.log('isSelected', isSelected);
-//   // console.groupEnd();
-//   if (!selectedLineItems) return { isSelected: false };
-//   if (!selectedLineItems.length) return { isSelected: false };
-//   return {
-//     isSelected: selectedLineItems.some(_id => _id === id)
-//   };
-// };
-
-// const mapDispatchToProps = {
-//   selectItem,
-//   deselectItem
-// };
-
-// LineItem = connect(
-//   mapStateToProps,
-//   mapDispatchToProps
-// )(LineItem);
 
 export default React.memo(LineItem);

@@ -28,17 +28,21 @@ const LineItems = ({ fields, meta: { error, form }, job, shopDrawing }) => {
   return (
     <Grid item xs={12}>
       <Grid container spacing={2}>
-        {fields.map((name, index, fields) => (
-          <LineItem
-            lineItem={name}
-            form={form}
-            fields={fields}
-            index={index}
-            key={fields.get(index).id}
-            job={job}
-            shopDrawing={shopDrawing}
-          />
-        ))}
+        {fields.map((name, index, fields) => {
+          const id = fields.get(index).id;
+          return (
+            <LineItem
+              lineItem={name}
+              form={form}
+              fields={fields}
+              index={index}
+              key={id}
+              id={id}
+              job={job}
+              shopDrawing={shopDrawing}
+            />
+          );
+        })}
 
         <Grid item xs={12}>
           <Button color="primary" onClick={e => addLineItem(e)}>

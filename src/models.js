@@ -163,3 +163,24 @@ RequisitionLineItem.fields = {
     relatedName: 'requisitionLineItems'
   })
 };
+
+export class Note extends Model {
+  toString() {
+    return `Requisition Line Item: ${this.id}`;
+  }
+}
+
+Note.modelName = 'Note';
+
+Note.fields = {
+  id: attr(),
+  user: attr(),
+  userName: attr(),
+  dateCreated: attr(),
+  note: attr(),
+  relatedRequisitionLineItem: fk({
+    to: 'RequisitionLineItem',
+    as: 'requisitionLineItem',
+    relatedName: 'notes'
+  })
+};

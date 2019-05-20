@@ -5,7 +5,6 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { toString } from 'lodash/fp';
 import { toBoolean } from '../helpers';
 
-import TextField from '@material-ui/core/TextField';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import Input from '@material-ui/core/Input';

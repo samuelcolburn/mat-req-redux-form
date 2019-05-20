@@ -31,7 +31,11 @@ import {
   CREATE_MANY_REQUISITION_LINE_ITEM,
   CREATE_REQUISITION_LINE_ITEM,
   UPDATE_REQUISITION_LINE_ITEM,
-  REMOVE_REQUISITION_LINE_ITEM
+  REMOVE_REQUISITION_LINE_ITEM,
+  CREATE_MANY_NOTES,
+  CREATE_NOTE,
+  UPDATE_NOTE,
+  REMOVE_NOTE
   // SELECT_LINE_ITEM,
   // DESELECT_LINE_ITEM,
   // SELECT_LINE_ITEMS,
@@ -42,7 +46,8 @@ import {
   doQuery,
   getData,
   getRandomData,
-  getLineItemsForReq
+  getLineItemsForReq,
+  getNotesForLineItems
 } from './data/api';
 import orm from './orm';
 // import { getSelectedLineItems } from './selectors';
@@ -128,6 +133,13 @@ export const removePhase = id => {
 export const createManyRequisitionLineItem = props => {
   return {
     type: CREATE_MANY_REQUISITION_LINE_ITEM,
+    payload: props
+  };
+};
+
+export const createManyLineItemNotes = props => {
+  return {
+    type: CREATE_MANY_NOTES,
     payload: props
   };
 };
@@ -241,6 +253,9 @@ const fetchLineItemsForReq = id => {
   return (dispatch, getState) => getLineItemsForReq({ id });
 };
 
+const fetchNotesForLineItems = lineItems => (dispatch, getState) =>
+  getNotesForLineItems(lineItems);
+
 export const loadRequisitionById = ({ id }) => {
   console.log('loadRequisitionById', id);
   return (dispatch, getState) => {
@@ -273,19 +288,29 @@ const fetchRandomRequisition = () => {
 export const loadRandomRequisition = () => {
   return (dispatch, getState) => {
     dispatch(fetchRandomRequisition()).then(data =>
-      Promise.all([data, dispatch(fetchLineItemsForReq(data.id))]).then(
-        data => {
-          console.log('load req done fetching: ', data);
-          dispatch(reqRequisitionSuccess(data[0]));
-          dispatch(createManyRequisitionLineItem(data[1]));
-          dispatch(selectRequisition(data[0].id));
-        },
-        error => {
-          console.log('error fetching data: ', error.message);
-          console.error(error);
-          dispatch(reqRequisitionError(error));
-        }
-      )
+      Promise.all([data, dispatch(fetchLineItemsForReq(data.id))])
+        .then(([requisition, lineItems]) =>
+          Promise.all([
+            requisition,
+            lineItems,
+            dispatch(fetchNotesForLineItems(lineItems))
+          ])
+        )
+        .then(
+          ([requisition, lineItems, lineItemNotes]) => {
+            console.log('load req done fetching: ', data);
+            dispatch(reqRequisitionSuccess(requisition));
+            dispatch(createManyRequisitionLineItem(lineItems));
+            dispatch(createManyLineItemNotes(lineItemNotes));
+
+            dispatch(selectRequisition(requisition.id));
+          },
+          error => {
+            console.log('error fetching data: ', error.message);
+            console.error(error);
+            dispatch(reqRequisitionError(error));
+          }
+        )
     );
   };
 };
@@ -672,4 +697,8 @@ export const removeSelected = ({ form }) => (dispatch, getState) => {
         li.updatedIndex > indexToRemove ? li.updatedIndex - 1 : li.updatedIndex
     }));
   });
+};
+
+export const saveNote = ({ form, index, note }) => (dispatch, getState) => {
+  dispatch(change(form, `lineItems.${index}.addNote`, note, false));
 };

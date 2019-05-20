@@ -70,7 +70,7 @@ export const getData = async ({ table, id, wait = 500 }) => {
   return Promise.resolve(record);
 };
 
-export const getLineItemsForReq = async ({ id, wait = 500 }) => {
+export const getLineItemsForReq = async ({ id, wait = 100 }) => {
   console.log('fetchLineItemsForReq, id: ', id);
 
   await delay(wait);
@@ -91,4 +91,37 @@ export const getLineItemsForReq = async ({ id, wait = 500 }) => {
   console.log('API returning lineItems: ', forReq);
 
   return Promise.resolve(forReq);
+};
+
+export const getNotesForLineItems = async (lineItems, wait = 100) => {
+  console.log('getNotesForLineItems, lineItems: ', lineItems);
+
+  await delay(wait);
+
+  if (!lineItems) {
+    return Promise.reject('No lineItems supplied');
+  }
+
+  const notes = sampleData['notes'];
+  console.log('notes: ', notes);
+
+  if (!notes) {
+    return Promise.reject('no notes found');
+  }
+
+  const notesForLineItems = notes.reduce((acc, note) => {
+    if (
+      lineItems.some(
+        lineItem => lineItem.id === note.relatedRequisitionLineItem
+      )
+    ) {
+      acc.push(note);
+    }
+
+    return acc;
+  }, []);
+
+  console.log('API returning notesForLineItems: ', notesForLineItems);
+
+  return Promise.resolve(notesForLineItems);
 };

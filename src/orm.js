@@ -7,7 +7,8 @@ import {
   RequisitionLineItem,
   Vendor,
   InventoryItem,
-  ItemType
+  ItemType,
+  Note
 } from './models';
 
 const orm = new ORM();
@@ -19,7 +20,8 @@ orm.register(
   Vendor,
   ItemType,
   InventoryItem,
-  RequisitionLineItem
+  RequisitionLineItem,
+  Note
 );
 
 export default orm;
@@ -32,5 +34,6 @@ export const tableModelMap = {
   requisitionLineItems: 'RequisitionLineItem',
   vendors: 'Vendor',
   itemTypes: 'ItemType',
-  inventoryItems: 'InventoryItem'
+  inventoryItems: 'InventoryItem',
+  note: 'Note'
 };
