@@ -42,9 +42,11 @@ const SelectField = ({
   ...custom
 }) => (
   <FormControl {...formControlProps} fullWidth>
-    <InputLabel shrink={toBoolean(placeholder)} htmlFor={input.name}>
-      {label}
-    </InputLabel>
+    {label && (
+      <InputLabel shrink={toBoolean(placeholder)} htmlFor={input.name}>
+        {label}
+      </InputLabel>
+    )}
     <Select native={native} {...input} {...custom}>
       <Placeholder placeholder={placeholder} label={label} native={native} />
       {!children

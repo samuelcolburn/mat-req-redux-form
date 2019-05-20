@@ -9,7 +9,9 @@ const useStyles = makeStyles(theme => ({
     width: 40
   },
   actions: {
-    width: 45
+    width: 35,
+    minWidth: 35,
+    maxWidth: 35
   }
 }));
 

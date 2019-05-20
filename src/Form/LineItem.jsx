@@ -56,7 +56,7 @@ const renderItemInput = props => {
     ) : (
       <Autocomplete
         name={names[1]}
-        label="Inventory Item"
+        label={mdAndDown && 'Inventory Item'}
         // placeholder="Search for an Item..."
         table="inventoryItems"
         params={{
@@ -81,7 +81,7 @@ const renderItemInput = props => {
         <Autocomplete
           {...itemType}
           name={names[0]}
-          label="Type"
+          label={mdAndDown && 'Type'}
           // placeholder="Search for an Item Type..."
           table="itemTypes"
           itemToString={itemTypeToString}
@@ -134,7 +134,10 @@ const useStyles = makeStyles(theme => ({
   actions: {
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    width: 35,
+    minWidth: 35,
+    maxWidth: 35
   }
 }));
 

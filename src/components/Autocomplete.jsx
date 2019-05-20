@@ -215,18 +215,20 @@ let AutoComplete = ({
         <div className={classes.container}>
           {
             <FormControl error={meta.error && meta.touched} fullWidth {...rest}>
-              <InputLabel
-                {...getLabelProps({
-                  shrink: toBoolean(
-                    (placeholder && placeholder.length) ||
-                      (inputValue && inputValue.length)
-                  ),
-                  htmlFor: input.name,
-                  ...rest
-                })}
-              >
-                {label}
-              </InputLabel>
+              {label && (
+                <InputLabel
+                  {...getLabelProps({
+                    shrink: toBoolean(
+                      (placeholder && placeholder.length) ||
+                        (inputValue && inputValue.length)
+                    ),
+                    htmlFor: input.name,
+                    ...rest
+                  })}
+                >
+                  {label}
+                </InputLabel>
+              )}
               <Input
                 {...getInputProps({
                   error: meta.error && meta.touched,
