@@ -128,7 +128,10 @@ let Form = props => {
           <Field
             name="shopDrawing"
             label="Shop Drawing"
-            placeholder="Search for a Shop Drawing..."
+            placeholder={
+              job && job.id ? 'Search for a Shop Drawing...' : 'Choose a Job'
+            }
+            disabled={!(job && job.id)}
             table="shopDrawings"
             params={{
               related: [

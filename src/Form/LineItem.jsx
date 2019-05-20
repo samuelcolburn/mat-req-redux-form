@@ -50,7 +50,7 @@ const renderItemInput = props => {
         name={names[2]}
         multiline
         fullWidth
-        label="Description"
+        label={mdAndDown && 'Description'}
         {...description}
       />
     ) : (
@@ -308,6 +308,7 @@ const LineItem = ({ lineItem, index, fields, job, shopDrawing }) => {
                         <InputAdornment position="start">$</InputAdornment>
                       )
                     }}
+                    numberType="currency"
                   />
                 </Grid>
 
@@ -321,6 +322,7 @@ const LineItem = ({ lineItem, index, fields, job, shopDrawing }) => {
                         <InputAdornment position="start">$</InputAdornment>
                       )
                     }}
+                    numberType="currency"
                   />
                 </Grid>
               </Grid>

@@ -32,9 +32,10 @@ const ControllerButton = ({
   classes,
   selectedItem,
   clearSelection,
-  toggleMenu
+  toggleMenu,
+  disabled
 }) => (
-  <InputAdornment position="end">
+  <InputAdornment position="end" disablePointerEvents={disabled}>
     {selectedItem ? (
       <IconButton
         edge="end"
@@ -138,6 +139,7 @@ let AutoComplete = ({
   itemToString,
   table,
   params,
+  disabled,
   ...rest
 }) => {
   const classes = useStyles();
@@ -148,12 +150,6 @@ let AutoComplete = ({
     setInputValue(inputValue);
     if (!inputValue || !inputValue.length) input.onChange(null);
   }
-
-  const handleKeyDown = event => {
-    if (event.key === 'Delete') {
-      input.onChange(null);
-    }
-  };
 
   const handleFocus = event => {
     console.log('handleFocus: ', input.name);
@@ -214,16 +210,17 @@ let AutoComplete = ({
       }) => (
         <div className={classes.container}>
           {
-            <FormControl error={meta.error && meta.touched} fullWidth {...rest}>
+            <FormControl error={meta.error && meta.touched} fullWidth>
               {label && (
                 <InputLabel
                   {...getLabelProps({
+                    error: meta.error && meta.touched,
+                    disabled,
                     shrink: toBoolean(
                       (placeholder && placeholder.length) ||
                         (inputValue && inputValue.length)
                     ),
-                    htmlFor: input.name,
-                    ...rest
+                    htmlFor: input.name
                   })}
                 >
                   {label}
@@ -231,6 +228,7 @@ let AutoComplete = ({
               )}
               <Input
                 {...getInputProps({
+                  disabled,
                   error: meta.error && meta.touched,
                   classes: {
                     root: classes.inputRoot,
@@ -240,17 +238,18 @@ let AutoComplete = ({
                   onFocus: handleFocus,
                   endAdornment: (
                     <ControllerButton
-                      classes={classes}
-                      clearSelection={clearSelection}
-                      toggleMenu={toggleMenu}
-                      selectedItem={selectedItem}
-                      {...getToggleButtonProps()}
+                      {...getToggleButtonProps({
+                        classes,
+                        clearSelection,
+                        toggleMenu,
+                        selectedItem,
+                        disabled
+                      })}
                     />
                   ),
                   inputProps: {
                     name: input.name,
-                    placeholder,
-                    onKeyDown: handleKeyDown
+                    placeholder
                   }
                 })}
               />

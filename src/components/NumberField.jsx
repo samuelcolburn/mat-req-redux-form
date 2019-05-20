@@ -6,6 +6,11 @@ import { toString } from 'lodash/fp';
 import { toBoolean } from '../helpers';
 
 import TextField from '@material-ui/core/TextField';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
+import Input from '@material-ui/core/Input';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import { makeStyles } from '@material-ui/styles';
 
 import NumberFormat from 'react-number-format';
 
@@ -14,11 +19,38 @@ import NumberFormat from 'react-number-format';
 // type="number" is not used because of the arrow blocks
 // and because it doesn't allow thousands separators
 // TODO: Make as type="number" on mobile
+
+const useStyles = makeStyles(theme => ({
+  root: {
+    transform: props =>
+      props.numberType && props.numberType === 'currency'
+        ? 'translate(13px, 24px) scale(1)'
+        : undefined,
+    '&$shrink': {
+      transform: 'translate(0, 1.5px) scale(0.75)'
+    }
+  },
+  shrink: {}
+}));
+
+const NumberInputLabel = props => {
+  const classes = useStyles(props);
+
+  const { label, shrink, name, numberType, ...rest } = props;
+
+  return label ? (
+    <InputLabel shrink={shrink} htmlFor={name} classes={classes} {...rest}>
+      {label}
+    </InputLabel>
+  ) : null;
+};
+
 const NumberFormatCustom = props => {
-  const { inputRef, onChange, ...other } = props;
+  const { inputRef, onChange, numberType, ...other } = props;
 
   return (
     <NumberFormat
+      // classes={classes}
       {...other}
       getInputRef={inputRef}
       onValueChange={values => {
@@ -43,12 +75,20 @@ const shouldShrink = value => {
   }
 };
 
-const NumberField = ({
-  input,
-  meta: { error, dirty },
-  InputProps,
-  ...custom
-}) => {
+const NumberField = props => {
+  const {
+    input,
+    meta: { error, dirty },
+    InputLabelProps,
+    InputProps,
+    numberType,
+    label,
+    placeholder,
+    ...custom
+  } = props;
+
+  const classes = useStyles(props);
+
   const [value, setValue] = useState(input.value);
 
   const [debouncedFunction, cancel] = useDebouncedCallback(
@@ -112,21 +152,28 @@ const NumberField = ({
   const memoShrink = useMemo(() => shouldShrink(value), [value]);
 
   return (
-    <TextField
-      {...input}
-      {...custom}
-      value={value}
-      onChange={handleChange}
-      error={error && dirty}
-      helperText={error && dirty ? error : null}
-      InputLabelProps={{
-        shrink: memoShrink
-      }}
-      InputProps={{
-        inputComponent: NumberFormatCustom,
-        ...InputProps
-      }}
-    />
+    <FormControl error={error && dirty} fullWidth>
+      <NumberInputLabel
+        name={input.name}
+        label={label}
+        numberType={numberType}
+        shrink={memoShrink}
+        {...InputLabelProps}
+      />
+
+      <Input
+        {...input}
+        {...custom}
+        placeholder={placeholder}
+        className={classes.input}
+        value={value}
+        onChange={handleChange}
+        error={error && dirty}
+        inputComponent={NumberFormatCustom}
+        {...InputProps}
+      />
+      {error && dirty ? <FormHelperText>{error}</FormHelperText> : null}
+    </FormControl>
   );
 };
 

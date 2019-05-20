@@ -43,7 +43,12 @@ const SelectField = ({
 }) => (
   <FormControl {...formControlProps} fullWidth>
     {label && (
-      <InputLabel shrink={toBoolean(placeholder)} htmlFor={input.name}>
+      <InputLabel
+        shrink={
+          toBoolean(placeholder) || (input.value && input.value.length > 0)
+        }
+        htmlFor={input.name}
+      >
         {label}
       </InputLabel>
     )}
