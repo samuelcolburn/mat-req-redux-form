@@ -31,7 +31,13 @@ const shopDrawingToString = shopDrawing =>
 
 const useStyles = makeStyles(theme => ({
   root: {
-    padding: theme.spacing(8, 4)
+    padding: theme.spacing(8, 4),
+    [theme.breakpoints.down('sm')]: {
+      padding: theme.spacing(4, 2)
+    },
+    [theme.breakpoints.only('xs')]: {
+      padding: 0
+    }
   },
   title: {
     paddingLeft: theme.spacing(4)
@@ -173,7 +179,7 @@ let Form = props => {
       <Grid container className={classes.lineItems} component="section">
         <LineItemsHeader form={form} />
 
-        <LineItemsColumns />
+        <LineItemsColumns form={form} />
 
         <Divider variant="fullWidth" style={{ width: '100%' }} />
 

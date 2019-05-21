@@ -14,7 +14,7 @@ const mockNote = requisitionLineItem => ({
 
 const mockNotes = (
   requisitionLineItems,
-  numNotesOptions = { min: 0, max: 10 }
+  numNotesOptions = { min: 0, max: 2 }
 ) =>
   requisitionLineItems.reduce((acc, curr) => {
     const numNotes = faker.random.number(numNotesOptions);

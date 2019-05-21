@@ -2,13 +2,13 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 
 // import uniqueId from 'lodash/fp/uniqueId';
-
+import { makeStyles } from '@material-ui/styles';
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
 // import Grid from '@material-ui/core/Grid';
-import { TextField } from '@material-ui/core';
+import TextField from '@material-ui/core/TextField';
 
 // import CircularProgress from '@material-ui/core/CircularProgress';
 // import ErrorIcon from '@material-ui/icons/Error';
@@ -18,6 +18,14 @@ import { loadRandomRequisition, loadRequisitionById } from './actions';
 
 import Form from './Form';
 
+const useStyles = makeStyles(theme => ({
+  root: {
+    [theme.breakpoints.only('xs')]: {
+      padding: 0
+    }
+  }
+}));
+
 let App = ({
   loadRequisitionById,
   loadRandomRequisition,
@@ -25,6 +33,7 @@ let App = ({
   error,
   selectedRequisition
 }) => {
+  const classes = useStyles();
   const [reqId, setReqId] = useState('');
 
   const loadRequisition = e => {
@@ -62,7 +71,7 @@ let App = ({
   // );
 
   return (
-    <Container>
+    <Container className={classes.root}>
       <Typography variant="h4" component="h1" gutterBottom>
         Material Requisition
       </Typography>

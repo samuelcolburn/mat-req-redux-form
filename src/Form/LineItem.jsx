@@ -49,13 +49,15 @@ const renderItemInput = props => {
         multiline
         fullWidth
         label={mdAndDown && 'Description'}
+        placeholder={!mdAndDown && 'Description'}
         {...description}
+        margin="dense"
       />
     ) : (
       <Autocomplete
         name={names[1]}
         label={mdAndDown && 'Inventory Item'}
-        // placeholder="Search for an Item..."
+        placeholder={!mdAndDown && 'Inventory Item'}
         table="inventoryItems"
         params={{
           related: [
@@ -70,6 +72,7 @@ const renderItemInput = props => {
           shrink: mdAndDown
         }}
         {...inventoryItem}
+        margin="dense"
       />
     );
 
@@ -80,12 +83,13 @@ const renderItemInput = props => {
           {...itemType}
           name={names[0]}
           label={mdAndDown && 'Type'}
-          // placeholder="Search for an Item Type..."
+          placeholder={!mdAndDown && 'Type'}
           table="itemTypes"
           itemToString={itemTypeToString}
           InputLabelProps={{
             shrink: mdAndDown
           }}
+          margin="dense"
         />
       </Grid>
       <Grid item xs={12} lg={8}>
@@ -98,10 +102,13 @@ const renderItemInput = props => {
 const useStyles = makeStyles(theme => ({
   root: {
     position: 'relative',
-    // TODO: this is a big performance hit, need to optimze somehow
 
+    // TODO: this is a big performance hit, need to optimze somehow
     // backgroundColor: ({ fields, index }) =>
     //   fields.get(index).selected && theme.palette.action.selected,
+    // '&$selected, &$selected:hover': {
+    //   backgroundColor: theme.palette.action.selected
+    // },
     '&::before': {
       content: '""',
       opacity: 0,
@@ -121,32 +128,44 @@ const useStyles = makeStyles(theme => ({
   // },
   selectedWrapper: {
     display: 'flex',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     justifyContent: 'center'
   },
-  selected: {
+  selectedCheckbox: {
     // padding: theme.spacing(4, 1)
-    height: 36,
-    width: 30
+    height: 25,
+    width: 25
   },
   actions: {
     display: 'flex',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     justifyContent: 'center',
-    width: 35,
-    minWidth: 35,
-    maxWidth: 35
+    width: 30,
+    minWidth: 30,
+    maxWidth: 30
   }
+  // selected: {}
 }));
 
 const LineItem = props => {
-  const { lineItem, index, id, fields, job, form, shopDrawing } = props;
+  const {
+    lineItem,
+    index,
+    id,
+    fields,
+    job,
+    form,
+    shopDrawing
+    // selected
+  } = props;
 
   // const classes = useStyles({ fields, index });
   const mdAndDown = useMediaQueryWithTheme(theme =>
     theme.breakpoints.down('md')
   );
-  const classes = useStyles();
+
+  const xsOnly = useMediaQueryWithTheme(theme => theme.breakpoints.only('xs'));
+  const classes = useStyles(props);
 
   return (
     <Grid item xs={12} className={classes.root}>
@@ -158,10 +177,11 @@ const LineItem = props => {
               name={`${lineItem}.selected`}
               component={CheckboxField}
               options={statusOptions}
-              value="selected"
+              // value="selected"
               color="primary"
               type="checkbox"
-              className={classes.selected}
+              className={classes.selectedCheckbox}
+              margin="dense"
             />
           </div>
         </Hidden>
@@ -171,7 +191,7 @@ const LineItem = props => {
           <Grid container spacing={2}>
             {/* Status, Phase, Vendor */}
             <Grid item xs={12} md={3} lg={3}>
-              <Grid container>
+              <Grid container spacing={2}>
                 <Grid item xs={12} lg={5}>
                   <Field
                     name={`${lineItem}.status`}
@@ -180,6 +200,7 @@ const LineItem = props => {
                     options={statusOptions}
                     native
                     // placeholder
+                    margin="dense"
                   >
                     {({ options, native }) => {
                       return options.map((option, index) => {
@@ -201,7 +222,7 @@ const LineItem = props => {
                   <Field
                     name={`${lineItem}.phase`}
                     label={mdAndDown && 'Phase'}
-                    // placeholder="Search for a Phase..."
+                    placeholder={!mdAndDown && 'Phase'}
                     table="phases"
                     params={{
                       related: [
@@ -218,6 +239,7 @@ const LineItem = props => {
                     }}
                     itemToString={phaseToString}
                     component={Autocomplete}
+                    margin="dense"
                   />
                 </Grid>
 
@@ -225,10 +247,11 @@ const LineItem = props => {
                   <Field
                     name={`${lineItem}.vendor`}
                     label={mdAndDown && 'Vendor'}
-                    // placeholder="Search for a Vendor..."
+                    placeholder={!mdAndDown && 'Vendor'}
                     table="vendors"
                     itemToString={vendorToString}
                     component={Autocomplete}
+                    margin="dense"
                   />
                 </Grid>
               </Grid>
@@ -236,7 +259,7 @@ const LineItem = props => {
 
             {/* Item Type, Item, Description */}
             <Grid item xs={12} md={6} lg={5} xl={6}>
-              <Grid container>
+              <Grid container spacing={2}>
                 <Fields
                   names={[
                     `${lineItem}.itemType`,
@@ -260,8 +283,10 @@ const LineItem = props => {
                   <Field
                     name={`${lineItem}.startingInventory`}
                     label={mdAndDown && 'Inventory'}
-                    // type="number"
+                    placeholder={!mdAndDown && 'Inventory'}
+                    type={xsOnly ? 'number' : undefined}
                     component={NumberField}
+                    margin="dense"
                   />
                 </Grid>
 
@@ -269,8 +294,10 @@ const LineItem = props => {
                   <Field
                     name={`${lineItem}.quantityRequested`}
                     label={mdAndDown && 'Requested'}
-                    // type="number"
+                    placeholder={!mdAndDown && 'Requested'}
+                    type={xsOnly ? 'number' : undefined}
                     component={NumberField}
+                    margin="dense"
                   />
                 </Grid>
 
@@ -278,8 +305,10 @@ const LineItem = props => {
                   <Field
                     name={`${lineItem}.quantityNeeded`}
                     label={mdAndDown && 'Needed'}
-                    // type="number"
+                    placeholder={!mdAndDown && 'Needed'}
+                    type={xsOnly ? 'number' : undefined}
                     component={NumberField}
+                    margin="dense"
                   />
                 </Grid>
 
@@ -287,8 +316,10 @@ const LineItem = props => {
                   <Field
                     name={`${lineItem}.quantityOrdered`}
                     label={mdAndDown && 'Ordered'}
-                    // type="number"
+                    placeholder={!mdAndDown && 'Ordered'}
+                    type={xsOnly ? 'number' : undefined}
                     component={NumberField}
+                    margin="dense"
                   />
                 </Grid>
               </Grid>
@@ -301,7 +332,7 @@ const LineItem = props => {
                   <Field
                     name={`${lineItem}.estimatedCost`}
                     label={mdAndDown && 'Est Cost'}
-                    // type="number"
+                    type={xsOnly ? 'number' : undefined}
                     component={NumberField}
                     InputProps={{
                       startAdornment: (
@@ -309,6 +340,7 @@ const LineItem = props => {
                       )
                     }}
                     numberType="currency"
+                    margin="dense"
                   />
                 </Grid>
 
@@ -322,7 +354,9 @@ const LineItem = props => {
                         <InputAdornment position="start">$</InputAdornment>
                       )
                     }}
+                    type={xsOnly ? 'number' : undefined}
                     numberType="currency"
+                    margin="dense"
                   />
                 </Grid>
               </Grid>
@@ -336,6 +370,7 @@ const LineItem = props => {
                   component={DebouncedTextField}
                   fullWidth
                   multiline
+                  margin="dense"
                 />
               </Grid>
             </Hidden>

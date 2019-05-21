@@ -4,6 +4,8 @@ import Hidden from '@material-ui/core/Hidden';
 import { makeStyles } from '@material-ui/styles';
 // import useMediaQueryWithTheme from '../components/useMediaQueryWithTheme';
 
+import SelectAllCheckbox from './SelectAllCheckbox';
+
 const useStyles = makeStyles(theme => ({
   selectAllSpacer: {
     width: 40
@@ -15,18 +17,14 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const LineItemsColumns = () => {
-  // const mdAndUp = useMediaQueryWithTheme(theme => theme.breakpoints.up('md'));
+const LineItemsColumns = ({ form }) => {
   const classes = useStyles();
-  // const smAndDown = useMediaQueryWithTheme(theme =>
-  //   theme.breakpoints.down('sm')
-  // );
 
   return (
     <Hidden mdDown>
       <Grid container alignItems="center" wrap="nowrap">
-        {/* Spacer for the Select checkbox */}
-        <div className={classes.selectAllSpacer} />
+        {/* Select All checkbox */}
+        <SelectAllCheckbox form={form} />
 
         {/* All actual Column headers */}
         <Grid container spacing={2} wrap="nowrap">

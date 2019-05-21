@@ -1,14 +1,15 @@
 {
   "name": "req-redux-form-material-ui",
-  "version": "1.0.0-alpha.26",
+  "version": "1.0.0-alpha.27",
   "description": "",
   "keywords": [],
   "main": "src/index.js",
   "dependencies": {
     "@date-io/date-fns": "^1.3.5",
-    "@material-ui/core": "^4.0.0-beta.2",
-    "@material-ui/icons": "^4.0.0-beta.0",
-    "@material-ui/styles": "^4.0.0-beta.2",
+    "@material-ui/core": "^4.0.0-rc.0",
+    "@material-ui/icons": "^4.0.0-rc.0",
+    "@material-ui/styles": "^4.0.0-rc.0",
+    "clsx": "^1.0.4",
     "date-fns": "^2.0.0-alpha.27",
     "downshift": "^3.2.10",
     "faker": "4.1.0",
@@ -34,7 +35,7 @@
     "redux-orm": "^0.13.3",
     "redux-thunk": "2.3.0",
     "reselect": "4.0.0",
-    "use-debounce": "^2.0.0",
+    "use-debounce": "^2.0.1",
     "yup": "0.27.0"
   },
   "devDependencies": {

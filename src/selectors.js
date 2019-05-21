@@ -6,6 +6,8 @@ import createCachedSelector from 're-reselect';
 import orm, { tableModelMap } from './orm';
 // import { getFormValues, formValueSelector } from 'redux-form';
 // import { SELECTED_ALL, SELECTED_NONE, SELECTED_SOME } from './constants';
+import { formValueSelector } from 'redux-form';
+import { SELECTED_ALL, SELECTED_NONE, SELECTED_SOME } from './constants';
 
 const dbStateSelector = state => state.db;
 
@@ -217,3 +219,27 @@ export const autocompleteStateSelector = createCachedSelector(
 //     );
 //   }
 // );
+
+const formSelector = (form, ...other) => formValueSelector(form)(...other);
+
+export const getAllSelected = (state, props) => {
+  const lineItems = formSelector(props.form, state, 'lineItems');
+  if (!lineItems || !lineItems.length) {
+    return { allSelected: SELECTED_NONE };
+  }
+
+  const lineItemsLength = lineItems.length;
+  const selectedLength = lineItems.filter(item => item.selected).length;
+
+  const allSelected = !selectedLength
+    ? SELECTED_NONE
+    : selectedLength >= 0 && selectedLength < lineItemsLength
+    ? SELECTED_SOME
+    : selectedLength === lineItems.length
+    ? SELECTED_ALL
+    : SELECTED_NONE;
+
+  return {
+    allSelected
+  };
+};

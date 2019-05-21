@@ -29,7 +29,7 @@ const LineItems = ({ fields, meta: { error, form }, job, shopDrawing }) => {
     <Grid item xs={12}>
       <Grid container spacing={2}>
         {fields.map((name, index, fields) => {
-          const id = fields.get(index).id;
+          const { id } = fields.get(index);
           return (
             <LineItem
               lineItem={name}

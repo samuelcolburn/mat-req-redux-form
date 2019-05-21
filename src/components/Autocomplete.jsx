@@ -140,6 +140,7 @@ let AutoComplete = ({
   table,
   params,
   disabled,
+  margin,
   ...rest
 }) => {
   const classes = useStyles();
@@ -220,7 +221,8 @@ let AutoComplete = ({
                       (placeholder && placeholder.length) ||
                         (inputValue && inputValue.length)
                     ),
-                    htmlFor: input.name
+                    htmlFor: input.name,
+                    margin
                   })}
                 >
                   {label}
@@ -229,6 +231,7 @@ let AutoComplete = ({
               <Input
                 {...getInputProps({
                   disabled,
+                  margin,
                   error: meta.error && meta.touched,
                   classes: {
                     root: classes.inputRoot,
