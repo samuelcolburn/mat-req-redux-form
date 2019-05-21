@@ -19,11 +19,7 @@ import { loadRandomRequisition, loadRequisitionById } from './actions';
 import Form from './Form';
 
 const useStyles = makeStyles(theme => ({
-  root: {
-    [theme.breakpoints.only('xs')]: {
-      padding: 0
-    }
-  }
+  root: {}
 }));
 
 let App = ({

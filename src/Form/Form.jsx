@@ -45,6 +45,7 @@ const useStyles = makeStyles(theme => ({
   header: {},
   lineItems: {
     marginTop: theme.spacing(8)
+    // gridTemplateColumns: '25px '
   }
 }));
 //       <Grid container className={classes.header} component="section">

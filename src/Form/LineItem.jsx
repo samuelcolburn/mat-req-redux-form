@@ -29,7 +29,7 @@ const statusOptions = [
   { label: 'Complete', value: 'complete' }
 ];
 
-const phaseToString = phase => getOr('', 'phase', phase);
+const phaseToString = phase => getOr('', 'number', phase);
 const vendorToString = vendor => getOr('', 'name', vendor);
 const itemTypeToString = itemType => getOr('', 'fullName', itemType);
 const inventoryItemToString = inventoryItem =>
@@ -48,16 +48,16 @@ const renderItemInput = props => {
         name={names[2]}
         multiline
         fullWidth
-        label={mdAndDown && 'Description'}
-        placeholder={!mdAndDown && 'Description'}
+        label={mdAndDown ? 'Description' : ''}
+        placeholder={mdAndDown ? '' : 'Description'}
         {...description}
         margin="dense"
       />
     ) : (
       <Autocomplete
         name={names[1]}
-        label={mdAndDown && 'Inventory Item'}
-        placeholder={!mdAndDown && 'Inventory Item'}
+        label={mdAndDown ? 'Inventory Item' : ''}
+        placeholder={mdAndDown ? '' : 'Inventory Item'}
         table="inventoryItems"
         params={{
           related: [
@@ -82,8 +82,8 @@ const renderItemInput = props => {
         <Autocomplete
           {...itemType}
           name={names[0]}
-          label={mdAndDown && 'Type'}
-          placeholder={!mdAndDown && 'Type'}
+          label={mdAndDown ? 'Type' : ''}
+          placeholder={mdAndDown ? '' : 'Type'}
           table="itemTypes"
           itemToString={itemTypeToString}
           InputLabelProps={{
@@ -163,8 +163,6 @@ const LineItem = props => {
   const mdAndDown = useMediaQueryWithTheme(theme =>
     theme.breakpoints.down('md')
   );
-
-  const xsOnly = useMediaQueryWithTheme(theme => theme.breakpoints.only('xs'));
   const classes = useStyles(props);
 
   return (
@@ -221,8 +219,9 @@ const LineItem = props => {
                 <Grid item xs={12} sm={5} md={4} lg={3}>
                   <Field
                     name={`${lineItem}.phase`}
-                    label={mdAndDown && 'Phase'}
-                    placeholder={!mdAndDown && 'Phase'}
+                    label={mdAndDown ? 'Phase' : ''}
+                    placeholder={mdAndDown ? '' : 'Phase'}
+                    disabled={!(shopDrawing && shopDrawing.id)}
                     table="phases"
                     params={{
                       related: [
@@ -246,8 +245,8 @@ const LineItem = props => {
                 <Grid item xs={12} sm={7} md={8} lg={4}>
                   <Field
                     name={`${lineItem}.vendor`}
-                    label={mdAndDown && 'Vendor'}
-                    placeholder={!mdAndDown && 'Vendor'}
+                    label={mdAndDown ? 'Vendor' : ''}
+                    placeholder={mdAndDown ? '' : 'Vendor'}
                     table="vendors"
                     itemToString={vendorToString}
                     component={Autocomplete}
@@ -283,8 +282,8 @@ const LineItem = props => {
                   <Field
                     name={`${lineItem}.startingInventory`}
                     label={mdAndDown && 'Inventory'}
-                    placeholder={!mdAndDown && 'Inventory'}
-                    type={xsOnly ? 'number' : undefined}
+                    placeholder={mdAndDown ? '' : 'Inventory'}
+                    // type={xsOnly ? 'number' : undefined}
                     component={NumberField}
                     margin="dense"
                   />
@@ -293,9 +292,9 @@ const LineItem = props => {
                 <Grid item xs={6} sm={3} md={6} lg={3}>
                   <Field
                     name={`${lineItem}.quantityRequested`}
-                    label={mdAndDown && 'Requested'}
-                    placeholder={!mdAndDown && 'Requested'}
-                    type={xsOnly ? 'number' : undefined}
+                    label={mdAndDown ? 'Requested' : ''}
+                    placeholder={mdAndDown ? '' : 'Requested'}
+                    // type={xsOnly ? 'number' : undefined}
                     component={NumberField}
                     margin="dense"
                   />
@@ -304,9 +303,9 @@ const LineItem = props => {
                 <Grid item xs={6} sm={3} md={6} lg={3}>
                   <Field
                     name={`${lineItem}.quantityNeeded`}
-                    label={mdAndDown && 'Needed'}
-                    placeholder={!mdAndDown && 'Needed'}
-                    type={xsOnly ? 'number' : undefined}
+                    label={mdAndDown ? 'Needed' : ''}
+                    placeholder={mdAndDown ? '' : 'Needed'}
+                    // type={xsOnly ? 'number' : undefined}
                     component={NumberField}
                     margin="dense"
                   />
@@ -315,9 +314,9 @@ const LineItem = props => {
                 <Grid item xs={6} sm={3} md={6} lg={3}>
                   <Field
                     name={`${lineItem}.quantityOrdered`}
-                    label={mdAndDown && 'Ordered'}
-                    placeholder={!mdAndDown && 'Ordered'}
-                    type={xsOnly ? 'number' : undefined}
+                    label={mdAndDown ? 'Ordered' : ''}
+                    placeholder={mdAndDown ? '' : 'Ordered'}
+                    // type={xsOnly ? 'number' : undefined}
                     component={NumberField}
                     margin="dense"
                   />
@@ -331,8 +330,9 @@ const LineItem = props => {
                 <Grid item xs={6} sm={6} md={12} lg={6}>
                   <Field
                     name={`${lineItem}.estimatedCost`}
-                    label={mdAndDown && 'Est Cost'}
-                    type={xsOnly ? 'number' : undefined}
+                    label={mdAndDown ? 'Est Cost' : ''}
+                    placeholder={mdAndDown ? '' : 'Est Cost'}
+                    // type={xsOnly ? 'number' : undefined}
                     component={NumberField}
                     InputProps={{
                       startAdornment: (
@@ -348,13 +348,14 @@ const LineItem = props => {
                   <Field
                     name={`${lineItem}.currentCost`}
                     label={mdAndDown && 'Curr Cost'}
+                    placeholder={mdAndDown ? '' : 'Curr Cost'}
                     component={NumberField}
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">$</InputAdornment>
                       )
                     }}
-                    type={xsOnly ? 'number' : undefined}
+                    // type={xsOnly ? 'number' : undefined}
                     numberType="currency"
                     margin="dense"
                   />

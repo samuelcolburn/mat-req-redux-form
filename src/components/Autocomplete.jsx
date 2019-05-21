@@ -35,7 +35,11 @@ const ControllerButton = ({
   toggleMenu,
   disabled
 }) => (
-  <InputAdornment position="end" disablePointerEvents={disabled}>
+  <InputAdornment
+    position="end"
+    disablePointerEvents={disabled}
+    className={classes.inputAdornment}
+  >
     {selectedItem ? (
       <IconButton
         edge="end"
@@ -58,6 +62,7 @@ const ControllerButton = ({
   </InputAdornment>
 );
 
+const ITEM_HEIGHT = 36;
 const SuggestionRenderer = React.memo(({ index, style, data }) => {
   const {
     getItemProps,
@@ -71,6 +76,7 @@ const SuggestionRenderer = React.memo(({ index, style, data }) => {
 
   return (
     <MenuItem
+      disableGutters
       key={item.id}
       {...getItemProps({
         item,
@@ -78,6 +84,9 @@ const SuggestionRenderer = React.memo(({ index, style, data }) => {
         selected: highlightedIndex === index,
         style: {
           fontWeight: selectedItem.id === item.id ? 500 : 400,
+          minHeight: ITEM_HEIGHT,
+          paddingLeft: 8,
+          paddingRight: 8,
           ...style
         }
       })}
@@ -109,6 +118,7 @@ const useStyles = makeStyles(theme => ({
     marginTop: theme.spacing(1),
     left: 0,
     right: 0,
+    // top: props => (props.margin && props.margin === 'dense' ? 26 : 40),
     maxHeight: 300,
     overflowY: 'auto'
   },
@@ -122,30 +132,35 @@ const useStyles = makeStyles(theme => ({
     width: 'auto',
     flexGrow: 1
   },
+  inputAdornment: {
+    marginLeft: 0
+  },
   iconButton: {
-    padding: theme.spacing(2),
-    marginRight: theme.spacing(2) * -1
+    padding: 0,
+    marginRight: 0
   },
   resultsError: {
     color: theme.palette.error.main
   }
 }));
 
-let AutoComplete = ({
-  input,
-  meta,
-  label,
-  placeholder,
-  itemToString,
-  table,
-  params,
-  disabled,
-  margin,
-  ...rest
-}) => {
-  const classes = useStyles();
+let AutoComplete = props => {
+  const classes = useStyles(props);
+  const {
+    input,
+    meta,
+    label,
+    placeholder,
+    itemToString,
+    table,
+    params,
+    disabled,
+    margin,
+    ...rest
+  } = props;
 
   const [inputValue, setInputValue] = useState(itemToString(input.value));
+  const inputRef = useRef(null);
 
   function onInputValueChange(inputValue, stateAndHelpers) {
     setInputValue(inputValue);
@@ -211,7 +226,11 @@ let AutoComplete = ({
       }) => (
         <div className={classes.container}>
           {
-            <FormControl error={meta.error && meta.touched} fullWidth>
+            <FormControl
+              error={meta.error && meta.touched}
+              fullWidth
+              ref={inputRef}
+            >
               {label && (
                 <InputLabel
                   {...getLabelProps({
@@ -262,7 +281,14 @@ let AutoComplete = ({
             </FormControl>
           }
           {isOpen ? (
-            <Paper className={classes.paper} square>
+            <Paper
+              className={classes.paper}
+              square
+              {...getMenuProps()}
+              style={{
+                top: inputRef.current.clientHeight
+              }}
+            >
               {(() => {
                 if (!isOpen) {
                   return null;
@@ -306,9 +332,11 @@ let AutoComplete = ({
                       return (
                         <FixedSizeList
                           ref={listRef}
-                          height={data.length < 7 ? data.length * 46 : 300}
+                          height={
+                            data.length < 7 ? data.length * ITEM_HEIGHT : 300
+                          }
                           width="100%"
-                          itemSize={46}
+                          itemSize={ITEM_HEIGHT}
                           itemCount={data.length}
                           itemData={itemData}
                         >
