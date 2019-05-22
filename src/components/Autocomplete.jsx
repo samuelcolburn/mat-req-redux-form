@@ -144,6 +144,10 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
+const getInputHeight = ref =>
+  ref.current.computedStyleMap().get('margin-top').value +
+  ref.current.scrollHeight;
+
 let AutoComplete = props => {
   const classes = useStyles(props);
   const {
@@ -156,6 +160,7 @@ let AutoComplete = props => {
     params,
     disabled,
     margin,
+    InputProps,
     ...rest
   } = props;
 
@@ -226,11 +231,7 @@ let AutoComplete = props => {
       }) => (
         <div className={classes.container}>
           {
-            <FormControl
-              error={meta.error && meta.touched}
-              fullWidth
-              ref={inputRef}
-            >
+            <FormControl error={meta.error && meta.touched} fullWidth>
               {label && (
                 <InputLabel
                   {...getLabelProps({
@@ -272,7 +273,9 @@ let AutoComplete = props => {
                   inputProps: {
                     name: input.name,
                     placeholder
-                  }
+                  },
+                  ref: inputRef,
+                  ...InputProps
                 })}
               />
               {meta.error && meta.touched ? (
@@ -286,7 +289,7 @@ let AutoComplete = props => {
               square
               {...getMenuProps()}
               style={{
-                top: inputRef.current.clientHeight
+                top: getInputHeight(inputRef)
               }}
             >
               {(() => {

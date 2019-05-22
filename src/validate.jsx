@@ -1,4 +1,4 @@
-import validationSchema from "./validationSchema";
+import validationSchema from './validationSchema';
 
 export const asyncValidate = values => {
   return validationSchema.validate(values, { abortEarly: false }).catch(err =>

@@ -73,12 +73,16 @@ const validationSchema = Yup.object({
     id: Yup.string(),
     number: Yup.string(),
     name: Yup.string()
-  }).required('A Job is required'),
+  })
+    .nullable()
+    .required('A Job is required'),
   shopDrawing: Yup.object({
     id: Yup.string(),
     job: Yup.string(),
     name: Yup.string()
-  }).required('A Shop Drawing is required'),
+  })
+    .nullable()
+    .required('A Shop Drawing is required'),
   number: Yup.string().required('A TO number is required'),
   subject: Yup.string().required('A subject is required'),
   lineItems: Yup.array(LineItemSchema)

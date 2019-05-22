@@ -23,17 +23,25 @@ const useStyles = makeStyles(theme => ({
     gridTemplateColumns: '25px 5fr 6fr 2fr 2fr 2fr 30px',
     gridColumnGap: '4px',
     [theme.breakpoints.down('sm')]: {
-      gridTemplateColumns: '1fr'
+      gridTemplateColumns: '1fr 1fr'
     }
   },
   attributeContainer: {
     display: 'grid',
     gridTemplateColumns:
       'repeat(auto-fit, minmax(var(--column-width-min), 1fr))',
-    gridColumnGap: '4px'
+    alignItems: 'center',
+    gridColumnGap: '4px',
+    [theme.breakpoints.down('sm')]: {
+      gridColumnStart: 1,
+      gridColumnEnd: 3
+    }
   },
   line: {
-    '--column-width-min': '200px'
+    '--column-width-min': '200px',
+    [theme.breakpoints.down('xs')]: {
+      gridTemplateColumns: '1fr'
+    }
   },
   status: {
     '--column-width-min': '125px'
@@ -55,10 +63,18 @@ const useStyles = makeStyles(theme => ({
     '--column-width-min': '300px'
   },
   quantityRequest: {
-    '--column-width-min': '75px'
+    '--column-width-min': '75px',
+    [theme.breakpoints.down('sm')]: {
+      gridColumnStart: 1,
+      gridColumnEnd: 2
+    }
   },
   quantityOrder: {
-    '--column-width-min': '75px'
+    '--column-width-min': '75px',
+    [theme.breakpoints.down('sm')]: {
+      gridColumnStart: 2,
+      gridColumnEnd: 3
+    }
   },
   cost: {
     '--column-width-min': '80px'

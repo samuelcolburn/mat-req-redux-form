@@ -260,7 +260,7 @@ const mapStateToProps = (state, props) => {
 export default compose(
   connect(mapStateToProps),
   reduxForm({
-    validate,
+    // validate,
     onChange,
     form: 'RequisitionForm',
     enableReinitialize: true
