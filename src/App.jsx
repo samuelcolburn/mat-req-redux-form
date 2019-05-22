@@ -18,6 +18,8 @@ import { loadRandomRequisition, loadRequisitionById } from './actions';
 
 import Form from './Form';
 
+import Hidden from '@material-ui/core/Hidden';
+
 const useStyles = makeStyles(theme => ({
   root: {}
 }));
@@ -30,6 +32,7 @@ let App = ({
   selectedRequisition
 }) => {
   const classes = useStyles();
+
   const [reqId, setReqId] = useState('');
 
   const loadRequisition = e => {
@@ -67,9 +70,16 @@ let App = ({
   // );
 
   return (
-    <Container className={classes.root}>
+    <Container className={classes.root} maxWidth="xl">
       <Typography variant="h4" component="h1" gutterBottom>
-        Material Requisition
+        Material Requisition:
+        <Typography variant="h4" component="span" gutterBottom>
+          <Hidden smUp>{'XS'}</Hidden>
+          <Hidden mdUp>{', SM'}</Hidden>
+          <Hidden lgUp>{', MD'}</Hidden>
+          <Hidden xlUp>{', LG'}</Hidden>
+          <Hidden>{', XL'}</Hidden>
+        </Typography>
       </Typography>
 
       <Button color="primary" variant="contained" onClick={loadRequisition}>

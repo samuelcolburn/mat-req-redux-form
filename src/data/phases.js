@@ -1,5 +1,4 @@
 import faker from 'faker';
-import random from 'lodash/random';
 import { populate } from '../helpers';
 
 const alphabet = [

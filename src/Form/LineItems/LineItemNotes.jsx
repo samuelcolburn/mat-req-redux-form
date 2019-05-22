@@ -1,7 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { connect } from 'react-redux';
-// import { Field } from 'redux-form';
-
+import { Field } from 'redux-form';
 import { makeStyles } from '@material-ui/styles';
 
 import Popover from '@material-ui/core/Popover';
@@ -15,6 +14,7 @@ import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import ChatIcon from '@material-ui/icons/Chat';
 import TextField from '@material-ui/core/TextField';
+import Collapse from '@material-ui/core/Collapse';
 
 import { MuiPickersContext } from 'material-ui-pickers';
 
@@ -24,20 +24,14 @@ import {
   bindPopover
 } from 'material-ui-popup-state/hooks';
 
-// import DebouncedTextField from '../components/DebouncedTextField';
+import useMediaQueryWithTheme from '../../components/useMediaQueryWithTheme';
+import DebouncedTextField from '../../components/DebouncedTextField';
 
-import { saveNote } from '../actions';
-import { noteSelector } from '../selectors';
+import { saveNote } from '../../actions';
+import { noteSelector } from '../../selectors';
+import { InputAdornment } from '@material-ui/core';
 
-const useStyles = makeStyles(theme => ({
-  // root: {
-  //   display: 'flex',
-  //   alignItems: 'center',
-  //   justifyContent: 'center',
-  //   width: 35,
-  //   minWidth: 35,
-  //   maxWidth: 35
-  // },
+const useDialogStyles = makeStyles(theme => ({
   paper: {
     padding: theme.spacing(4),
     maxWidth: 300
@@ -61,19 +55,8 @@ const userHasNotReadNote = user => note =>
 const unreadNotesCount = user => notes =>
   notes.filter(userHasNotReadNote(user)).length;
 
-let LineItemNotes = ({
-  lineItem,
-  index,
-  fields,
-  job,
-  shopDrawing,
-  id,
-  form,
-  user,
-  saveNote,
-  notes
-}) => {
-  const classes = useStyles();
+const DialogNotes = ({ index, id, form, user, saveNote, notes }) => {
+  const classes = useDialogStyles();
 
   const popupState = usePopupState({
     variant: 'popover',
@@ -145,16 +128,6 @@ let LineItemNotes = ({
             })}
           </List>
 
-          {/* <Field
-            className={classes.input}
-            name={`${lineItem}.addNote`}
-            label="Add Note"
-            component={DebouncedTextField}
-            fullWidth
-            multiline
-            variant="outlined"
-            inputRef={focusedInput}
-          /> */}
           <TextField
             className={classes.input}
             inputRef={focusedInput}
@@ -177,6 +150,91 @@ let LineItemNotes = ({
       </Popover>
     </React.Fragment>
   );
+};
+
+const useExpansionStyles = makeStyles(theme => ({
+  button: {
+    margin: theme.spacing(4)
+  }
+}));
+
+const ExpansionNotes = props => {
+  const {
+    lineItem,
+    index,
+    fields,
+    job,
+    shopDrawing,
+    id,
+    form,
+    user,
+    saveNote,
+    notes
+  } = props;
+  const classes = useExpansionStyles();
+  const utils = useContext(MuiPickersContext);
+  const [showNotes, setShowNotes] = useState(false);
+  const unreadCount = unreadNotesCount(user)(notes);
+
+  function handleClick(e) {
+    setShowNotes(prev => !prev);
+  }
+
+  return (
+    <Grid container alignItems="flex-start">
+      <IconButton
+        onClick={handleClick}
+        size="small"
+        disabled={unreadCount <= 0}
+        className={classes.button}
+      >
+        <Badge badgeContent={unreadCount} color="primary">
+          <ChatIcon />
+        </Badge>
+      </IconButton>
+
+      <Grid item xs>
+        <Collapse in={showNotes}>
+          <List dense disablePadding>
+            {notes.map((note, index) => {
+              const dateCreated = utils.format(note.dateCreated, 'MM/dd/yyyy');
+              const userName = `${note.firstName} ${note.lastName}`;
+              return (
+                <ListItem
+                  dense
+                  key={index}
+                  className={classes.listItem}
+                  disableGutters
+                >
+                  <ListItemText
+                    primary={note.note}
+                    secondary={`${dateCreated} - ${userName}`}
+                  />
+                </ListItem>
+              );
+            })}
+          </List>
+        </Collapse>
+
+        <Field
+          name={`${lineItem}.addNote`}
+          multiline
+          fullWidth
+          placeholder="Add Note"
+          component={DebouncedTextField}
+          margin="dense"
+        />
+      </Grid>
+    </Grid>
+  );
+};
+
+let LineItemNotes = props => {
+  const smAndDown = useMediaQueryWithTheme(theme =>
+    theme.breakpoints.down('sm')
+  );
+
+  return smAndDown ? <ExpansionNotes {...props} /> : <DialogNotes {...props} />;
 };
 
 const mapStateToProps = (state, props) => {

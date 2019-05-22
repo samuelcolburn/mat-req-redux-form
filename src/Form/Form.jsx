@@ -1,11 +1,10 @@
 import React from 'react';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
-import { Field, FieldArray, reduxForm, formValueSelector } from 'redux-form';
+import { Field, reduxForm, formValueSelector } from 'redux-form';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
-import Divider from '@material-ui/core/Divider';
 import { makeStyles } from '@material-ui/styles';
 
 import DebouncedTextField from '../components/DebouncedTextField';
@@ -13,9 +12,6 @@ import TextField from '../components/TextField';
 import Autocomplete from '../components/Autocomplete';
 import DebouncedDatePickerField from '../components/DebouncedDatePickerField';
 
-import LineItemsHeader from './LineItemsHeader';
-import LineItemsColumns from './LineItemsColumns';
-// import LineItems from './LineItems';
 import LineItems from './LineItems';
 
 import { validate } from '../validate';
@@ -45,7 +41,23 @@ const useStyles = makeStyles(theme => ({
   header: {},
   lineItems: {
     marginTop: theme.spacing(8)
-    // gridTemplateColumns: '25px '
+    // display: 'grid',
+    // gridTemplateColumns: `
+    // [select-checkbox] 25px
+    // [status] 125px
+    // [phase] 75px
+    // [vendor] 200px
+    // [type] 170px
+    // [item] minmax(335px, auto)
+    // [qty-inventory] 75px
+    // [qty-requested] 75px
+    // [qty-needed] 75px
+    // [qty-ordered] 75px
+    // [cost-est] 80px
+    // [cost-current] 80px
+    // [actions] 30px
+    // `,
+    // gridTemplateRows: '30px'
   }
 }));
 //       <Grid container className={classes.header} component="section">
@@ -177,7 +189,7 @@ let Form = props => {
         </Grid>
       </Grid>
 
-      <Grid container className={classes.lineItems} component="section">
+      {/* <Grid container className={classes.lineItems} component="section">
         <LineItemsHeader form={form} />
 
         <LineItemsColumns form={form} />
@@ -190,14 +202,8 @@ let Form = props => {
           job={job}
           shopDrawing={shopDrawing}
         />
-      </Grid>
-
-      {/* <FieldArray
-        name="lineItems"
-        component={LineItems}
-        job={job}
-        shopDrawing={shopDrawing}
-      /> */}
+      </Grid> */}
+      <LineItems job={job} shopDrawing={shopDrawing} form={form} />
 
       <section className="actions">
         <Button

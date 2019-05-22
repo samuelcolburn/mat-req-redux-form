@@ -1,0 +1,139 @@
+import React from 'react';
+import { FieldArray } from 'redux-form';
+
+import { makeStyles } from '@material-ui/styles';
+import Grid from '@material-ui/core/Grid';
+import Hidden from '@material-ui/core/Hidden';
+import Divider from '@material-ui/core/Divider';
+
+import LineItemsColumns from './LineItemsColumns';
+import LineItemsHeader from './LineItemsHeader';
+import LineItemsList from './LineItemsList';
+
+const useStyles = makeStyles(theme => ({
+  root: {
+    marginTop: theme.spacing(8)
+  },
+  container: {
+    display: 'block',
+    width: '100%'
+  },
+  itemContainer: {
+    display: 'grid',
+    gridTemplateColumns: '25px 5fr 6fr 2fr 2fr 2fr 30px',
+    gridColumnGap: '4px',
+    [theme.breakpoints.down('sm')]: {
+      gridTemplateColumns: '1fr'
+    }
+  },
+  attributeContainer: {
+    display: 'grid',
+    gridTemplateColumns:
+      'repeat(auto-fit, minmax(var(--column-width-min), 1fr))',
+    gridColumnGap: '4px'
+  },
+  line: {
+    '--column-width-min': '200px'
+  },
+  status: {
+    '--column-width-min': '125px'
+  },
+  vendor: {
+    '--column-width-min': '150px'
+  },
+  item: {
+    '--column-width-min': '300px',
+    gridTemplateColumns: '1fr 3fr',
+    [theme.breakpoints.down('md')]: {
+      gridTemplateColumns: '1fr'
+    }
+  },
+  itemType: {
+    '--column-width-min': '150px'
+  },
+  itemDescription: {
+    '--column-width-min': '300px'
+  },
+  quantityRequest: {
+    '--column-width-min': '75px'
+  },
+  quantityOrder: {
+    '--column-width-min': '75px'
+  },
+  cost: {
+    '--column-width-min': '80px'
+  },
+  actions: {
+    '--column-width-min': '30px',
+    alignItems: 'center'
+  },
+  lineItem: {
+    position: 'relative',
+    '&::before': {
+      content: '""',
+      opacity: 0,
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      width: '100%',
+      height: '100%',
+      backgroundColor: theme.palette.action.hover
+    },
+    '&:hover::before': {
+      opacity: 1
+    }
+  },
+  selectedWrapper: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  selectedCheckbox: {
+    height: 25,
+    width: 25
+  },
+  buttonsContainer: {
+    display: 'grid',
+    gridTemplateColumns: '1fr'
+  },
+  buttonWrapper: {
+    [theme.breakpoints.down('sm')]: {
+      width: '100%'
+    }
+  }
+}));
+
+const LineItems = props => {
+  const { form, job, shopDrawing } = props;
+  const classes = useStyles();
+
+  return (
+    <Grid container className={classes.root}>
+      <LineItemsHeader form={form} classes={classes} />
+
+      <Grid item xs={12}>
+        <div className={classes.container}>
+          <Hidden smDown>
+            <LineItemsColumns form={form} classes={classes} />
+          </Hidden>
+
+          <Divider
+            variant="fullWidth"
+            style={{ width: '100%' }}
+            className={classes.itemContainer}
+          />
+
+          <FieldArray
+            name="lineItems"
+            component={LineItemsList}
+            job={job}
+            shopDrawing={shopDrawing}
+            classes={classes}
+          />
+        </div>
+      </Grid>
+    </Grid>
+  );
+};
+
+export default LineItems;

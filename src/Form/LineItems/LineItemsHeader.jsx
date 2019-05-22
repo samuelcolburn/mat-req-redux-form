@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
+import Hidden from '@material-ui/core/Hidden';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
@@ -11,12 +12,12 @@ import FileCopyIcon from '@material-ui/icons/FileCopy';
 import DeleteIcon from '@material-ui/icons/Delete';
 
 import { makeStyles } from '@material-ui/styles';
-// import useMediaQueryWithTheme from '../components/useMediaQueryWithTheme';
-// import Hidden from '@material-ui/core/Hidden';
 
-import { SELECTED_NONE } from '../constants';
-import { updateStatus, copySelected, removeSelected } from '../actions';
-import { getAllSelected } from '../selectors';
+import { SELECTED_NONE } from '../../constants';
+import { updateStatus, copySelected, removeSelected } from '../../actions';
+import { getAllSelected } from '../../selectors';
+
+import SelectAllCheckbox from './SelectAllCheckbox';
 
 let HeaderActions = ({
   allSelected,
@@ -26,8 +27,6 @@ let HeaderActions = ({
   form,
   classes
 }) => {
-  // const classes = useStyles();
-
   return allSelected === SELECTED_NONE ? null : (
     <React.Fragment>
       <Tooltip title="Approve" placement="top">
@@ -77,17 +76,13 @@ let HeaderActions = ({
   );
 };
 
-const useStyles = makeStyles(theme => ({
+const useHeaderStyles = makeStyles(theme => ({
   root: {
     height: 30
   },
   title: {
     paddingLeft: theme.spacing(4)
   },
-  // selectAll: {
-  //   height: 36,
-  //   width: 30
-  // },
   button: {
     margin: theme.spacing(1)
   }
@@ -103,14 +98,9 @@ HeaderActions = connect(
 )(HeaderActions);
 
 let LineItemsHeader = ({ form }) => {
-  // const mdAndUp = useMediaQueryWithTheme(theme => theme.breakpoints.up('md'));
-  const classes = useStyles();
+  const classes = useHeaderStyles();
   return (
     <Grid container alignItems="center" className={classes.root}>
-      {/* <Hidden smDown>
-        <SelectAllCheckBox form={form} classes={classes} />
-      </Hidden> */}
-
       <Typography variant="h6" component="h5" className={classes.title}>
         Line Items
       </Typography>

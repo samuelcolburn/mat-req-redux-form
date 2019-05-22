@@ -4,9 +4,9 @@ import { connect } from 'react-redux';
 import { makeStyles } from '@material-ui/styles';
 import Checkbox from '@material-ui/core/Checkbox';
 
-import { SELECTED_NONE, SELECTED_SOME } from '../constants';
-import { selectAll, deselectAll } from '../actions';
-import { getAllSelected } from '../selectors';
+import { SELECTED_NONE, SELECTED_SOME } from '../../constants';
+import { selectAll, deselectAll } from '../../actions';
+import { getAllSelected } from '../../selectors';
 
 const useStyles = makeStyles(theme => ({
   root: {
