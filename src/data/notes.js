@@ -9,6 +9,7 @@ const mockNote = requisitionLineItem => ({
   dateCreated: faker.date.recent(),
   note: faker.lorem.text(),
   relatedRequisitionLineItem: requisitionLineItem.id,
+  readBy: '',
   requisitionLineItem: { ...requisitionLineItem }
 });
 

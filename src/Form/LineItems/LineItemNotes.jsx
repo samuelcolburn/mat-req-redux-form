@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Field } from 'redux-form';
 import { makeStyles } from '@material-ui/styles';
@@ -27,9 +27,8 @@ import {
 import useMediaQueryWithTheme from '../../components/useMediaQueryWithTheme';
 import DebouncedTextField from '../../components/DebouncedTextField';
 
-import { saveNote } from '../../actions';
+import { saveNote, readNotes } from '../../actions';
 import { noteSelector } from '../../selectors';
-import { InputAdornment } from '@material-ui/core';
 
 const useDialogStyles = makeStyles(theme => ({
   paper: {
@@ -52,10 +51,9 @@ const userHasNotReadNote = user => note =>
       note.readBy.split(';').some(reader => reader === user))
   );
 
-const unreadNotesCount = user => notes =>
-  notes.filter(userHasNotReadNote(user)).length;
+const unreadNotes = user => notes => notes.filter(userHasNotReadNote(user));
 
-const DialogNotes = ({ index, id, form, user, saveNote, notes }) => {
+const DialogNotes = ({ index, id, form, user, saveNote, notes, onOpen }) => {
   const classes = useDialogStyles();
 
   const popupState = usePopupState({
@@ -74,6 +72,7 @@ const DialogNotes = ({ index, id, form, user, saveNote, notes }) => {
 
   function handleClick(event) {
     popupState.open(event);
+    onOpen(event);
   }
 
   function handleSave(event) {
@@ -92,7 +91,7 @@ const DialogNotes = ({ index, id, form, user, saveNote, notes }) => {
         onClick={handleClick}
         size="small"
       >
-        <Badge badgeContent={unreadNotesCount(user)(notes)} color="primary">
+        <Badge badgeContent={unreadNotes(user)(notes).length} color="primary">
           <ChatIcon />
         </Badge>
       </IconButton>
@@ -159,33 +158,26 @@ const useExpansionStyles = makeStyles(theme => ({
 }));
 
 const ExpansionNotes = props => {
-  const {
-    lineItem,
-    index,
-    fields,
-    job,
-    shopDrawing,
-    id,
-    form,
-    user,
-    saveNote,
-    notes
-  } = props;
+  const { lineItem, user, notes, onOpen } = props;
   const classes = useExpansionStyles();
   const utils = useContext(MuiPickersContext);
   const [showNotes, setShowNotes] = useState(false);
-  const unreadCount = unreadNotesCount(user)(notes);
+  const unreadCount = unreadNotes(user)(notes).length;
 
   function handleClick(e) {
     setShowNotes(prev => !prev);
   }
+
+  useEffect(() => {
+    if (showNotes) onOpen();
+  }, [showNotes, onOpen]);
 
   return (
     <Grid container alignItems="flex-start">
       <IconButton
         onClick={handleClick}
         size="small"
-        disabled={unreadCount <= 0}
+        disabled={!notes || !notes.length}
         className={classes.button}
       >
         <Badge badgeContent={unreadCount} color="primary">
@@ -234,7 +226,24 @@ let LineItemNotes = props => {
     theme.breakpoints.down('sm')
   );
 
-  return smAndDown ? <ExpansionNotes {...props} /> : <DialogNotes {...props} />;
+  const { readNotes, notes, user } = props;
+
+  const onOpen = e => {
+    if (!notes) return;
+    if (!notes.length) return;
+
+    const notesToRead = unreadNotes(user)(notes);
+
+    if (!notesToRead.length) return;
+
+    readNotes({ notes: notesToRead, user });
+  };
+
+  return smAndDown ? (
+    <ExpansionNotes {...props} onOpen={onOpen} />
+  ) : (
+    <DialogNotes {...props} onOpen={onOpen} />
+  );
 };
 
 const mapStateToProps = (state, props) => {
@@ -245,7 +254,8 @@ const mapStateToProps = (state, props) => {
 };
 
 const mapDispatchToProps = {
-  saveNote
+  saveNote,
+  readNotes
 };
 
 LineItemNotes = connect(

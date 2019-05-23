@@ -699,6 +699,20 @@ export const removeSelected = ({ form }) => (dispatch, getState) => {
   });
 };
 
+const readNote = ({ note, user }) => ({
+  type: UPDATE_NOTE,
+  payload: {
+    id: note.id,
+    readBy: note.readBy + ';' + user
+  }
+});
+
 export const saveNote = ({ form, index, note }) => (dispatch, getState) => {
   dispatch(change(form, `lineItems.${index}.addNote`, note, false));
+};
+
+export const readNotes = ({ notes, user }) => (dispatch, getState) => {
+  notes.forEach(note => {
+    dispatch(readNote({ note, user }));
+  });
 };
