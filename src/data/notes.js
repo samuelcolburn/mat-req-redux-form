@@ -8,6 +8,7 @@ const mockNote = requisitionLineItem => ({
   lastName: faker.name.lastName(),
   dateCreated: faker.date.recent(),
   note: faker.lorem.text(),
+  readBy: '',
   relatedRequisitionLineItem: requisitionLineItem.id,
   requisitionLineItem: { ...requisitionLineItem }
 });

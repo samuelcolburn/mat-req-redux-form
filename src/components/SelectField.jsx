@@ -11,7 +11,8 @@ import { toBoolean } from '../helpers';
 const useStyles = makeStyles(theme => ({
   select: {
     width: 'calc(100% - 20px)',
-    paddingRight: 20
+    paddingRight: 20,
+    paddingBottom: theme.spacing(2)
   }
 }));
 

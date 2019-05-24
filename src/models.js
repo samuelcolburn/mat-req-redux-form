@@ -178,6 +178,7 @@ Note.fields = {
   userName: attr(),
   dateCreated: attr(),
   note: attr(),
+  readBy: attr(),
   relatedRequisitionLineItem: fk({
     to: 'RequisitionLineItem',
     as: 'requisitionLineItem',

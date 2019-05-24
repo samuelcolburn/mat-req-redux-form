@@ -2,6 +2,7 @@ import React from 'react';
 import { FieldArray } from 'redux-form';
 
 import { makeStyles } from '@material-ui/styles';
+import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import Hidden from '@material-ui/core/Hidden';
 import Divider from '@material-ui/core/Divider';
@@ -12,7 +13,7 @@ import LineItemsList from './LineItemsList';
 
 const useStyles = makeStyles(theme => ({
   root: {
-    marginTop: theme.spacing(8)
+    margin: theme.spacing(8, 0)
   },
   container: {
     display: 'block',
@@ -20,7 +21,7 @@ const useStyles = makeStyles(theme => ({
   },
   itemContainer: {
     display: 'grid',
-    gridTemplateColumns: '25px 5fr 6fr 2fr 2fr 2fr 30px',
+    gridTemplateColumns: '30px 5fr 6fr 2fr 2fr 2fr 30px',
     gridColumnGap: '4px',
     [theme.breakpoints.down('sm')]: {
       gridTemplateColumns: '1fr 1fr'
@@ -84,6 +85,7 @@ const useStyles = makeStyles(theme => ({
     alignItems: 'center'
   },
   lineItem: {
+    borderBottom: `1px solid ${theme.palette.divider}`,
     position: 'relative',
     '&::before': {
       content: '""',
@@ -105,8 +107,8 @@ const useStyles = makeStyles(theme => ({
     justifyContent: 'center'
   },
   selectedCheckbox: {
-    height: 25,
-    width: 25
+    height: 30,
+    width: 30
   },
   buttonsContainer: {
     display: 'grid',

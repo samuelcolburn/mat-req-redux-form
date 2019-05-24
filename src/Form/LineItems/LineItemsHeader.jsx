@@ -1,7 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import Hidden from '@material-ui/core/Hidden';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
@@ -16,8 +15,6 @@ import { makeStyles } from '@material-ui/styles';
 import { SELECTED_NONE } from '../../constants';
 import { updateStatus, copySelected, removeSelected } from '../../actions';
 import { getAllSelected } from '../../selectors';
-
-import SelectAllCheckbox from './SelectAllCheckbox';
 
 let HeaderActions = ({
   allSelected,
@@ -78,11 +75,10 @@ let HeaderActions = ({
 
 const useHeaderStyles = makeStyles(theme => ({
   root: {
-    height: 30
+    height: 30,
+    margin: theme.spacing(4, 8)
   },
-  title: {
-    paddingLeft: theme.spacing(4)
-  },
+  title: {},
   button: {
     margin: theme.spacing(1)
   }

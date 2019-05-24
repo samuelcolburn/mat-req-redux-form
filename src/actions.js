@@ -41,7 +41,7 @@ import {
   // SELECT_LINE_ITEMS,
   // DESELECT_LINE_ITEMS
 } from './constants';
-import { stringify, makeLineItemId } from './helpers';
+import { delay, stringify, makeLineItemId } from './helpers';
 import {
   doQuery,
   getData,
@@ -701,4 +701,29 @@ export const removeSelected = ({ form }) => (dispatch, getState) => {
 
 export const saveNote = ({ form, index, note }) => (dispatch, getState) => {
   dispatch(change(form, `lineItems.${index}.addNote`, note, false));
+};
+
+const readNote = ({ note, user }) => ({
+  type: UPDATE_NOTE,
+  payload: {
+    id: note.id,
+    readBy: note.readBy + ';' + user
+  }
+});
+
+export const readNotes = ({ notes, user }) => (dispatch, getState) => {
+  console.group('readNotes: ');
+  console.log('notes: ', notes);
+  console.log('user: ', user);
+  console.groupEnd();
+  delay(200).then(
+    success => {
+      console.log('notes were set to read in database: ');
+      notes.forEach(note => dispatch(readNote({ note, user })));
+    },
+    error => {
+      console.log('error reading notes: ', error.message);
+      console.error(error);
+    }
+  );
 };

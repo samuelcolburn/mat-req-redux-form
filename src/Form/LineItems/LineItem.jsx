@@ -14,7 +14,7 @@ import DebouncedTextField from '../../components/DebouncedTextField';
 import NumberField from '../../components/NumberField';
 import CheckboxField from '../../components/CheckboxField';
 
-import useMediaQueryWithTheme from '../../components/useMediaQueryWithTheme';
+import useMediaQueryWithTheme from '../../hooks/useMediaQueryWithTheme';
 import LineItemNotes from './LineItemNotes';
 
 const statusOptions = [
@@ -279,7 +279,9 @@ let LineItem = props => {
             component={NumberField}
             InputProps={{
               startAdornment: (
-                <InputAdornment position="start">$</InputAdornment>
+                <InputAdornment position="start" style={{ marginRight: '3px' }}>
+                  {'$'}
+                </InputAdornment>
               )
             }}
             numberType="currency"
@@ -294,7 +296,9 @@ let LineItem = props => {
             component={NumberField}
             InputProps={{
               startAdornment: (
-                <InputAdornment position="start">$</InputAdornment>
+                <InputAdornment position="start" style={{ marginRight: '3px' }}>
+                  {'$'}
+                </InputAdornment>
               )
             }}
             // type={xsOnly ? 'number' : undefined}

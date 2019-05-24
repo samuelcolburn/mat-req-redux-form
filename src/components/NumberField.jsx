@@ -19,7 +19,7 @@ import NumberFormat from 'react-number-format';
 // and because it doesn't allow thousands separators
 // TODO: Make as type="number" on mobile
 
-const useStyles = makeStyles(theme => ({
+const useLabelStyles = makeStyles(theme => ({
   root: {
     transform: props =>
       props.numberType && props.numberType === 'currency'
@@ -33,7 +33,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const NumberInputLabel = props => {
-  const classes = useStyles(props);
+  const classes = useLabelStyles(props);
 
   const { label, shrink, name, numberType, ...rest } = props;
 
@@ -73,6 +73,12 @@ const shouldShrink = value => {
     return true;
   }
 };
+
+const useStyles = makeStyles(theme => ({
+  input: {
+    paddingBottom: theme.spacing(2)
+  }
+}));
 
 const NumberField = props => {
   const {
@@ -164,7 +170,7 @@ const NumberField = props => {
         {...input}
         {...custom}
         placeholder={placeholder}
-        className={classes.input}
+        classes={classes}
         value={value}
         onChange={handleChange}
         error={error && dirty}

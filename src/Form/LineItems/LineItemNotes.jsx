@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useCallback } from 'react';
 import { connect } from 'react-redux';
 import { Field } from 'redux-form';
 import { makeStyles } from '@material-ui/styles';
@@ -24,12 +24,11 @@ import {
   bindPopover
 } from 'material-ui-popup-state/hooks';
 
-import useMediaQueryWithTheme from '../../components/useMediaQueryWithTheme';
+import useMediaQueryWithTheme from '../../hooks/useMediaQueryWithTheme';
 import DebouncedTextField from '../../components/DebouncedTextField';
 
-import { saveNote } from '../../actions';
+import { saveNote, readNotes } from '../../actions';
 import { noteSelector } from '../../selectors';
-import { InputAdornment } from '@material-ui/core';
 
 const useDialogStyles = makeStyles(theme => ({
   paper: {
@@ -52,10 +51,19 @@ const userHasNotReadNote = user => note =>
       note.readBy.split(';').some(reader => reader === user))
   );
 
-const unreadNotesCount = user => notes =>
-  notes.filter(userHasNotReadNote(user)).length;
+const unreadNotes = user => notes => notes.filter(userHasNotReadNote(user));
 
-const DialogNotes = ({ index, id, form, user, saveNote, notes }) => {
+const DialogNotes = ({
+  index,
+  id,
+  form,
+  user,
+  saveNote,
+  readNotes,
+  notes,
+  onOpen
+}) => {
+  // const savedCallback = useRef();
   const classes = useDialogStyles();
 
   const popupState = usePopupState({
@@ -74,6 +82,7 @@ const DialogNotes = ({ index, id, form, user, saveNote, notes }) => {
 
   function handleClick(event) {
     popupState.open(event);
+    onOpen(event);
   }
 
   function handleSave(event) {
@@ -92,7 +101,7 @@ const DialogNotes = ({ index, id, form, user, saveNote, notes }) => {
         onClick={handleClick}
         size="small"
       >
-        <Badge badgeContent={unreadNotesCount(user)(notes)} color="primary">
+        <Badge badgeContent={unreadNotes(user)(notes).length} color="primary">
           <ChatIcon />
         </Badge>
       </IconButton>
@@ -159,25 +168,16 @@ const useExpansionStyles = makeStyles(theme => ({
 }));
 
 const ExpansionNotes = props => {
-  const {
-    lineItem,
-    index,
-    fields,
-    job,
-    shopDrawing,
-    id,
-    form,
-    user,
-    saveNote,
-    notes
-  } = props;
+  const { lineItem, user, notes, onOpen } = props;
+
   const classes = useExpansionStyles();
   const utils = useContext(MuiPickersContext);
   const [showNotes, setShowNotes] = useState(false);
-  const unreadCount = unreadNotesCount(user)(notes);
+  const unreadCount = unreadNotes(user)(notes).length;
 
   function handleClick(e) {
     setShowNotes(prev => !prev);
+    onOpen(e);
   }
 
   return (
@@ -234,7 +234,24 @@ let LineItemNotes = props => {
     theme.breakpoints.down('sm')
   );
 
-  return smAndDown ? <ExpansionNotes {...props} /> : <DialogNotes {...props} />;
+  const { notes, user, readNotes } = props;
+
+  const clearUnread = useCallback(() => {
+    if (!notes) return;
+    if (!notes.length) return;
+
+    const notesToRead = unreadNotes(user)(notes);
+
+    if (notesToRead && notesToRead.length) {
+      readNotes({ notes: notesToRead, user });
+    }
+  }, [notes, user, readNotes]);
+
+  return smAndDown ? (
+    <ExpansionNotes {...props} onOpen={clearUnread} />
+  ) : (
+    <DialogNotes {...props} onOpen={clearUnread} />
+  );
 };
 
 const mapStateToProps = (state, props) => {
@@ -245,7 +262,8 @@ const mapStateToProps = (state, props) => {
 };
 
 const mapDispatchToProps = {
-  saveNote
+  saveNote,
+  readNotes
 };
 
 LineItemNotes = connect(

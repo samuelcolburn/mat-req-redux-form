@@ -2,7 +2,7 @@ import React from 'react';
 import compose from 'lodash/fp/compose';
 
 import Button from '@material-ui/core/Button';
-import useMediaQueryWithTheme from '../../components/useMediaQueryWithTheme';
+import useMediaQueryWithTheme from '../../hooks/useMediaQueryWithTheme';
 
 import { makeLineItemWithId } from '../../helpers';
 

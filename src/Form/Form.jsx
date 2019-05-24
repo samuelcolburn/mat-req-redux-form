@@ -205,6 +205,23 @@ let Form = props => {
       </Grid> */}
       <LineItems job={job} shopDrawing={shopDrawing} form={form} />
 
+      {/* Attachments */}
+      <Grid container className={classes.attachments}>
+        <Grid
+          container
+          alignItems="center"
+          className={classes.attachmentsHeader}
+        >
+          <Typography
+            variant="h6"
+            component="h5"
+            className={classes.attachmentsHeader}
+          >
+            Attachments
+          </Typography>
+        </Grid>
+      </Grid>
+
       <section className="actions">
         <Button
           variant="contained"

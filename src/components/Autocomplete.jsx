@@ -130,7 +130,8 @@ const useStyles = makeStyles(theme => ({
   },
   inputInput: {
     width: 'auto',
-    flexGrow: 1
+    flexGrow: 1,
+    paddingBottom: theme.spacing(2)
   },
   inputAdornment: {
     marginLeft: 0

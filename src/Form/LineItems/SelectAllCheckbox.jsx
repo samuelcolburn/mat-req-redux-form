@@ -10,8 +10,8 @@ import { getAllSelected } from '../../selectors';
 
 const useStyles = makeStyles(theme => ({
   root: {
-    height: 25,
-    width: 25
+    height: 30,
+    width: 30
   }
 }));
 
