@@ -58,6 +58,13 @@ const useStyles = makeStyles(theme => ({
     // [actions] 30px
     // `,
     // gridTemplateRows: '30px'
+  },
+  attachments: {
+    margin: theme.spacing(8, 0)
+  },
+  attachmentsHeader: {
+    height: 30,
+    margin: theme.spacing(4, 8)
   }
 }));
 //       <Grid container className={classes.header} component="section">
@@ -215,7 +222,7 @@ let Form = props => {
           <Typography
             variant="h6"
             component="h5"
-            className={classes.attachmentsHeader}
+            className={classes.attachmentsTitle}
           >
             Attachments
           </Typography>
