@@ -57,12 +57,12 @@ const useStyles = makeStyles(theme => ({
       gridTemplateColumns: '1fr'
     }
   },
-  itemType: {
-    '--column-width-min': '150px'
-  },
-  itemDescription: {
-    '--column-width-min': '300px'
-  },
+  // itemType: {
+  //   '--column-width-min': '150px'
+  // },
+  // itemDescription: {
+  //   '--column-width-min': '300px'
+  // },
   quantityRequest: {
     '--column-width-min': '75px',
     [theme.breakpoints.down('sm')]: {

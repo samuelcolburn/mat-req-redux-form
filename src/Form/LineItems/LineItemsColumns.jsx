@@ -25,14 +25,14 @@ const LineItemsColumns = ({ form, classes }) => {
 
       {/* Group 2: Type, Item */}
       <div className={clsx(classes.attributeContainer, classes.item)}>
-        <div className={clsx(classes.attributeContainer, classes.itemType)}>
-          <div>Type</div>
-        </div>
-        <div
+        {/* <div className={clsx(classes.attributeContainer, classes.itemType)}> */}
+        <div>Type</div>
+        {/* </div> */}
+        {/* <div
           className={clsx(classes.attributeContainer, classes.itemDescription)}
-        >
-          <div>Item</div>
-        </div>
+        > */}
+        <div>Item</div>
+        {/* </div> */}
       </div>
 
       {/* Group 3: Quantities */}

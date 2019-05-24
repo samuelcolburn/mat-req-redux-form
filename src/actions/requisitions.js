@@ -21,7 +21,9 @@ import orm from '../orm';
 
 import { createJob } from './jobs';
 import { createShopDrawing } from './shopDrawings';
+import { createUser } from './users';
 import { createManyLineItemNotes } from './notes';
+import { createManyAttachments, fetchAttachmentsForReq } from './attachments';
 
 export const createManyRequisitionLineItem = props => ({
   type: CREATE_MANY_REQUISITION_LINE_ITEM,
@@ -87,6 +89,10 @@ const reqRequisitionSuccess = requisition => (dispatch, getState) => {
   const dbState = getState().db;
   const sess = orm.session(dbState);
 
+  if (!sess.User.idExists(requisition.relatedUser)) {
+    dispatch(createUser(requisition.user));
+  }
+
   if (!sess.Job.idExists(requisition.relatedJob)) {
     dispatch(createJob(requisition.job));
   }
@@ -117,20 +123,32 @@ const fetchNotesForLineItems = lineItems => (dispatch, getState) =>
 export const loadRequisitionById = ({ id }) => (dispatch, getState) => {
   Promise.all([
     dispatch(fetchRequisition(id)),
-    dispatch(fetchLineItemsForReq(id))
-  ]).then(
-    data => {
-      console.log('load req done fetching: ', data);
-      dispatch(reqRequisitionSuccess(data[0]));
-      dispatch(createManyRequisitionLineItem(data[1]));
-      dispatch(selectRequisition(data[0].id));
-    },
-    error => {
-      console.log('error fetching data: ', error.message);
-      console.error(error);
-      dispatch(reqRequisitionError(error));
-    }
-  );
+    dispatch(fetchLineItemsForReq(id)),
+    dispatch(fetchAttachmentsForReq(id))
+  ])
+    .then(([requisition, lineItems, attachments]) =>
+      Promise.all([
+        requisition,
+        lineItems,
+        attachments,
+        dispatch(fetchNotesForLineItems(lineItems))
+      ])
+    )
+    .then(
+      ([requisition, lineItems, attachments, lineItemNotes]) => {
+        console.log('load req done fetching: ');
+        dispatch(reqRequisitionSuccess(requisition));
+        dispatch(createManyRequisitionLineItem(lineItems));
+        dispatch(createManyAttachments(attachments));
+        dispatch(createManyLineItemNotes(lineItemNotes));
+        dispatch(selectRequisition(requisition.id));
+      },
+      error => {
+        console.log('error fetching data: ', error.message);
+        console.error(error);
+        dispatch(reqRequisitionError(error));
+      }
+    );
 };
 
 const fetchRandomRequisition = () => (dispatch, getState) => {
@@ -141,21 +159,26 @@ const fetchRandomRequisition = () => (dispatch, getState) => {
 
 export const loadRandomRequisition = () => (dispatch, getState) => {
   dispatch(fetchRandomRequisition()).then(data =>
-    Promise.all([data, dispatch(fetchLineItemsForReq(data.id))])
-      .then(([requisition, lineItems]) =>
+    Promise.all([
+      data,
+      dispatch(fetchLineItemsForReq(data.id)),
+      dispatch(fetchAttachmentsForReq(data.id))
+    ])
+      .then(([requisition, lineItems, attachments]) =>
         Promise.all([
           requisition,
           lineItems,
+          attachments,
           dispatch(fetchNotesForLineItems(lineItems))
         ])
       )
       .then(
-        ([requisition, lineItems, lineItemNotes]) => {
+        ([requisition, lineItems, attachments, lineItemNotes]) => {
           console.log('load req done fetching: ', data);
           dispatch(reqRequisitionSuccess(requisition));
           dispatch(createManyRequisitionLineItem(lineItems));
+          dispatch(createManyAttachments(attachments));
           dispatch(createManyLineItemNotes(lineItemNotes));
-
           dispatch(selectRequisition(requisition.id));
         },
         error => {

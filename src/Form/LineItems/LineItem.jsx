@@ -160,45 +160,40 @@ let LineItem = props => {
               });
             }}
           </Field>
-
-          <div>
-            <Field
-              name={`${lineItem}.phase`}
-              label={mdAndDown ? 'Phase' : ''}
-              placeholder={mdAndDown ? '' : 'Phase'}
-              disabled={!(shopDrawing && shopDrawing.id)}
-              table="phases"
-              params={{
-                related: [
-                  {
-                    key: 'relatedJob',
-                    value: job && job.id ? job.id : 0
-                  },
-                  {
-                    key: 'relatedShopDrawing',
-                    value: shopDrawing && shopDrawing.id ? shopDrawing.id : 0
-                  }
-                ]
-              }}
-              itemToString={phaseToString}
-              component={Autocomplete}
-              margin="dense"
-            />
-          </div>
+          <Field
+            name={`${lineItem}.phase`}
+            label={mdAndDown ? 'Phase' : ''}
+            placeholder={mdAndDown ? '' : 'Phase'}
+            disabled={!(shopDrawing && shopDrawing.id)}
+            table="phases"
+            params={{
+              related: [
+                {
+                  key: 'relatedJob',
+                  value: job && job.id ? job.id : 0
+                },
+                {
+                  key: 'relatedShopDrawing',
+                  value: shopDrawing && shopDrawing.id ? shopDrawing.id : 0
+                }
+              ]
+            }}
+            itemToString={phaseToString}
+            component={Autocomplete}
+            margin="dense"
+          />
         </div>
 
         <div classes={clsx(classes.attributeContainer, classes.vendor)}>
-          <div>
-            <Field
-              name={`${lineItem}.vendor`}
-              label={mdAndDown ? 'Vendor' : ''}
-              placeholder={mdAndDown ? '' : 'Vendor'}
-              table="vendors"
-              itemToString={vendorToString}
-              component={Autocomplete}
-              margin="dense"
-            />
-          </div>
+          <Field
+            name={`${lineItem}.vendor`}
+            label={mdAndDown ? 'Vendor' : ''}
+            placeholder={mdAndDown ? '' : 'Vendor'}
+            table="vendors"
+            itemToString={vendorToString}
+            component={Autocomplete}
+            margin="dense"
+          />
         </div>
       </div>
 

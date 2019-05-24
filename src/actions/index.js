@@ -27,3 +27,4 @@ export {
   updateShopDrawing,
   removeShopDrawing
 } from './shopDrawings';
+export { fetchCurrentUser, createUser, updateUser, removeUser } from './users';

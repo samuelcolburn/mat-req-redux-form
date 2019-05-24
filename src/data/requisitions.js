@@ -1,15 +1,15 @@
 import faker from 'faker';
 import { populate } from '../helpers';
 
-const mockRequisition = shopDrawing => {
+const mockRequisition = (users, shopDrawing) => {
+  const user = users[faker.random.number({ min: 0, max: users.length - 1 })];
   return {
     id: faker.random.uuid(),
-    createdBy: faker.fake('{{name.firstName}} {{name.lastName}}'),
-    // dateCreated: faker.date.recent().toLocaleDateString(),
-    // dateNeeded: faker.date.future(0, new Date()).toLocaleDateString(),
+    createdBy: `${user.firstName} ${user.lastName}`,
+    relatedUser: user.id,
+    user: { ...user },
     dateCreated: faker.date.recent(),
     dateNeeded: faker.date.future(0, new Date()),
-
     number: faker.random.number({
       min: 1,
       max: 99
@@ -22,11 +22,11 @@ const mockRequisition = shopDrawing => {
   };
 };
 
-const mockRequisitions = shopDrawings =>
+const mockRequisitions = (shopDrawings, users, opts = { min: 5, max: 25 }) =>
   shopDrawings.reduce((acc, curr) => {
-    const numRequisitions = faker.random.number({ min: 5, max: 25 });
+    const numRequisitions = faker.random.number(opts);
 
-    return [...acc, ...populate(mockRequisition)(numRequisitions, curr)];
+    return [...acc, ...populate(mockRequisition)(numRequisitions, users, curr)];
   }, []);
 
 export default mockRequisitions;

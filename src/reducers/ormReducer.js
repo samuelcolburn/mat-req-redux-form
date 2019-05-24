@@ -29,7 +29,14 @@ import {
   CREATE_MANY_NOTES,
   CREATE_NOTE,
   UPDATE_NOTE,
-  REMOVE_NOTE
+  REMOVE_NOTE,
+  CREATE_MANY_ATTACHMENTS,
+  CREATE_ATTACHMENT,
+  UPDATE_ATTACHMENT,
+  REMOVE_ATTACHMENT,
+  CREATE_USER,
+  UPDATE_USER,
+  REMOVE_USER
 } from '../constants';
 
 function autocompleteOrmReducer(sess, action) {
@@ -73,7 +80,9 @@ function ormReducer(dbState, action) {
     Vendor,
     ItemType,
     InventoryItem,
-    Note
+    Note,
+    Attachment,
+    User
   } = sess;
 
   switch (action.type) {
@@ -205,6 +214,36 @@ function ormReducer(dbState, action) {
 
     case REMOVE_NOTE:
       Note.withId(action.payload.id).update(action.payload);
+      break;
+
+    case CREATE_MANY_ATTACHMENTS:
+      action.payload.forEach(attachment => {
+        createOrUpdate(Attachment, attachment);
+      });
+      break;
+
+    case CREATE_ATTACHMENT:
+      Attachment.create(action.payload);
+      break;
+
+    case UPDATE_ATTACHMENT:
+      Attachment.withId(action.payload.id).update(action.payload);
+      break;
+
+    case REMOVE_ATTACHMENT:
+      Attachment.withId(action.payload.id).update(action.payload);
+      break;
+
+    case CREATE_USER:
+      User.create(action.payload);
+      break;
+
+    case UPDATE_USER:
+      User.withId(action.payload.id).update(action.payload);
+      break;
+
+    case REMOVE_USER:
+      User.withId(action.payload.id).update(action.payload);
       break;
 
     default:

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 
 // import uniqueId from 'lodash/fp/uniqueId';
@@ -13,7 +13,11 @@ import TextField from '@material-ui/core/TextField';
 // import CircularProgress from '@material-ui/core/CircularProgress';
 // import ErrorIcon from '@material-ui/icons/Error';
 
-import { loadRandomRequisition, loadRequisitionById } from './actions';
+import {
+  loadRandomRequisition,
+  loadRequisitionById,
+  fetchCurrentUser
+} from './actions';
 // import { getSelectedRequisitionId, getSelectedRequisition } from './selectors';
 
 import Form from './Form';
@@ -25,6 +29,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 let App = ({
+  fetchCurrentUser,
   loadRequisitionById,
   loadRandomRequisition,
   loading,
@@ -34,6 +39,10 @@ let App = ({
   const classes = useStyles();
 
   const [reqId, setReqId] = useState('');
+
+  useEffect(() => {
+    fetchCurrentUser();
+  }, []);
 
   const loadRequisition = e => {
     console.group('loadRequsition');
@@ -101,7 +110,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
   loadRequisitionById,
-  loadRandomRequisition
+  loadRandomRequisition,
+  fetchCurrentUser
 };
 
 App = connect(

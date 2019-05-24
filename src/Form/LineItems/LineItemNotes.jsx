@@ -45,25 +45,15 @@ const useDialogStyles = makeStyles(theme => ({
 
 const userHasNotReadNote = user => note =>
   !(
-    note.user === user ||
+    note.relatedUser === user.id ||
     (note &&
       note.readBy &&
-      note.readBy.split(';').some(reader => reader === user))
+      note.readBy.split(';').some(reader => reader === user.id))
   );
 
 const unreadNotes = user => notes => notes.filter(userHasNotReadNote(user));
 
-const DialogNotes = ({
-  index,
-  id,
-  form,
-  user,
-  saveNote,
-  readNotes,
-  notes,
-  onOpen
-}) => {
-  // const savedCallback = useRef();
+const DialogNotes = ({ index, id, form, user, saveNote, notes, onOpen }) => {
   const classes = useDialogStyles();
 
   const popupState = usePopupState({
@@ -120,7 +110,7 @@ const DialogNotes = ({
           <List dense disablePadding>
             {notes.map((note, index) => {
               const dateCreated = utils.format(note.dateCreated, 'MM/dd/yyyy');
-              const userName = `${note.firstName} ${note.lastName}`;
+              const userName = `${note.user.firstName} ${note.user.lastName}`;
               return (
                 <ListItem
                   dense
@@ -202,7 +192,7 @@ const ExpansionNotes = props => {
           <List dense disablePadding>
             {notes.map((note, index) => {
               const dateCreated = utils.format(note.dateCreated, 'MM/dd/yyyy');
-              const userName = `${note.firstName} ${note.lastName}`;
+              const userName = `${note.user.firstName} ${note.user.lastName}`;
               return (
                 <ListItem
                   dense
@@ -260,7 +250,7 @@ let LineItemNotes = props => {
 
 const mapStateToProps = (state, props) => {
   return {
-    user: state.currentUser.email,
+    user: state.currentUser,
     notes: noteSelector(state, props)
   };
 };

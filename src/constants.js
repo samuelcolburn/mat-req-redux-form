@@ -1,5 +1,8 @@
 // USER
 export const SET_CURRENT_USER = 'SET_CURRENT_USER';
+export const CREATE_USER = 'CREATE_USER';
+export const UPDATE_USER = 'UPDATE_USER';
+export const REMOVE_USER = 'REMOVE_USER';
 
 // FORM
 // selected line items state
@@ -61,6 +64,7 @@ export const UPDATE_NOTE = 'UPDATE_NOTE';
 export const REMOVE_NOTE = 'REMOVE_NOTE';
 
 // Attachments
+export const CREATE_MANY_ATTACHMENTS = 'CREATE_MANY_ATTACHMENTS';
 export const CREATE_ATTACHMENT = 'CREATE_ATTACHMENT';
 export const UPDATE_ATTACHMENT = 'UPDATE_ATTACHMENT';
 export const REMOVE_ATTACHMENT = 'REMOVE_ATTACHMENT';

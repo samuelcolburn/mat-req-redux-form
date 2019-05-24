@@ -125,3 +125,26 @@ export const getNotesForLineItems = async (lineItems, wait = 100) => {
 
   return Promise.resolve(notesForLineItems);
 };
+
+export const getAttachmentsForReq = async ({ id, wait = 100 }) => {
+  console.log('getAttachmentsForReq, id: ', id);
+
+  await delay(wait);
+
+  if (!id) {
+    return Promise.reject('No Req Id supplied');
+  }
+
+  const attachments = sampleData['attachments'];
+  console.log('attachments: ', attachments);
+
+  if (!attachments) {
+    return Promise.reject('no attachments found for that Requisition');
+  }
+
+  const forReq = attachments.filter(item => item.relatedRequisition === id);
+
+  console.log('API returning attachments: ', forReq);
+
+  return Promise.resolve(forReq);
+};

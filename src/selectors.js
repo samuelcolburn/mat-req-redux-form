@@ -66,10 +66,71 @@ export const getSelectedRequisition = createSelector(
 
     return {
       ...obj,
-      lineItems: model ? model.requisitionLineItems.toRefArray() : []
+      lineItems: model ? model.requisitionLineItems.toRefArray() : [],
+      attachments: model ? model.attachments.toRefArray() : []
     };
   })
 );
+
+export const getSelectedRequisitionAttachments = createSelector(
+  [getSelectedRequisition, (_state, props) => props],
+  (selectedRequisition, props) => {
+    return get('attachments', selectedRequisition);
+  }
+);
+
+export const tableQuerySelector = ormCreateSelector(
+  orm,
+  dbStateSelector,
+  (state, table) => table,
+  (state, table, indices) => indices,
+  (session, table, indices) => {
+    if (!indices || !indices.length) return [];
+
+    const modelName = tableModelMap[table];
+    if (!modelName) return [];
+
+    const model = session[modelName];
+    return indices.reduce(
+      (acc, curr) =>
+        model.idExists(curr) ? [...acc, { ...model.withId(curr).ref }] : acc,
+      []
+    );
+  }
+);
+
+const getAutocompleteData = state => state.autocomplete;
+export const autocompleteStateSelector = createCachedSelector(
+  getAutocompleteData,
+  (state, aspect) => aspect,
+  (state, aspect, table) => table,
+  (state, aspect, table) => get([table, aspect], state)
+)((state, aspect, table) => `autocomplete:${table}:${aspect}`);
+
+const formSelector = (form, ...other) => formValueSelector(form)(...other);
+
+export const getAllSelected = (state, props) => {
+  const lineItems = formSelector(props.form, state, 'lineItems');
+  if (!lineItems || !lineItems.length) {
+    return { allSelected: SELECTED_NONE };
+  }
+
+  const lineItemsLength = lineItems.length;
+  const selectedLength = lineItems.filter(item => item.selected).length;
+
+  const allSelected = !selectedLength
+    ? SELECTED_NONE
+    : selectedLength >= 0 && selectedLength < lineItemsLength
+    ? SELECTED_SOME
+    : selectedLength === lineItems.length
+    ? SELECTED_ALL
+    : SELECTED_NONE;
+
+  return {
+    allSelected
+  };
+};
+
 /*
 const recordHasRelation = record => relation =>
   record[relation.key] === relation.value;
@@ -104,33 +165,6 @@ export const tableQuerySelector = ormCreateSelector(
 );
 
  */
-export const tableQuerySelector = ormCreateSelector(
-  orm,
-  dbStateSelector,
-  (state, table) => table,
-  (state, table, indices) => indices,
-  (session, table, indices) => {
-    if (!indices || !indices.length) return [];
-
-    const modelName = tableModelMap[table];
-    if (!modelName) return [];
-
-    const model = session[modelName];
-    return indices.reduce(
-      (acc, curr) =>
-        model.idExists(curr) ? [...acc, { ...model.withId(curr).ref }] : acc,
-      []
-    );
-  }
-);
-
-const getAutocompleteData = state => state.autocomplete;
-export const autocompleteStateSelector = createCachedSelector(
-  getAutocompleteData,
-  (state, aspect) => aspect,
-  (state, aspect, table) => table,
-  (state, aspect, table) => get([table, aspect], state)
-)((state, aspect, table) => `autocomplete:${table}:${aspect}`);
 
 // const requisitionFormSelector = state => state.form.RequisitionForm;
 // const lineItemsLengthSelector = state =>
@@ -219,27 +253,3 @@ export const autocompleteStateSelector = createCachedSelector(
 //     );
 //   }
 // );
-
-const formSelector = (form, ...other) => formValueSelector(form)(...other);
-
-export const getAllSelected = (state, props) => {
-  const lineItems = formSelector(props.form, state, 'lineItems');
-  if (!lineItems || !lineItems.length) {
-    return { allSelected: SELECTED_NONE };
-  }
-
-  const lineItemsLength = lineItems.length;
-  const selectedLength = lineItems.filter(item => item.selected).length;
-
-  const allSelected = !selectedLength
-    ? SELECTED_NONE
-    : selectedLength >= 0 && selectedLength < lineItemsLength
-    ? SELECTED_SOME
-    : selectedLength === lineItems.length
-    ? SELECTED_ALL
-    : SELECTED_NONE;
-
-  return {
-    allSelected
-  };
-};

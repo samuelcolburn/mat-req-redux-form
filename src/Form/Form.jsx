@@ -13,6 +13,7 @@ import Autocomplete from '../components/Autocomplete';
 import DebouncedDatePickerField from '../components/DebouncedDatePickerField';
 
 import LineItems from './LineItems';
+import Attachments from './Attachments';
 
 import { validate } from '../validate';
 
@@ -58,13 +59,6 @@ const useStyles = makeStyles(theme => ({
     // [actions] 30px
     // `,
     // gridTemplateRows: '30px'
-  },
-  attachments: {
-    margin: theme.spacing(8, 0)
-  },
-  attachmentsHeader: {
-    height: 30,
-    margin: theme.spacing(4, 8)
   }
 }));
 //       <Grid container className={classes.header} component="section">
@@ -213,21 +207,7 @@ let Form = props => {
       <LineItems job={job} shopDrawing={shopDrawing} form={form} />
 
       {/* Attachments */}
-      <Grid container className={classes.attachments}>
-        <Grid
-          container
-          alignItems="center"
-          className={classes.attachmentsHeader}
-        >
-          <Typography
-            variant="h6"
-            component="h5"
-            className={classes.attachmentsTitle}
-          >
-            Attachments
-          </Typography>
-        </Grid>
-      </Grid>
+      <Attachments />
 
       <section className="actions">
         <Button

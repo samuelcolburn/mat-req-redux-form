@@ -1,5 +1,20 @@
 import { fk, many, attr, Model } from 'redux-orm';
 
+export class User extends Model {
+  toString() {
+    return `User: [${this.id}, ${this.email}, ${this.firstName} ${
+      this.lastName
+    }]`;
+  }
+}
+User.modelName = 'User';
+User.fields = {
+  id: attr(),
+  firstName: attr(),
+  lastName: attr(),
+  email: attr()
+};
+
 export class Job extends Model {
   toString() {
     return `Job: ${this.number} - ${this.name}`;
@@ -63,6 +78,11 @@ Requisition.fields = {
   dateNeeded: attr(),
   number: attr(),
   subject: attr(),
+  relatedUser: fk({
+    to: 'User',
+    as: 'user',
+    relatedName: 'requisitions'
+  }),
   relatedJob: fk({
     to: 'Job',
     as: 'job',
@@ -179,9 +199,41 @@ Note.fields = {
   dateCreated: attr(),
   note: attr(),
   readBy: attr(),
+  relatedUser: fk({
+    to: 'User',
+    as: 'user',
+    relatedName: 'notes'
+  }),
   relatedRequisitionLineItem: fk({
     to: 'RequisitionLineItem',
     as: 'requisitionLineItem',
     relatedName: 'notes'
+  })
+};
+
+export class Attachment extends Model {
+  toString() {
+    return `Attachment: ${this.id}`;
+  }
+}
+
+Attachment.modelName = 'Attachment';
+
+Attachment.fields = {
+  id: attr(),
+  name: attr(),
+  file: attr(),
+  mimeType: attr(),
+  fileType: attr(),
+  dateCreated: attr(),
+  relatedUser: fk({
+    to: 'User',
+    as: 'user',
+    relatedName: 'attachments'
+  }),
+  relatedRequisition: fk({
+    to: 'Requisition',
+    as: 'requisition',
+    relatedName: 'attachments'
   })
 };
