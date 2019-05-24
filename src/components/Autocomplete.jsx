@@ -145,9 +145,17 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const getInputHeight = ref =>
-  ref.current.computedStyleMap().get('margin-top').value +
-  ref.current.scrollHeight;
+const getInputHeight = ref => {
+  try {
+    return ref && ref.current
+      ? ref.current.computedStyleMap().get('margin-top').value +
+          ref.current.scrollHeight
+      : 0;
+  } catch (error) {
+    console.log(error);
+    console.log('error getInputHeight, ref: ', ref);
+  }
+};
 
 let AutoComplete = props => {
   const classes = useStyles(props);

@@ -10,6 +10,7 @@ const mockNote = requisitionLineItem => ({
   note: faker.lorem.text(),
   readBy: '',
   relatedRequisitionLineItem: requisitionLineItem.id,
+  readBy: '',
   requisitionLineItem: { ...requisitionLineItem }
 });
 

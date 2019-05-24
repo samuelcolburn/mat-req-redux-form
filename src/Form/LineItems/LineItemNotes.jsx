@@ -1,4 +1,4 @@
-import React, { useContext, useState, useCallback } from 'react';
+import React, { useContext, useState, useEffect, useCallback } from 'react';
 import { connect } from 'react-redux';
 import { Field } from 'redux-form';
 import { makeStyles } from '@material-ui/styles';
@@ -180,12 +180,16 @@ const ExpansionNotes = props => {
     onOpen(e);
   }
 
+  useEffect(() => {
+    if (showNotes) onOpen();
+  }, [showNotes, onOpen]);
+
   return (
     <Grid container alignItems="flex-start">
       <IconButton
         onClick={handleClick}
         size="small"
-        disabled={unreadCount <= 0}
+        disabled={!notes || !notes.length}
         className={classes.button}
       >
         <Badge badgeContent={unreadCount} color="primary">
