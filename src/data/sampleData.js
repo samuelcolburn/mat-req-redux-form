@@ -14,7 +14,7 @@ const makeSampleData = () => {
   const vendors = mockVendors(100);
   const itemTypes = mockItemTypes(20);
   const inventoryItems = mockInventoryItems(itemTypes);
-  const users = mockUsers(100);
+  const users = mockUsers(10);
 
   const jobs = mockJobs(10);
   const shopDrawings = mockShopDrawings(jobs, { min: 2, max: 5 });

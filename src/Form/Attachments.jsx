@@ -1,4 +1,5 @@
 import React, { useContext } from 'react';
+import clsx from 'clsx';
 import { connect } from 'react-redux';
 import { MuiPickersContext } from 'material-ui-pickers';
 
@@ -6,10 +7,8 @@ import { makeStyles } from '@material-ui/styles';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
+import Hidden from '@material-ui/core/Hidden';
 
 import MusicVideoIcon from '@material-ui/icons/MusicVideo';
 import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
@@ -18,6 +17,29 @@ import ImageIcon from '@material-ui/icons/Image';
 
 import { getSelectedRequisitionAttachments } from '../selectors';
 import AttachmentsField from '../components/AttachmentsField';
+import { Checkbox } from '@material-ui/core';
+
+const AttachmentColumns = ({ form, classes }) => {
+  return (
+    <div className={classes.itemContainer}>
+      {/* Select All checkbox */}
+      <div className={classes.attributeContainer}>
+        <Checkbox className={classes.selectedCheckbox} color="primary" />
+      </div>
+
+      {/* File Name */}
+      <div className={classes.name}>
+        <div>File</div>
+      </div>
+
+      {/* Upload Date, User */}
+      <div className={clsx(classes.attributeContainer, classes.info)}>
+        <div>Uploaded</div>
+        <div>User</div>
+      </div>
+    </div>
+  );
+};
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -34,15 +56,59 @@ const useStyles = makeStyles(theme => ({
   },
   itemContainer: {
     display: 'grid',
-    gridTemplateColumns: '30px 5fr 6fr 2fr 2fr 2fr 30px',
+    gridTemplateColumns: '30px 4fr 2fr',
     gridColumnGap: '4px',
     [theme.breakpoints.down('sm')]: {
       gridTemplateColumns: '1fr 1fr'
     }
+  },
+  attributeContainer: {
+    display: 'grid',
+    gridTemplateColumns:
+      'repeat(auto-fit, minmax(var(--column-width-min), 1fr))',
+    alignItems: 'center',
+    gridColumnGap: '4px'
+  },
+  icon: {
+    padding: theme.spacing(4, 4, 4, 0)
+  },
+  name: {
+    display: 'flex',
+    alignItems: 'center',
+    lineHeight: 1
+  },
+  info: {
+    '--column-width-min': '125px'
+  },
+  selectedWrapper: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  selectedCheckbox: {
+    height: 30,
+    width: 30
+  },
+  item: {
+    borderBottom: `1px solid ${theme.palette.divider}`,
+    position: 'relative',
+    '&::before': {
+      content: '""',
+      opacity: 0,
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      width: '100%',
+      height: '100%',
+      backgroundColor: theme.palette.action.hover
+    },
+    '&:hover::before': {
+      opacity: 1
+    }
   }
 }));
 
-const AttachmentIcon = ({ attachment }) => {
+const AttachmentIcon = React.memo(({ classes, attachment }) => {
   const renderStrategies = {
     application: <InsertDriveFileIcon />,
     audio: <MusicVideoIcon />,
@@ -51,35 +117,60 @@ const AttachmentIcon = ({ attachment }) => {
     video: <MovieIcon />
   };
 
-  return renderStrategies[attachment.fileType];
-};
+  return (
+    <div className={classes.icon}>{renderStrategies[attachment.fileType]}</div>
+  );
+});
 
 const AttachmentsListItem = props => {
   const utils = useContext(MuiPickersContext);
-  const { attachment } = props;
+
+  const { classes, attachment } = props;
+
   const dateCreated = utils.format(attachment.dateCreated, 'MM/dd/yyyy h:mma');
+
   return (
-    <ListItem button>
-      <ListItemIcon>
-        <AttachmentIcon {...props} />
-      </ListItemIcon>
-      <ListItemText
-        primary={attachment.name}
-        secondary={`${dateCreated} - ${attachment.user.firstName} ${
-          attachment.user.lastName
-        }`}
-      />
-    </ListItem>
+    <div className={clsx(classes.itemContainer, classes.item)}>
+      {/* Select All checkbox */}
+      <div className={classes.attributeContainer}>
+        <Checkbox className={classes.selectedCheckbox} />
+      </div>
+
+      {/* File Name */}
+      <div className={classes.name}>
+        <AttachmentIcon classes={classes} attachment={attachment} />
+
+        <Typography variant="body2" component="div">
+          {attachment.name}
+        </Typography>
+      </div>
+
+      {/* Upload Date, User */}
+      <div className={clsx(classes.attributeContainer, classes.info)}>
+        <Typography variant="body2" component="div" color="textSecondary">
+          {dateCreated}
+        </Typography>
+        <Typography variant="body2" component="div" color="textSecondary">
+          {`${attachment.user.firstName} ${attachment.user.lastName}`}
+        </Typography>
+      </div>
+    </div>
   );
 };
 
-const AttachmentsList = ({ attachments }) => (
-  <List dense>
-    {attachments.map(attachment => (
-      <AttachmentsListItem key={attachment.id} attachment={attachment} />
-    ))}
-  </List>
-);
+const AttachmentsList = props => {
+  return (
+    <List dense>
+      {props.attachments.map(attachment => (
+        <AttachmentsListItem
+          key={attachment.id}
+          attachment={attachment}
+          {...props}
+        />
+      ))}
+    </List>
+  );
+};
 
 let Attachments = props => {
   const { form, attachments } = props;
@@ -95,11 +186,25 @@ let Attachments = props => {
       </Grid>
 
       <Grid item xs={12}>
-        {attachments && attachments.length ? (
-          <AttachmentsList {...props} />
-        ) : (
-          'No Attachments'
-        )}
+        <div className={classes.container}>
+          <Hidden smDown>
+            <AttachmentColumns form={form} classes={classes} />
+          </Hidden>
+
+          <Divider
+            variant="fullWidth"
+            style={{ width: '100%' }}
+            className={classes.itemContainer}
+          />
+
+          {props.attachments.map(attachment => (
+            <AttachmentsListItem
+              key={attachment.id}
+              attachment={attachment}
+              classes={classes}
+            />
+          ))}
+        </div>
       </Grid>
 
       <Grid item xs={12}>

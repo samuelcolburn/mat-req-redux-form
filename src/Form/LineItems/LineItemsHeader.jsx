@@ -5,6 +5,9 @@ import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
+
+import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
+import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
 import CheckIcon from '@material-ui/icons/Check';
 import BlockIcon from '@material-ui/icons/Block';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
@@ -93,10 +96,13 @@ HeaderActions = connect(
   }
 )(HeaderActions);
 
-let LineItemsHeader = ({ form }) => {
+let LineItemsHeader = ({ form, expanded, setExpanded }) => {
   const classes = useHeaderStyles();
   return (
     <Grid container alignItems="center" className={classes.root}>
+      <IconButton onClick={e => setExpanded(!expanded)}>
+        {expanded ? <KeyboardArrowDownIcon /> : <KeyboardArrowRightIcon />}
+      </IconButton>
       <Typography variant="h6" component="h5" className={classes.title}>
         Line Items
       </Typography>

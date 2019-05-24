@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FieldArray } from 'redux-form';
 
 import { makeStyles } from '@material-ui/styles';
@@ -10,6 +10,7 @@ import Divider from '@material-ui/core/Divider';
 import LineItemsColumns from './LineItemsColumns';
 import LineItemsHeader from './LineItemsHeader';
 import LineItemsList from './LineItemsList';
+import { Collapse } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -124,32 +125,39 @@ const useStyles = makeStyles(theme => ({
 const LineItems = props => {
   const { form, job, shopDrawing } = props;
   const classes = useStyles();
+  const [expanded, setExpanded] = useState(false);
 
   return (
     <Grid container className={classes.root}>
-      <LineItemsHeader form={form} classes={classes} />
+      <LineItemsHeader
+        form={form}
+        classes={classes}
+        expanded={expanded}
+        setExpanded={setExpanded}
+      />
+      <Collapse in={expanded}>
+        <Grid item xs={12}>
+          <div className={classes.container}>
+            <Hidden smDown>
+              <LineItemsColumns form={form} classes={classes} />
+            </Hidden>
 
-      <Grid item xs={12}>
-        <div className={classes.container}>
-          <Hidden smDown>
-            <LineItemsColumns form={form} classes={classes} />
-          </Hidden>
+            <Divider
+              variant="fullWidth"
+              style={{ width: '100%' }}
+              className={classes.itemContainer}
+            />
 
-          <Divider
-            variant="fullWidth"
-            style={{ width: '100%' }}
-            className={classes.itemContainer}
-          />
-
-          <FieldArray
-            name="lineItems"
-            component={LineItemsList}
-            job={job}
-            shopDrawing={shopDrawing}
-            classes={classes}
-          />
-        </div>
-      </Grid>
+            <FieldArray
+              name="lineItems"
+              component={LineItemsList}
+              job={job}
+              shopDrawing={shopDrawing}
+              classes={classes}
+            />
+          </div>
+        </Grid>
+      </Collapse>
     </Grid>
   );
 };

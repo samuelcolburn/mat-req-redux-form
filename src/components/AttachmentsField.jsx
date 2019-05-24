@@ -46,7 +46,7 @@ const AttachmentsField = ({ form }) => {
       id={form + '_attachments'}
       uppy={uppy}
       note="Max file size: 5MB"
-      height={200}
+      height={300}
     />
   );
 };
