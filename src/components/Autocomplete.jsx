@@ -367,4 +367,4 @@ let AutoComplete = props => {
   );
 };
 
-export default AutoComplete;
+export default React.memo(AutoComplete);

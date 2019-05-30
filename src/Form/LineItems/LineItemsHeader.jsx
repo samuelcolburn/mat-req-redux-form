@@ -15,16 +15,17 @@ import { makeStyles } from '@material-ui/styles';
 
 import { SELECTED_NONE } from '../../constants';
 import { updateStatus, copySelected, removeSelected } from '../../actions';
-import { getSelectAllState } from '../../selectors';
+import { getAllSelected } from '../../selectors';
 
 let HeaderActions = ({
+  allSelected,
   updateStatus,
   copySelected,
   removeSelected,
   form,
   classes
 }) => {
-  return getSelectAllState === SELECTED_NONE ? null : (
+  return allSelected === SELECTED_NONE ? null : (
     <React.Fragment>
       <Tooltip title="Approve" placement="top">
         <IconButton
@@ -86,8 +87,7 @@ const useHeaderStyles = makeStyles(theme => ({
 
 const mapStateToProps = (state, props) => {
   return {
-    getSelectAllState: getSelectAllState(state, props)
-    // getAllSelected: getAllSelected(state, props)
+    allSelected: getAllSelected(state, props)
   };
 };
 
@@ -113,4 +113,4 @@ let LineItemsHeader = ({ form }) => {
   );
 };
 
-export default LineItemsHeader;
+export default React.memo(LineItemsHeader);

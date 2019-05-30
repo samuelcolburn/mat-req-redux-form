@@ -1,5 +1,12 @@
-import React, { useContext, useState, useEffect, useCallback } from 'react';
+import React, {
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+  useMemo
+} from 'react';
 import { connect } from 'react-redux';
+
 import { Field } from 'redux-form';
 import { makeStyles } from '@material-ui/styles';
 
@@ -51,9 +58,17 @@ const userHasNotReadNote = user => note =>
       note.readBy.split(';').some(reader => reader === user.id))
   );
 
-const unreadNotes = user => notes => notes.filter(userHasNotReadNote(user));
+const getUnreadNotes = user => notes => notes.filter(userHasNotReadNote(user));
 
-const DialogNotes = ({ index, id, form, user, saveNote, notes, onOpen }) => {
+const DialogNotes = ({
+  index,
+  id,
+  form,
+  saveNote,
+  notes,
+  unreadNotes,
+  onOpen
+}) => {
   const classes = useDialogStyles();
 
   const popupState = usePopupState({
@@ -91,7 +106,7 @@ const DialogNotes = ({ index, id, form, user, saveNote, notes, onOpen }) => {
         onClick={handleClick}
         size="small"
       >
-        <Badge badgeContent={unreadNotes(user)(notes).length} color="primary">
+        <Badge badgeContent={unreadNotes.length} color="primary">
           <ChatIcon />
         </Badge>
       </IconButton>
@@ -157,13 +172,20 @@ const useExpansionStyles = makeStyles(theme => ({
   }
 }));
 
-const ExpansionNotes = props => {
-  const { lineItem, user, notes, onOpen } = props;
-
+const ExpansionNotes = ({
+  lineItem,
+  index,
+  id,
+  form,
+  user,
+  saveNote,
+  notes,
+  unreadNotes,
+  onOpen
+}) => {
   const classes = useExpansionStyles();
   const utils = useContext(MuiPickersContext);
   const [showNotes, setShowNotes] = useState(false);
-  const unreadCount = unreadNotes(user)(notes).length;
 
   function handleClick(e) {
     setShowNotes(prev => !prev);
@@ -182,7 +204,7 @@ const ExpansionNotes = props => {
         disabled={!notes || !notes.length}
         className={classes.button}
       >
-        <Badge badgeContent={unreadCount} color="primary">
+        <Badge badgeContent={unreadNotes.length} color="primary">
           <ChatIcon />
         </Badge>
       </IconButton>
@@ -223,28 +245,54 @@ const ExpansionNotes = props => {
   );
 };
 
-let LineItemNotes = props => {
+let LineItemNotes = ({
+  index,
+  id,
+  lineItem,
+  form,
+  user,
+  notes,
+  saveNote,
+  readNotes
+}) => {
   const smAndDown = useMediaQueryWithTheme(theme =>
     theme.breakpoints.down('sm')
   );
 
-  const { notes, user, readNotes } = props;
+  const unreadNotes = useMemo(() => getUnreadNotes(user)(notes), [user, notes]);
 
   const clearUnread = useCallback(() => {
     if (!notes) return;
     if (!notes.length) return;
 
-    const notesToRead = unreadNotes(user)(notes);
-
-    if (notesToRead && notesToRead.length) {
-      readNotes({ notes: notesToRead, user });
+    if (unreadNotes && unreadNotes.length) {
+      readNotes({ notes: unreadNotes, user });
     }
-  }, [notes, user, readNotes]);
+  }, [notes, unreadNotes, user, readNotes]);
 
   return smAndDown ? (
-    <ExpansionNotes {...props} onOpen={clearUnread} />
+    <ExpansionNotes
+      index={index}
+      id={id}
+      form={form}
+      user={user}
+      saveNote={saveNote}
+      notes={notes}
+      lineItem={lineItem}
+      unreadNotes={unreadNotes}
+      onOpen={clearUnread}
+    />
   ) : (
-    <DialogNotes {...props} onOpen={clearUnread} />
+    <DialogNotes
+      index={index}
+      id={id}
+      form={form}
+      user={user}
+      saveNote={saveNote}
+      notes={notes}
+      unreadNotes={unreadNotes}
+      onOpen={clearUnread}
+    />
   );
 };
 
@@ -265,4 +313,4 @@ LineItemNotes = connect(
   mapDispatchToProps
 )(LineItemNotes);
 
-export default LineItemNotes;
+export default React.memo(LineItemNotes);

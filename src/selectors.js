@@ -44,10 +44,10 @@ export const requisitionSelector = createSelector(
 );
 
 export const noteSelector = createSelector(
-  [dbStateSelector, (_state, props) => props],
-  ormCreateSelector(orm, (session, props) => {
+  [dbStateSelector, (_state, props) => get('id', props)],
+  ormCreateSelector(orm, (session, lineItemId) => {
     return session.Note.filter(
-      note => note.relatedRequisitionLineItem === props.id
+      note => note.relatedRequisitionLineItem === lineItemId
     )
       .orderBy('dateCreated')
       .toRefArray();
@@ -132,7 +132,7 @@ export const getSelected = createSelector(
     lineItems.filter(item => item.selected).map(pick(['id', 'selected']))
 );
 
-export const getSelectAllState = createSelector(
+export const getAllSelected = createSelector(
   [valueSelector('lineItems'), getSelected],
   (lineItems, selectedLineItems) => {
     if (!lineItems || !lineItems.length) {
@@ -161,28 +161,28 @@ export const formValuesSelector = (state, props) => {
 };
 
 // ::::: non reselect getAllselected :::::
-const OLDformSelector = (form, ...other) => formValueSelector(form)(...other);
-export const getAllSelected = (state, props) => {
-  const lineItems = OLDformSelector(props.form, state, 'lineItems');
-  if (!lineItems || !lineItems.length) {
-    return { allSelected: SELECTED_NONE };
-  }
+// const OLDformSelector = (form, ...other) => formValueSelector(form)(...other);
+// export const getAllSelected = (state, props) => {
+//   const lineItems = OLDformSelector(props.form, state, 'lineItems');
+//   if (!lineItems || !lineItems.length) {
+//     return { allSelected: SELECTED_NONE };
+//   }
 
-  const lineItemsLength = lineItems.length;
-  const selectedLength = lineItems.filter(item => item.selected).length;
+//   const lineItemsLength = lineItems.length;
+//   const selectedLength = lineItems.filter(item => item.selected).length;
 
-  const allSelected = !selectedLength
-    ? SELECTED_NONE
-    : selectedLength >= 0 && selectedLength < lineItemsLength
-    ? SELECTED_SOME
-    : selectedLength === lineItems.length
-    ? SELECTED_ALL
-    : SELECTED_NONE;
+//   const allSelected = !selectedLength
+//     ? SELECTED_NONE
+//     : selectedLength >= 0 && selectedLength < lineItemsLength
+//     ? SELECTED_SOME
+//     : selectedLength === lineItems.length
+//     ? SELECTED_ALL
+//     : SELECTED_NONE;
 
-  return {
-    allSelected
-  };
-};
+//   return {
+//     allSelected
+//   };
+// };
 
 // export const getTotalCost = createSelector(
 //   [lineItems, (_state, props) => props],

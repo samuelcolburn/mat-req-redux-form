@@ -306,7 +306,12 @@ let LineItem = props => {
       {/* Actions */}
       <div className={clsx(classes.attributeContainer, classes.actions)}>
         <div>
-          <LineItemNotes {...props} />
+          <LineItemNotes
+            index={index}
+            id={id}
+            form={form}
+            lineItem={lineItem}
+          />
         </div>
       </div>
     </div>

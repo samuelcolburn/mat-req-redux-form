@@ -61,4 +61,4 @@ const LineItemsColumns = ({ form, classes }) => {
   );
 };
 
-export default LineItemsColumns;
+export default React.memo(LineItemsColumns);
