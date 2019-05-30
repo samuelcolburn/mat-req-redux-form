@@ -6,8 +6,6 @@ import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 
-import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
-import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
 import CheckIcon from '@material-ui/icons/Check';
 import BlockIcon from '@material-ui/icons/Block';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
@@ -17,17 +15,16 @@ import { makeStyles } from '@material-ui/styles';
 
 import { SELECTED_NONE } from '../../constants';
 import { updateStatus, copySelected, removeSelected } from '../../actions';
-import { getAllSelected } from '../../selectors';
+import { getSelectAllState } from '../../selectors';
 
 let HeaderActions = ({
-  allSelected,
   updateStatus,
   copySelected,
   removeSelected,
   form,
   classes
 }) => {
-  return allSelected === SELECTED_NONE ? null : (
+  return getSelectAllState === SELECTED_NONE ? null : (
     <React.Fragment>
       <Tooltip title="Approve" placement="top">
         <IconButton
@@ -87,8 +84,15 @@ const useHeaderStyles = makeStyles(theme => ({
   }
 }));
 
+const mapStateToProps = (state, props) => {
+  return {
+    getSelectAllState: getSelectAllState(state, props)
+    // getAllSelected: getAllSelected(state, props)
+  };
+};
+
 HeaderActions = connect(
-  getAllSelected,
+  mapStateToProps,
   {
     updateStatus,
     copySelected,
@@ -96,13 +100,10 @@ HeaderActions = connect(
   }
 )(HeaderActions);
 
-let LineItemsHeader = ({ form, expanded, setExpanded }) => {
+let LineItemsHeader = ({ form }) => {
   const classes = useHeaderStyles();
   return (
     <Grid container alignItems="center" className={classes.root}>
-      <IconButton onClick={e => setExpanded(!expanded)}>
-        {expanded ? <KeyboardArrowDownIcon /> : <KeyboardArrowRightIcon />}
-      </IconButton>
       <Typography variant="h6" component="h5" className={classes.title}>
         Line Items
       </Typography>

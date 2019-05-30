@@ -6,12 +6,13 @@ import Checkbox from '@material-ui/core/Checkbox';
 
 import { SELECTED_NONE, SELECTED_SOME } from '../../constants';
 import { selectAll, deselectAll } from '../../actions';
-import { getAllSelected } from '../../selectors';
+import { getSelectAllState } from '../../selectors';
 
 const useStyles = makeStyles(theme => ({
   root: {
-    height: 30,
-    width: 30
+    height: '100%',
+    width: '100%',
+    padding: 0
   }
 }));
 
@@ -35,8 +36,12 @@ let SelectAllCheckbox = ({ form, allSelected, selectAll, deselectAll }) => {
   );
 };
 
+const mapStateToProps = (state, props) => ({
+  allSelected: getSelectAllState(state, props)
+});
+
 SelectAllCheckbox = connect(
-  getAllSelected,
+  mapStateToProps,
   {
     selectAll,
     deselectAll

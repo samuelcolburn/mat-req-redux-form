@@ -1,12 +1,13 @@
 import get from 'lodash/fp/get';
+import pick from 'lodash/fp/pick';
 // import has from 'lodash/fp/has';
 import { createSelector as ormCreateSelector } from 'redux-orm';
-import { createSelector } from 'reselect';
+import { createSelector, createStructuredSelector } from 'reselect';
 import createCachedSelector from 're-reselect';
 import orm, { tableModelMap } from './orm';
 // import { getFormValues, formValueSelector } from 'redux-form';
 // import { SELECTED_ALL, SELECTED_NONE, SELECTED_SOME } from './constants';
-import { formValueSelector } from 'redux-form';
+import { formValueSelector, getFormValues } from 'redux-form';
 import { SELECTED_ALL, SELECTED_NONE, SELECTED_SOME } from './constants';
 
 const dbStateSelector = state => state.db;
@@ -107,10 +108,62 @@ export const autocompleteStateSelector = createCachedSelector(
   (state, aspect, table) => get([table, aspect], state)
 )((state, aspect, table) => `autocomplete:${table}:${aspect}`);
 
-const formSelector = (form, ...other) => formValueSelector(form)(...other);
+// const FORM_NAME = 'RequisitionForm';
 
+// export const formSelector = formValueSelector(FORM_NAME);
+
+// OK
+export const valueSelector = valueName => (state, props) =>
+  formValueSelector(props.form)(state, valueName);
+
+// OK
+// export const makeValueSelector = valueName => state =>
+//   formSelector(state, valueName);
+
+// OK
+// export const getLineItems = createStructuredSelector({
+//   lineItems: valueSelector('lineItems')
+// });
+
+// ok
+export const getSelected = createSelector(
+  [valueSelector('lineItems')],
+  lineItems =>
+    lineItems.filter(item => item.selected).map(pick(['id', 'selected']))
+);
+
+export const getSelectAllState = createSelector(
+  [valueSelector('lineItems'), getSelected],
+  (lineItems, selectedLineItems) => {
+    if (!lineItems || !lineItems.length) {
+      return SELECTED_NONE;
+    }
+
+    const lineItemsLength = lineItems.length;
+    const selectedLength = lineItems.filter(item => item.selected).length;
+
+    return !selectedLength
+      ? SELECTED_NONE
+      : selectedLength >= 0 && selectedLength < lineItemsLength
+      ? SELECTED_SOME
+      : selectedLength === lineItems.length
+      ? SELECTED_ALL
+      : SELECTED_NONE;
+
+    // return {
+    //   allSelected
+    // };
+  }
+);
+
+export const formValuesSelector = (state, props) => {
+  return getFormValues(props.form)(state);
+};
+
+// ::::: non reselect getAllselected :::::
+const OLDformSelector = (form, ...other) => formValueSelector(form)(...other);
 export const getAllSelected = (state, props) => {
-  const lineItems = formSelector(props.form, state, 'lineItems');
+  const lineItems = OLDformSelector(props.form, state, 'lineItems');
   if (!lineItems || !lineItems.length) {
     return { allSelected: SELECTED_NONE };
   }
@@ -130,6 +183,11 @@ export const getAllSelected = (state, props) => {
     allSelected
   };
 };
+
+// export const getTotalCost = createSelector(
+//   [lineItems, (_state, props) => props],
+//   (lineItems, props) => lineItems.redu
+// );
 
 /*
 const recordHasRelation = record => relation =>

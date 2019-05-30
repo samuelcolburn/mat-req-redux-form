@@ -2,10 +2,15 @@ import React from 'react';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { Field, reduxForm, formValueSelector } from 'redux-form';
+import { makeStyles } from '@material-ui/styles';
+
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
-import { makeStyles } from '@material-ui/styles';
+
+import AttachFileIcon from '@material-ui/icons/AttachFile';
+import ShareIcon from '@material-ui/icons/Share';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
 
 import DebouncedTextField from '../components/DebouncedTextField';
 import TextField from '../components/TextField';
@@ -20,6 +25,7 @@ import { validate } from '../validate';
 import { getSelectedRequisitionId, getSelectedRequisition } from '../selectors';
 
 import { onChange } from '../actions';
+import { Toolbar, IconButton } from '@material-ui/core';
 
 const jobToString = job => (job ? `${job.number} - ${job.name}` : '');
 
@@ -28,16 +34,36 @@ const shopDrawingToString = shopDrawing =>
 
 const useStyles = makeStyles(theme => ({
   root: {
-    padding: theme.spacing(8, 4),
+    paddingLeft: theme.spacing(4),
+    paddingRight: theme.spacing(4),
+    paddingBottom: theme.spacing(4),
+
     [theme.breakpoints.down('sm')]: {
-      padding: theme.spacing(4, 2)
-    },
-    [theme.breakpoints.only('xs')]: {
-      padding: 0
+      paddingLeft: theme.spacing(2),
+      paddingRight: theme.spacing(2),
+      paddingBottom: theme.spacing(2)
     }
   },
+
+  grow: {
+    flexGrow: 1
+  },
+
+  desktopActions: {
+    display: 'flex',
+    [theme.breakpoints.down('xs')]: {
+      display: 'none'
+    }
+  },
+  mobileActions: {
+    display: 'flex',
+    [theme.breakpoints.up('sm')]: {
+      display: 'none'
+    }
+  },
+
   title: {
-    paddingLeft: theme.spacing(4)
+    // paddingLeft: theme.spacing(4)
   },
   header: {},
   lineItems: {
@@ -87,15 +113,33 @@ let Form = props => {
 
   return (
     <form onSubmit={e => onSubmit(e)} className={classes.root}>
-      <Typography
-        variant="h6"
-        component="h5"
-        gutterBottom
-        className={classes.title}
-      >
-        <span>Rid: </span>
-        <span>{rid}</span>
-      </Typography>
+      <Toolbar variant="dense" disableGutters>
+        <Typography
+          variant="h6"
+          component="h5"
+          gutterBottom
+          className={classes.title}
+        >
+          <span>Rid: </span>
+          <span>{rid}</span>
+        </Typography>
+
+        <div className={classes.grow} />
+
+        <div className={classes.desktopActions}>
+          <IconButton size="small">
+            <AttachFileIcon />
+          </IconButton>
+          <IconButton size="small">
+            <ShareIcon />
+          </IconButton>
+        </div>
+        <div className={classes.mobileActions}>
+          <IconButton size="small">
+            <MoreVertIcon />
+          </IconButton>
+        </div>
+      </Toolbar>
 
       <Grid container className={classes.header} spacing={4}>
         <Grid item xs={6} md={4}>
@@ -207,7 +251,7 @@ let Form = props => {
       <LineItems job={job} shopDrawing={shopDrawing} form={form} />
 
       {/* Attachments */}
-      <Attachments />
+      {/* <Attachments /> */}
 
       <section className="actions">
         <Button
