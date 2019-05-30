@@ -60,6 +60,56 @@ const userHasNotReadNote = user => note =>
 
 const getUnreadNotes = user => notes => notes.filter(userHasNotReadNote(user));
 
+const DialogNotesContent = React.memo(
+  ({ focusedInput, notes, value, setValue, handleSave, handleCancel }) => {
+    const classes = useDialogStyles();
+    const utils = useContext(MuiPickersContext);
+
+    return (
+      <Paper className={classes.paper}>
+        <List dense disablePadding>
+          {notes.map((note, index) => {
+            const dateCreated = utils.format(note.dateCreated, 'MM/dd/yyyy');
+            const userName = `${note.user.firstName} ${note.user.lastName}`;
+            return (
+              <ListItem
+                dense
+                key={index}
+                className={classes.listItem}
+                disableGutters
+              >
+                <ListItemText
+                  primary={note.note}
+                  secondary={`${dateCreated} - ${userName}`}
+                />
+              </ListItem>
+            );
+          })}
+        </List>
+
+        <TextField
+          className={classes.input}
+          inputRef={focusedInput}
+          value={value}
+          onChange={e => setValue(e.target.value)}
+          label="Add Note"
+          fullWidth
+          multiline
+          variant="outlined"
+        />
+        <Grid container justify="flex-end">
+          <Button color="primary" onClick={handleSave}>
+            Save
+          </Button>
+          <Button color="secondary" onClick={handleCancel}>
+            Cancel
+          </Button>
+        </Grid>
+      </Paper>
+    );
+  }
+);
+
 const DialogNotes = ({
   index,
   id,
@@ -69,14 +119,11 @@ const DialogNotes = ({
   unreadNotes,
   onOpen
 }) => {
-  const classes = useDialogStyles();
-
   const popupState = usePopupState({
     variant: 'popover',
     popupId: `line_item_notes_${id}`
   });
 
-  const utils = useContext(MuiPickersContext);
   const [value, setValue] = useState('');
 
   const focusedInput = React.useCallback(node => {
@@ -121,46 +168,14 @@ const DialogNotes = ({
           horizontal: 'right'
         }}
       >
-        <Paper className={classes.paper}>
-          <List dense disablePadding>
-            {notes.map((note, index) => {
-              const dateCreated = utils.format(note.dateCreated, 'MM/dd/yyyy');
-              const userName = `${note.user.firstName} ${note.user.lastName}`;
-              return (
-                <ListItem
-                  dense
-                  key={index}
-                  className={classes.listItem}
-                  disableGutters
-                >
-                  <ListItemText
-                    primary={note.note}
-                    secondary={`${dateCreated} - ${userName}`}
-                  />
-                </ListItem>
-              );
-            })}
-          </List>
-
-          <TextField
-            className={classes.input}
-            inputRef={focusedInput}
-            value={value}
-            onChange={e => setValue(e.target.value)}
-            label="Add Note"
-            fullWidth
-            multiline
-            variant="outlined"
-          />
-          <Grid container justify="flex-end">
-            <Button color="primary" onClick={handleSave}>
-              Save
-            </Button>
-            <Button color="secondary" onClick={handleCancel}>
-              Cancel
-            </Button>
-          </Grid>
-        </Paper>
+        <DialogNotesContent
+          handleSave={handleSave}
+          handleCancel={handleCancel}
+          focusedInput={focusedInput}
+          notes={notes}
+          value={value}
+          setValue={setValue}
+        />
       </Popover>
     </React.Fragment>
   );
