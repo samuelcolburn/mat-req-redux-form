@@ -64,46 +64,94 @@ projectManager
       - cannot update:
         - startingInventory
         - quantityRequested
+        - quantityNeeded
     
-    - if status is 'ordered', 'received', 'complete':
+    - if status is 'received', 'complete':
       - cannot update:
         - quantityNeeded
         - quantityOrdered
         - currentCost
 
-    - 
-
-    - cannot edit currentCost  
 
   - can delete:
     - if status = 'needsReview'. If past review cannot delete
+      && isCreatedBy
 
-cam
-
-
-
+cam,
 camManager
+- Requisitions
+  - can read
+  - can create
+    - status always 'needsReview'
+    - 
+  - can update
+    - if status = 'needsReview'
+  - can delete
+    - if status = 'needsReview'
+
+- RequisitionLineItems
+  - can read
+  - can create
+    - status always 'needsReview'
+    - quantityNeeded:
+      - cannot
+    - quantityOrdered:
+      - cannot
+    - currentCost:
+      - cannot
+  - can update
+    - if status = 'needsReview' && isCreatedBy
+  - can delete
+    - if status = 'needsReview' && isCreatedBy
 
 
 
-
-cell
-
-engineering
-
+engineering,
 engineeringManager
+  - Requisitions    
+    - can read
+    - can create
+
+    - can update
+      - if status = 'needsPricing' && isCreatedBy
+    - can delete
+      - if status = 'needsPricing' && isCreatedBy
+
+  - RequisitionLineItems
+    - can read
+    - can create
+      - ?status = 'needsPricing'
+      - quantityOrdered:
+        - cannot
+      - currentCost:
+        - cannot
+
+    - can update
+      - if status = 'needsPricing' && isCreatedBy
+      - status:
+        - cannot
+      - quantityOrdered:
+        - cannot
+      - currentCost:
+        - cannot
+
+    - can delete
+      - if status = 'needsPricing' && isCreatedBy
+
+  - cannot create
+  - cannot update
+  - cannot delete
+
+
 
 executive
 
-finish
 
-headForeman
 
-installForeman
 
-jobCaptain
 
-manufacturingManager
+
+
 
 pressPull
 
@@ -115,5 +163,22 @@ receiving
 
 shipping
 
-shopStation
+headForeman,
+installForeman,
+finish,
+manufacturingManager,
+jobCaptain,
+shopStation,
+cell
+  - Requisitions
+    - can read
+      - if status = 'ordered', 'received', 'complete'
+  
+  - RequisitionLineItems
+    - can read
+      - if status = 'ordered', 'received', 'complete'
+
+  - cannot create
+  - cannot update
+  - cannot delete
 
