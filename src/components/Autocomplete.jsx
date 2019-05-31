@@ -182,12 +182,12 @@ let AutoComplete = props => {
   }
 
   const handleFocus = event => {
-    console.log('handleFocus: ', input.name);
+    // console.log('handleFocus: ', input.name);
     input.onFocus(input.value);
   };
 
   const handleBlur = event => {
-    console.log('handleBlur', input.name);
+    // console.log('handleBlur', input.name);
     input.onBlur(input.value);
   };
 
