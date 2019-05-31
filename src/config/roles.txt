@@ -1,0 +1,119 @@
+actions:
+[create, read, update, delete, 
+
+accounting
+
+
+
+admin
+- can do anything
+[ // admin rules
+  { // rule 1
+    "actions": ["create", "read", "update", "delete"],
+    "subject": "all"
+  }
+]
+
+
+projectManager
+- Requsitions
+  - can read reqs
+  - can create reqs
+  - can update their own reqs
+  - cannot update:
+    - dateCreated
+    - createdBy
+    - id
+
+    - if the req has been approved:
+      - cannot update:
+        - ?dateNeeded
+        - number
+        - ?subject
+        - job
+        - shopDrawing
+
+
+  - can delete reqs:
+    - if status = 'needsReview', otherwise they have already been submitted
+      and should 
+
+  - cannot set reqItem status to 'approved', 'rejected'
+  - cannot change
+
+- RequisitionLineItems
+  - can read
+    - all
+  - can create
+    - cannot see 'needsReview' status option
+    - cannot edit status:
+      - status should be 'needsPricing' by default, if an estimatedCost is
+        entered for a lineItem, it should be updated to needsApproval.
+        Manual editing should be disabled
+    - cannot edit quantityOrdered
+    - cannot edit currentCost
+
+  - can update
+    - cannot see 'needsReview' status option
+    - can edit status if:
+      - status is 'approved':
+        - to 'ordered'
+      - status is 'rejected':
+        - to 'needsPricing', or 'needsApproval'
+    - if status is 'approved', 'ordered', 'received', 'complete':
+      - cannot update:
+        - startingInventory
+        - quantityRequested
+    
+    - if status is 'ordered', 'received', 'complete':
+      - cannot update:
+        - quantityNeeded
+        - quantityOrdered
+        - currentCost
+
+    - 
+
+    - cannot edit currentCost  
+
+  - can delete:
+    - if status = 'needsReview'. If past review cannot delete
+
+cam
+
+
+
+camManager
+
+
+
+
+cell
+
+engineering
+
+engineeringManager
+
+executive
+
+finish
+
+headForeman
+
+installForeman
+
+jobCaptain
+
+manufacturingManager
+
+pressPull
+
+production
+
+purchasing
+
+receiving
+
+shipping
+
+shopStation
+

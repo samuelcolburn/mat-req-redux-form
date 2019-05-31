@@ -145,6 +145,7 @@ let LineItem = props => {
             native
             // placeholder
             margin="dense"
+            disabled
           >
             {({ options, native }) => {
               return options.map((option, index) => {
