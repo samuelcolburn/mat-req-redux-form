@@ -1,14 +1,17 @@
 import get from 'lodash/fp/get';
+import getOr from 'lodash/fp/getOr';
+
 import pick from 'lodash/fp/pick';
-// import has from 'lodash/fp/has';
+import toNumber from 'lodash/fp/toNumber';
 import { createSelector as ormCreateSelector } from 'redux-orm';
-import { createSelector, createStructuredSelector } from 'reselect';
+import { createSelector } from 'reselect';
 import createCachedSelector from 're-reselect';
 import orm, { tableModelMap } from './orm';
 // import { getFormValues, formValueSelector } from 'redux-form';
 // import { SELECTED_ALL, SELECTED_NONE, SELECTED_SOME } from './constants';
 import { formValueSelector, getFormValues } from 'redux-form';
 import { SELECTED_ALL, SELECTED_NONE, SELECTED_SOME } from './constants';
+import { values } from './helpers';
 
 const dbStateSelector = state => state.db;
 
@@ -159,6 +162,23 @@ export const getAllSelected = createSelector(
 export const formValuesSelector = (state, props) => {
   return getFormValues(props.form)(state);
 };
+
+const lineItemValues = createSelector(
+  [valueSelector('lineItems'), (_, props) => get('field', props)],
+  (lineItems, field) =>
+    lineItems.reduce((acc, lineItem) => {
+      const value = getOr(null, field, lineItem);
+      if (value !== null) acc[lineItem.id] = value;
+      return acc;
+    }, {})
+);
+
+export const makeTotalSelector = () =>
+  createSelector(
+    [lineItemValues, (_, props) => get('field', props)],
+    (lineItemValues, field) =>
+      values(lineItemValues).reduce((acc, value) => acc + toNumber(value), 0)
+  );
 
 // ::::: non reselect getAllselected :::::
 // const OLDformSelector = (form, ...other) => formValueSelector(form)(...other);

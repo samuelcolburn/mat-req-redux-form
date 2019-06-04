@@ -145,16 +145,23 @@ let LineItem = props => {
             native
             // placeholder
             margin="dense"
-            disabled
           >
             {({ options, native }) => {
               return options.map((option, index) => {
                 return native ? (
-                  <option key={option.value} value={option.value}>
+                  <option
+                    key={option.value}
+                    value={option.value}
+                    disabled={option.disabled}
+                  >
                     {option.label}
                   </option>
                 ) : (
-                  <MenuItem key={option.value} value={option.value}>
+                  <MenuItem
+                    key={option.value}
+                    value={option.value}
+                    disabled={option.disabled}
+                  >
                     {option.label}
                   </MenuItem>
                 );

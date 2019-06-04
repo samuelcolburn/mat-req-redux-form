@@ -124,6 +124,10 @@ const NumberField = props => {
     if (e.target.value !== value) setValue(e.target.value);
   }
 
+  function handleBlur(e) {
+    input.onBlur(value);
+  }
+
   const memoShrink = useMemo(() => shouldShrink(value), [value]);
 
   return (
@@ -143,6 +147,7 @@ const NumberField = props => {
         classes={classes}
         value={value}
         onChange={handleChange}
+        onBlur={handleBlur}
         error={error && dirty}
         inputComponent={NumberFormatCustom}
         {...InputProps}
