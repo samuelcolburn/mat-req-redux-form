@@ -101,6 +101,9 @@ const useStyles = makeStyles(theme => ({
       opacity: 1
     }
   },
+  footer: {
+    borderBottom: `1px solid ${theme.palette.divider}`
+  },
   selectedWrapper: {
     display: 'flex',
     alignItems: 'center',

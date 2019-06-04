@@ -6,7 +6,7 @@ import TotalField from './TotalField';
 let LineItemsFooter = props => {
   const { form, classes } = props;
   return (
-    <div className={classes.itemContainer}>
+    <div className={clsx(classes.itemContainer, classes.footer)}>
       {/* Select All checkbox */}
       <div className={classes.attributeContainer}>Totals</div>
 
