@@ -7,6 +7,7 @@ import useMediaQueryWithTheme from '../../hooks/useMediaQueryWithTheme';
 import { makeLineItemWithId } from '../../helpers';
 
 import LineItem from './LineItem';
+import LineItemsFooter from './LineItemsFooter';
 
 const LineItems = ({
   fields,
@@ -42,6 +43,8 @@ const LineItems = ({
           />
         );
       })}
+
+      <LineItemsFooter form={form} classes={classes} />
 
       <div className={classes.buttonsContainer}>
         <div className={classes.buttonWrapper}>

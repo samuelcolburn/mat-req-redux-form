@@ -1,32 +1,7 @@
 import React from 'react';
 import clsx from 'clsx';
-import { connect } from 'react-redux';
-import NumberFormat from 'react-number-format';
 
-import { makeTotalSelector } from '../../selectors';
-
-let TotalField = props => {
-  const { total, NumberFieldProps } = props;
-
-  return (
-    <NumberFormat
-      value={total}
-      displayType={'text'}
-      thousandSeparator={true}
-      decimalScale={2}
-      {...NumberFieldProps}
-    />
-  );
-};
-const mapStateToProps = (state, props) => {
-  const getTotal = makeTotalSelector();
-
-  return {
-    total: getTotal(state, props)
-  };
-};
-
-TotalField = connect(mapStateToProps)(TotalField);
+import TotalField from './TotalField';
 
 let LineItemsFooter = props => {
   const { form, classes } = props;
@@ -49,24 +24,20 @@ let LineItemsFooter = props => {
       <div
         className={clsx(classes.attributeContainer, classes.quantityRequest)}
       >
-        <TotalField field="startingInventory" form={form} />
-        {/* <div>{requestedTotal}</div> */}
-        <TotalField field="quantityRequested" form={form} />
+        <TotalField field="startingInventory" label="Inventory" form={form} />
+        <TotalField field="quantityRequested" label="Requested" form={form} />
       </div>
       <div className={clsx(classes.attributeContainer, classes.quantityOrder)}>
-        {/* <div>{neededTotal}</div>
-        <div>{orderedTotal}</div> */}
-        <TotalField field="quantityNeeded" form={form} />
-        <TotalField field="quantityOrdered" form={form} />
+        <TotalField field="quantityNeeded" label="Needed" form={form} />
+        <TotalField field="quantityOrdered" label="Ordered" form={form} />
       </div>
 
       {/* Group 4: Prices */}
       <div className={clsx(classes.attributeContainer, classes.cost)}>
-        {/* <div>{estimatedTotal}</div>
-        <div>{currentTotal}</div> */}
         <TotalField
           field="estimatedCost"
           form={form}
+          label="Est Cost"
           NumberFieldProps={{
             prefix: '$'
           }}
@@ -74,6 +45,7 @@ let LineItemsFooter = props => {
         <TotalField
           field="currentCost"
           form={form}
+          label="Curr Cost"
           NumberFieldProps={{
             prefix: '$'
           }}
@@ -87,31 +59,5 @@ let LineItemsFooter = props => {
     </div>
   );
 };
-// const mapStateToProps = (state, props) => {
-//   console.log('LineItemsFooter: mapStateToProps');
-//   const getInventoryTotal = makeTotalSelector();
-//   const getRequestedTotal = makeTotalSelector();
-//   const getNeededTotal = makeTotalSelector();
-//   const getOrderedTotal = makeTotalSelector();
-
-//   const getEstimatedTotal = makeTotalSelector();
-//   const getCurrentTotal = makeTotalSelector();
-
-//   return {
-//     inventoryTotal: getInventoryTotal(state, props),
-//     requestedTotal: getRequestedTotal(state, props),
-//     neededTotal: getNeededTotal(state, props),
-//     orderedTotal: getOrderedTotal(state, props),
-//     estimatedTotal: getEstimatedTotal(state, props),
-//     currentTotal: getCurrentTotal(state, props)
-//   };
-// };
-
-// const mapDispatchToProps = {};
-
-// LineItemsFooter = connect(
-//   mapStateToProps,
-//   mapDispatchToProps
-// )(LineItemsFooter);
 
 export default LineItemsFooter;

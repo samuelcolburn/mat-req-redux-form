@@ -10,7 +10,6 @@ import Divider from '@material-ui/core/Divider';
 import LineItemsColumns from './LineItemsColumns';
 import LineItemsHeader from './LineItemsHeader';
 import LineItemsList from './LineItemsList';
-import LineItemsFooter from './LineItemsFooter';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -151,8 +150,6 @@ const LineItems = props => {
             shopDrawing={shopDrawing}
             classes={classes}
           />
-
-          <LineItemsFooter form={form} classes={classes} />
         </div>
       </Grid>
     </Grid>
