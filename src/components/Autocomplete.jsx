@@ -152,8 +152,8 @@ const getInputHeight = ref => {
           ref.current.scrollHeight
       : 0;
   } catch (error) {
-    console.log(error);
-    console.log('error getInputHeight, ref: ', ref);
+    // console.log(error);
+    // console.log('error getInputHeight, ref: ', ref);
   }
 };
 
@@ -194,7 +194,7 @@ let AutoComplete = props => {
   const listRef = useRef(null);
 
   const onStateChange = (changes, stateAndHelpers) => {
-    console.log('Downshift: onStateChange: ', changes, stateAndHelpers);
+    // console.log('Downshift: onStateChange: ', changes, stateAndHelpers);
     if (
       changes.hasOwnProperty('highlightedIndex') &&
       listRef.current !== null
@@ -203,7 +203,7 @@ let AutoComplete = props => {
     }
 
     if (changes.type === Downshift.stateChangeTypes.blurInput) {
-      console.log('Downshift: blurred input: ', changes);
+      // console.log('Downshift: blurred input: ', changes);
       input.onBlur(input.value);
     }
   };

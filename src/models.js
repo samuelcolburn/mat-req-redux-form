@@ -78,7 +78,7 @@ Requisition.fields = {
   dateNeeded: attr(),
   number: attr(),
   subject: attr(),
-  relatedUser: fk({
+  recordOwner: fk({
     to: 'User',
     as: 'user',
     relatedName: 'requisitions'

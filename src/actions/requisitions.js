@@ -1,3 +1,4 @@
+import pick from 'lodash/fp/pick';
 import {
   REQ_REQUISITION,
   REQ_REQUISITION_SUCCESS,
@@ -81,7 +82,22 @@ const reqRequisitionInit = id => ({
 });
 
 const reqRequisitionSuccess = requisition => (dispatch, getState) => {
-  dispatch(createRequisition(requisition));
+  const req = pick(
+    [
+      'id',
+      'createdBy',
+      'relatedUser',
+      'dateCreated',
+      'dateNeeded',
+      'number',
+      'subject',
+      'relatedJob',
+      // 'job',
+      'relatedShopDrawing'
+    ],
+    requisition
+  );
+
   dispatch({
     type: REQ_REQUISITION_SUCCESS
   });
@@ -98,8 +114,14 @@ const reqRequisitionSuccess = requisition => (dispatch, getState) => {
   }
 
   if (!sess.ShopDrawing.idExists(requisition.relatedShopDrawing)) {
-    dispatch(createShopDrawing(requisition.shopDrawing));
+    const sd = pick(
+      ['id', 'number', 'subject', 'shopDrawing', 'relatedJob'],
+      requisition.shopDrawing
+    );
+    dispatch(createShopDrawing(sd));
   }
+
+  dispatch(createRequisition(req));
 };
 
 const reqRequisitionError = error => {

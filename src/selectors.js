@@ -33,14 +33,17 @@ export const jobs = ormCreateSelector([orm, dbStateSelector], session => {
 export const requisitionSelector = createSelector(
   [state => state.db, (_state, props) => props],
   ormCreateSelector(orm, (session, props) => {
-    // console.log('requisitionSelector');
-    // console.log('props: ', props);
-    const model = session.Requisition.withId(props.id);
+    console.log('REQUISITION SELECTOR');
 
+    const model = session.Requisition.withId(props.id);
+    console.log('model : ', model);
     const obj = model ? model.ref : {};
 
     return {
       ...obj,
+      job: {
+        ...model.job.ref
+      },
       lineItems: model ? model.requisitionLineItems.toRefArray() : []
     };
   })
@@ -62,17 +65,22 @@ export const getSelectedRequisitionId = state => state.selectedRequisitionId;
 export const getSelectedRequisition = createSelector(
   [state => state.db, getSelectedRequisitionId],
   ormCreateSelector(orm, (session, id) => {
-    // console.log('requisitionSelector');
-    // console.log('props: ', props);
+    console.log('getSelectedRequisition');
+    console.log('session: ', session);
+    console.log('id: ', id);
     const model = session.Requisition.withId(id);
+    console.log('model: ', model);
 
-    const obj = model ? model.ref : {};
-
-    return {
-      ...obj,
-      lineItems: model ? model.requisitionLineItems.toRefArray() : [],
-      attachments: model ? model.attachments.toRefArray() : []
-    };
+    return !model
+      ? { lineItems: [], attachments: [] }
+      : {
+          ...model.ref,
+          user: { ...model.user.ref },
+          job: { ...model.job.ref },
+          shopDrawing: { ...model.shopDrawing.ref },
+          lineItems: model.requisitionLineItems.toRefArray(),
+          attachments: model.attachments.toRefArray()
+        };
   })
 );
 
