@@ -60,19 +60,33 @@ export const noteSelector = createSelector(
   })
 );
 
+export const getCurrentUser = state => state.currentUser;
+export const getCurrentUserName = createSelector(
+  getCurrentUser,
+  user =>
+    user && user.firstName && user.lastName
+      ? `${user.firstName} ${user.lastName}`
+      : ''
+);
+
 export const getSelectedRequisitionId = state => state.selectedRequisitionId;
 
 export const getSelectedRequisition = createSelector(
-  [state => state.db, getSelectedRequisitionId],
-  ormCreateSelector(orm, (session, id) => {
+  [state => state.db, getSelectedRequisitionId, getCurrentUserName],
+  ormCreateSelector(orm, (session, id, currentUser) => {
     console.log('getSelectedRequisition');
+    console.log('currentUser:', currentUser);
     console.log('session: ', session);
     console.log('id: ', id);
     const model = session.Requisition.withId(id);
     console.log('model: ', model);
 
     return !model
-      ? { lineItems: [], attachments: [] }
+      ? {
+          recordOwnerName: currentUser,
+          lineItems: [],
+          attachments: []
+        }
       : {
           ...model.ref,
           user: { ...model.user.ref },

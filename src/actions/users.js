@@ -5,6 +5,7 @@ import {
   SET_CURRENT_USER
 } from '../constants';
 import { getRandomData } from '../data/api';
+import { delay } from '../helpers';
 
 export const createUser = props => ({
   type: CREATE_USER,
@@ -32,15 +33,17 @@ const setCurrentUser = props => ({
 });
 
 export const fetchCurrentUser = () => (dispatch, getState) => {
-  getRandomData({ table: 'users' }).then(
-    user => {
-      console.log('current user: ', user);
-      dispatch(createUser(user));
-      dispatch(setCurrentUser(user));
-    },
-    error => {
-      console.log('error getting current user');
-      console.error(error);
-    }
-  );
+  delay(500)
+    .then(r => getRandomData({ table: 'users' }))
+    .then(
+      user => {
+        console.log('current user: ', user);
+        dispatch(createUser(user));
+        dispatch(setCurrentUser(user));
+      },
+      error => {
+        console.log('error getting current user');
+        console.error(error);
+      }
+    );
 };

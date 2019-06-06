@@ -144,7 +144,7 @@ let Form = props => {
       <Grid container className={classes.header} spacing={4}>
         <Grid item xs={6} md={4}>
           <Field
-            name="createdBy"
+            name="recordOwnerName"
             label="Created By"
             component={TextField}
             readOnly

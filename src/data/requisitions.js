@@ -5,7 +5,7 @@ const mockRequisition = (users, shopDrawing) => {
   const user = users[faker.random.number({ min: 0, max: users.length - 1 })];
   return {
     id: faker.random.uuid(),
-    createdBy: `${user.firstName} ${user.lastName}`,
+    recordOwnerName: `${user.firstName} ${user.lastName}`,
     relatedUser: user.id,
     user: { ...user },
     dateCreated: faker.date.recent(),

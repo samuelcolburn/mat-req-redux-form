@@ -85,7 +85,7 @@ const reqRequisitionSuccess = requisition => (dispatch, getState) => {
   const req = pick(
     [
       'id',
-      'createdBy',
+      'recordOwnerName',
       'relatedUser',
       'dateCreated',
       'dateNeeded',
