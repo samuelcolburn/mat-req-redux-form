@@ -23,7 +23,7 @@ import ChatIcon from '@material-ui/icons/Chat';
 import TextField from '@material-ui/core/TextField';
 import Collapse from '@material-ui/core/Collapse';
 
-import { MuiPickersContext } from 'material-ui-pickers';
+import { MuiPickersContext } from '@material-ui/pickers';
 
 import {
   usePopupState,

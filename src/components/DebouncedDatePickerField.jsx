@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import get from 'lodash/fp/get';
 import useDebouncedCallback from 'use-debounce/lib/callback';
-import { KeyboardDatePicker } from 'material-ui-pickers';
+import { KeyboardDatePicker } from '@material-ui/pickers';
 import { makeStyles } from '@material-ui/styles';
 
 const useStyles = makeStyles(theme => ({
