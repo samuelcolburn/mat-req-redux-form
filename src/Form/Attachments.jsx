@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import clsx from 'clsx';
 import { connect } from 'react-redux';
-import { MuiPickersContext } from 'material-ui-pickers';
+import { MuiPickersContext } from '@material-ui/pickers';
 
 import { makeStyles } from '@material-ui/styles';
 import Grid from '@material-ui/core/Grid';
