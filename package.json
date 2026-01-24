@@ -20,7 +20,7 @@
     "hammerjs": "^2.0.8",
     "husky": "^3.0.9",
     "lint-staged": "^9.4.2",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.23",
     "material-ui-popup-state": "^1.4.1",
     "memoize-one": "^5.1.1",
     "prettier": "^1.18.2",
